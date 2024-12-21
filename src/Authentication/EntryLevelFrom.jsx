@@ -112,7 +112,7 @@ const EntryLevelForm = () => {
         data.append(key, formData[key]);
       });
 
-      data.append("userId", userId);
+      data.append("userId", userId.toString());
       // data.append('details',true)// Add userId explicitly
 
       const response = await axios.post(
