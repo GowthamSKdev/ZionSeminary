@@ -95,12 +95,15 @@ function Register() {
             <h4 className="text-left text-dark fw-bold mb-3">Sign Up</h4>
             <p className="text-muted">
               Already have an account?{" "}
-              <a
+              {/* <a
                 href="/login"
                 className="text-decoration-underline fw-semibold text-primary"
               >
                 Sign In
-              </a>
+              </a> */}
+              <Link to={"/login"}>
+                <p className="text-decoration-underline fw-semibold text-primary">Sign In</p>
+              </Link>
             </p>
             <form onSubmit={handleSubmit(onSubmit)}>
               {/* Username */}
@@ -238,7 +241,9 @@ function Register() {
                 <button
                   type="button"
                   className="btn btn-white w-100 mb-3 rounded-pill border d-flex align-items-center"
-                onClick={()=>{handleGoogleLogin}}
+                  onClick={() => {
+                    handleGoogleLogin;
+                  }}
                 >
                   <img
                     src={google}

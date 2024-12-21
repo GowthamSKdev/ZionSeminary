@@ -212,7 +212,10 @@ const handleGoogleLogin = async () => {
 
 
   return (
-    <div style={{ height: "100%", minHeight: "100dvh",padding:'1em' }} className="register">
+    <div
+      style={{ height: "100%", minHeight: "100dvh", padding: "1em" }}
+      className="register"
+    >
       {/* <form className="my-form" onSubmit={handleSubmit(onSubmit)}>
         <h2 style={{ textAlign: 'center', marginBottom: "40px" }}>Login</h2>
         <div className="form-group">
@@ -248,12 +251,15 @@ const handleGoogleLogin = async () => {
             <h4 className="text-left text-dark fw-bold mb-3">Sign In</h4>
             <p className="text-muted">
               Don't have an account?{" "}
-              <a
+              {/* <a
                 href="/"
                 className="text-decoration-underline fw-semibold text-primary"
               >
                 Create now
-              </a>
+              </a> */}
+              <Link to={"/"}>
+                <p className="text-decoration-underline fw-semibold text-primary"> Create Now</p>
+              </Link>
             </p>
 
             <form onSubmit={handleSubmit(onSubmit)}>
