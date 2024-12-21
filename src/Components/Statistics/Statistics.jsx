@@ -1,7 +1,7 @@
 // src/components/Statistics.js
 import BigCalendar from "../Calendar/BigCalendar/BigCalendar";
 import Chart from "./Chart";
-import CourseProgress from "./courseProgress";
+// import CourseProgress from "./courseProgress";
 import MainEvents from "./MainEvents";
 import "./Statistics.css";
 
