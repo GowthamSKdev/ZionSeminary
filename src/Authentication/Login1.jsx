@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Register.css'; // Reuse the same CSS file
 // import { getAllUsers } from '../Admin/firebase/userApi';
 // import bcrypt from 'bcryptjs';
