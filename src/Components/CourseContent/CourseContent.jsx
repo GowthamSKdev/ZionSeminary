@@ -221,7 +221,7 @@ const CourseContent = () => {
             >
               {/* <source src={link} type="video/mp4" /> */}
               {/* <source src={link} type="video/mkv" /> */}
-              <source src="/test.mp4" type="video/mp4" />
+              <source src={link?link:'./test.mp4'} type="video/mp4" />
             </video>
           </div>
         </>
@@ -442,10 +442,10 @@ const CourseContent = () => {
               >
                 {courseData?.chapters?.length > 0 &&
                   renderContent(
-                    !currentCourseData.link
+                    !currentCourseData.file
                       ? courseData.videoUrl
-                      : currentCourseData.link,
-                    !currentCourseData.link ? "video" : currentCourseData.type
+                      : currentCourseData.file,
+                    !currentCourseData.file ? "video" : currentCourseData.type
                   )}
                 {/* <img src={courseData.thumbnail} alt="" /> */}
               </div>
