@@ -45,7 +45,7 @@ function Register() {
   const handleGoogleLogin = async () => {
     try {
       // Call the Google login endpoint
-      const res = await axios.post("/api/google-login");
+      const res = await axios.post(`${apiBaseUrl}/api/google-login`);
 
       // Process the response
       if (res.status === 200) {

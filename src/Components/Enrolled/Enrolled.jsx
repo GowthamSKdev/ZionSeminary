@@ -589,6 +589,8 @@ const Enrolled = () => {
   const userInfo = JSON.parse(localStorage.getItem("userdata"));
   const userId = userInfo.id;
 
+   const apiBaseUrl = process.env.BASE_API
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -606,7 +608,7 @@ const Enrolled = () => {
 
         
         const degreeData = await axios.get(
-          `/api/degrees/${LoginUser.applyingFor}`
+          `${apiBaseUrl}/api/degrees/${LoginUser.applyingFor}`
         );
         const degree = degreeData.data.degree;
         console.log(degree);
