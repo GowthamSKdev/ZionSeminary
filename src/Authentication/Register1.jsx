@@ -82,7 +82,7 @@ function Register() {
   return (
     <div
       className="register"
-      style={{ height: "100%", minHeight: "100vh", padding: "1em" }}
+      style={{ height: "100%", minHeight: "100vh" }}
     >
       <div className="register-container d-flex justify-content-center align-items-center min-vh-100">
         <div className="register-card d-flex flex-column flex-lg-row shadow-lg rounded">

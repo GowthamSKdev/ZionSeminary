@@ -7,7 +7,7 @@ import axios from "axios";
 import { Button, Modal, Form } from "react-bootstrap"; // Bootstrap modal components
 
 const localizer = momentLocalizer(moment);
-
+const apiBaseUrl = process.env.BASE_API;
 // const apiBaseurl = process.env.REACT_APP_API_BASE_URL;
 
 const BigCalendar = () => {
@@ -22,7 +22,7 @@ const BigCalendar = () => {
   useEffect(() => {
     const getEvents = async () => {
       try {
-        const res = await axios.get(`/api/event/${userid._id}`);
+        const res = await axios.get(`${apiBaseUrl}/api/event/${userid._id}`);
         const fetchedEvents = res.data.events || [];
         const formattedEvents = fetchedEvents.map((event) => ({
           title: event.title,
@@ -62,7 +62,10 @@ const BigCalendar = () => {
     };
 
     try {
-      const res = await axios.post(`/api/event/`, newEventWithUser);
+      const res = await axios.post(
+        `${apiBaseUrl}/api/event/`,
+        newEventWithUser
+      );
       setEvents([
         ...events,
         {
@@ -90,7 +93,7 @@ const BigCalendar = () => {
 
     try {
       const response = await axios.delete(
-        `/api/event/${eventToDelete.id}`
+        `${apiBaseUrl}/api/event/${eventToDelete.id}`
       );
       if (response.status === 200 || response.status === 204) {
         setEvents((prevEvents) =>
@@ -128,9 +131,7 @@ const BigCalendar = () => {
       <div className="main-calendar">
         <div className="Dash_calender">
           <h5>Calendar</h5>
-                  <Button variant="primary"
-                      onClick={() => setShowModal(true)}
-                  >
+          <Button variant="primary" onClick={() => setShowModal(true)}>
             Add Event
           </Button>
         </div>
@@ -191,9 +192,7 @@ const BigCalendar = () => {
             <Button variant="secondary" onClick={() => setShowModal(false)}>
               Close
             </Button>
-                      <Button variant="primary"
-                          onClick={handleAddEvent}
-                      >
+            <Button variant="primary" onClick={handleAddEvent}>
               Save Event
             </Button>
           </Modal.Footer>
@@ -217,9 +216,7 @@ const BigCalendar = () => {
             >
               Cancel
             </Button>
-                      <Button variant="danger"
-                          onClick={handleDeleteEvent}
-                      >
+            <Button variant="danger" onClick={handleDeleteEvent}>
               Delete
             </Button>
           </Modal.Footer>

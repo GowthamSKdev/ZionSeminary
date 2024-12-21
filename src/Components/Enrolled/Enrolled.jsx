@@ -737,12 +737,23 @@ const Enrolled = () => {
                 <div className="" key={course._id}>
                   <div className="zion-card">
                     <div className="zion-course-card">
-                      <img src={imgd} alt={course.title} />
+                      <img
+                        src={course.thumbnail ? course.thumbnail : imgd}
+                        alt={course.title}
+                      />
                       <div className="zion-course-content">
                         <h3 className="zion-course-title">{course.title}</h3>
                         <p className="zion-course-description">
                           {course.description}
                         </p>
+                        {/* <ul>
+                          {course?.chapters
+                            ?.slice(0, 3)
+                            .map((chapter, index) => (
+                              <li key={index}>{chapter.title}</li>
+                            ))}
+                          {course?.chapters?.length > 3 && <li>...and more</li>}
+                        </ul> */}
                         <div className="">
                           {/* <button
                             className="btn btn-primary"
@@ -755,14 +766,12 @@ const Enrolled = () => {
                           <button
                             className={`btn ${
                               isCompleted ? "btn-success" : "btn-danger"
-                              }`}
-                            
+                            }`}
                             onClick={() =>
-                              navigate(`/home/courseContent/${course.id}`, {
+                              navigate(`/home/courseContent/${course._id}`, {
                                 state: course,
                               })
                             }
-
                           >
                             {isCompleted ? <Unlock /> : <Lock />}
                             {isCompleted ? " Unlock" : " Locked"}

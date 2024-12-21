@@ -213,7 +213,7 @@ const handleGoogleLogin = async () => {
 
   return (
     <div
-      style={{ height: "100%", minHeight: "100dvh", padding: "1em" }}
+      style={{ height: "100%", minHeight: "100dvh" }}
       className="register"
     >
       {/* <form className="my-form" onSubmit={handleSubmit(onSubmit)}>

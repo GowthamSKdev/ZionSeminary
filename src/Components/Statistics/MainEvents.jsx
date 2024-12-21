@@ -3,12 +3,12 @@ import "./Events.css";
 import { Calendar } from "lucide-react";
 import axios from "axios";
 // const apiBaeApi = process.env.REACT_APP_API_BASE_URL;
-
+const apiBaseUrl = process.env.BASE_API;
 const MainEvents = () => {
       const [events, setEvents] = useState([]);
     useEffect(() => {
       const getEvent = async () => {
-        const resEvents = await axios.get(`/api/admin-event`);
+        const resEvents = await axios.get(`${apiBaseUrl}/api/admin-event`);
         console.log(resEvents);
         const { events } = resEvents.data;
         
