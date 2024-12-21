@@ -6,7 +6,7 @@ import axios from "axios";
 import UserContext from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 
-const apiBaseUrl = process.env.BASE_API;
+const apiBaseUrl = process.env.REACT_APP_BASE_API;
 const EntryLevelForm = () => {
   const {
     register,

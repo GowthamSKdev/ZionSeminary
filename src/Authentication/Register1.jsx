@@ -5,6 +5,7 @@ import axios from "axios";
 import "./Register.css";
 import logo from "./assets/logo.png";
 import google from "./assets/google.png";
+import { toast } from "react-toastify";
 
 function Register() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function Register() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState("");
 
-  const apiBaseUrl = process.env.BASE_API
+  const apiBaseUrl = process.env.REACT_APP_BASE_API;
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
@@ -41,7 +42,6 @@ function Register() {
       setIsSubmitting(false);
     }
   };
-
   const handleGoogleLogin = async () => {
     try {
       // Call the Google login endpoint
@@ -53,8 +53,9 @@ function Register() {
 
         if (user) {
           // Save user data in local storage or context
-          localStorage.setItem("userdata", JSON.stringify(user));
-          localStorage.setItem("isloggedin", true);
+          localStorage.setItem("userData", JSON.stringify(user));
+          localStorage.setItem("isLoggedIn", "true");
+          toast.success("Google Login Successful");
           toast.success("Google Login Successful");
 
           // Redirect user based on their role
@@ -232,19 +233,18 @@ function Register() {
                 <p className="text-danger text-center">{serverError}</p>
               )}
 
-              <div className="text-center mb-3">
+              {/* <div className="text-center mb-3">
                 <div className="d-flex align-items-center mb-3">
                   <hr className="flex-grow-1" />
                   <span className="mx-2 fw-semibold">Or</span>
                   <hr className="flex-grow-1" />
                 </div>
 
-                {/* Google Sign-in Button */}
                 <button
                   type="button"
                   className="btn btn-white w-100 mb-3 rounded-pill border d-flex align-items-center"
                   onClick={() => {
-                    handleGoogleLogin;
+                    handleGoogleLogin()
                   }}
                 >
                   <img
@@ -257,7 +257,7 @@ function Register() {
                     Sign up with Google
                   </span>
                 </button>
-              </div>
+              </div> */}
             </form>
           </div>
 

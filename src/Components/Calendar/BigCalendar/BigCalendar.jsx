@@ -7,7 +7,7 @@ import axios from "axios";
 import { Button, Modal, Form } from "react-bootstrap"; // Bootstrap modal components
 
 const localizer = momentLocalizer(moment);
-const apiBaseUrl = process.env.BASE_API;
+const apiBaseUrl = process.env.REACT_APP_BASE_API;
 // const apiBaseurl = process.env.REACT_APP_API_BASE_URL;
 
 const BigCalendar = () => {

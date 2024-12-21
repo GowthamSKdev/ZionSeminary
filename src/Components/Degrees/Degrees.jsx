@@ -304,7 +304,7 @@ const Degrees = () => {
   const [fetchError, setFetchError] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState([]);
 
-  const baseApi = process.env.BASE_API
+  const baseApi = process.env.REACT_APP_BASE_API;
   useEffect(() => {
     const fetchData = async () => {
       try {

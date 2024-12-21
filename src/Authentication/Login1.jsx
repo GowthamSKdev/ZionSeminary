@@ -9,7 +9,7 @@ import google from "./assets/google.png";
 import { toast } from 'react-toastify';
 import axios from 'axios';
 // import UserContext from '../context/UserContext';
- const apiBaseUrl = process.env.BASE_API
+ const apiBaseUrl = process.env.REACT_APP_BASE_API;
 function Login() {
 
   // const { setUserInfo } = useContext(UserContext);
@@ -306,7 +306,7 @@ const handleGoogleLogin = async () => {
                 Sign In
               </button>
 
-              <div className="text-center mb-3">
+              {/* <div className="text-center mb-3">
                 <div className="d-flex align-items-center mb-3">
                   <hr className="flex-grow-1" />
                   <span className="mx-2 fw-semibold">Or</span>
@@ -328,7 +328,7 @@ const handleGoogleLogin = async () => {
                     Sign in with Google
                   </span>
                 </button>
-              </div>
+              </div> */}
             </form>
           </div>
 

@@ -589,7 +589,7 @@ const Enrolled = () => {
   const userInfo = JSON.parse(localStorage.getItem("userdata"));
   const userId = userInfo.id;
 
-   const apiBaseUrl = process.env.BASE_API
+   const apiBaseUrl = process.env.REACT_APP_BASE_API;
 
   useEffect(() => {
     const fetchUser = async () => {
