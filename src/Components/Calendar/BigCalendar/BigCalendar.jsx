@@ -11,117 +11,117 @@ const localizer = momentLocalizer(moment);
 // const apiBaseurl = process.env.REACT_APP_API_BASE_URL;
 
 const BigCalendar = () => {
-//   const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState([]);
   const [newEvent, setNewEvent] = useState({ title: "", start: "", end: "" });
   const [showModal, setShowModal] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-//   const [eventToDelete, setEventToDelete] = useState(null); // Store the event to delete
-//   const userid = localStorage.getItem("userid");
+  const [eventToDelete, setEventToDelete] = useState(null); // Store the event to delete
+  const userid = JSON.parse(localStorage.getItem("userdata"));
 
   // Fetch events from the API
-//   useEffect(() => {
-//     const getEvents = async () => {
-//       try {
-//         const res = await axios.get(`${apiBaseurl}/event/${userid}`);
-//         const fetchedEvents = res.data.events || [];
-//         const formattedEvents = fetchedEvents.map((event) => ({
-//           title: event.title,
-//           start: new Date(event.startDate),
-//           end: new Date(event.endDate),
-//           id: event.id || event._id, // Ensure compatibility with backend ID
-//         }));
-//         setEvents(formattedEvents);
-//       } catch (error) {
-//         console.error("Error fetching events:", error);
-//       }
-//     };
+  useEffect(() => {
+    const getEvents = async () => {
+      try {
+        const res = await axios.get(`/api/event/${userid._id}`);
+        const fetchedEvents = res.data.events || [];
+        const formattedEvents = fetchedEvents.map((event) => ({
+          title: event.title,
+          start: new Date(event.startDate),
+          end: new Date(event.endDate),
+          id: event.id || event._id, // Ensure compatibility with backend ID
+        }));
+        setEvents(formattedEvents);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
 
-//     getEvents();
-//   }, [userid]);
+    getEvents();
+  }, [userid]);
 
   // Add a new event
-//   const handleAddEvent = async () => {
-//     if (!newEvent.title || !newEvent.start || !newEvent.end) {
-//       alert("Please fill all fields before adding an event.");
-//       return;
-//     }
+  const handleAddEvent = async () => {
+    if (!newEvent.title || !newEvent.start || !newEvent.end) {
+      alert("Please fill all fields before adding an event.");
+      return;
+    }
 
-//     const startDate = new Date(newEvent.start);
-//     const endDate = new Date(newEvent.end);
+    const startDate = new Date(newEvent.start);
+    const endDate = new Date(newEvent.end);
 
-//     if (startDate >= endDate) {
-//       alert("End date must be after start date.");
-//       return;
-//     }
+    if (startDate >= endDate) {
+      alert("End date must be after start date.");
+      return;
+    }
 
-//     const newEventWithUser = {
-//       title: newEvent.title,
-//       startDate: startDate.toISOString(),
-//       endDate: endDate.toISOString(),
-//       userId: userid,
-//     };
+    const newEventWithUser = {
+      title: newEvent.title,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+      userId: userid,
+    };
 
-//     try {
-//       const res = await axios.post(`${apiBaseurl}/event/`, newEventWithUser);
-//       setEvents([
-//         ...events,
-//         {
-//           title: newEvent.title,
-//           start: startDate,
-//           end: endDate,
-//           id: res.data.event.id,
-//         },
-//       ]);
-//       setShowModal(false);
-//     } catch (error) {
-//       console.error("Error adding event:", error);
-//       alert("Failed to add event. Please try again.");
-//     }
+    try {
+      const res = await axios.post(`/api/event/`, newEventWithUser);
+      setEvents([
+        ...events,
+        {
+          title: newEvent.title,
+          start: startDate,
+          end: endDate,
+          id: res.data.event.id,
+        },
+      ]);
+      setShowModal(false);
+    } catch (error) {
+      console.error("Error adding event:", error);
+      alert("Failed to add event. Please try again.");
+    }
 
-//     setNewEvent({ title: "", start: "", end: "" });
-//   };
+    setNewEvent({ title: "", start: "", end: "" });
+  };
 
   // Handle event deletion
-//   const handleDeleteEvent = async () => {
-//     if (!eventToDelete || !eventToDelete.id) {
-//       alert("No event selected for deletion.");
-//       return;
-//     }
+  const handleDeleteEvent = async () => {
+    if (!eventToDelete || !eventToDelete.id) {
+      alert("No event selected for deletion.");
+      return;
+    }
 
-//     try {
-//       const response = await axios.delete(
-//         `${apiBaseurl}/event/${eventToDelete.id}`
-//       );
-//       if (response.status === 200 || response.status === 204) {
-//         setEvents((prevEvents) =>
-//           prevEvents.filter((event) => event.id !== eventToDelete.id)
-//         );
-//         setShowDeleteConfirmation(false);
-//         alert("Event deleted successfully.");
-//       } else {
-//         alert("Failed to delete event. Please try again.");
-//       }
-//     } catch (error) {
-//       console.error("Error deleting event:", error);
-//       alert("An error occurred while deleting the event.");
-//     }
-//   };
+    try {
+      const response = await axios.delete(
+        `/api/event/${eventToDelete.id}`
+      );
+      if (response.status === 200 || response.status === 204) {
+        setEvents((prevEvents) =>
+          prevEvents.filter((event) => event.id !== eventToDelete.id)
+        );
+        setShowDeleteConfirmation(false);
+        alert("Event deleted successfully.");
+      } else {
+        alert("Failed to delete event. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      alert("An error occurred while deleting the event.");
+    }
+  };
 
   // Show delete confirmation modal
-//   const handleShowDeleteConfirmation = (event) => {
-//     if (!event || !event.id) {
-//       alert("Invalid event selected.");
-//       return;
-//     }
-//     setEventToDelete(event);
-//     setShowDeleteConfirmation(true);
-//   };
+  const handleShowDeleteConfirmation = (event) => {
+    if (!event || !event.id) {
+      alert("Invalid event selected.");
+      return;
+    }
+    setEventToDelete(event);
+    setShowDeleteConfirmation(true);
+  };
 
-//   const eventPropGetter = (event) => ({
-//     style: {
-//       position: "relative",
-//     },
-//   });
+  const eventPropGetter = (event) => ({
+    style: {
+      position: "relative",
+    },
+  });
 
   return (
     <div className="react-Big-calendar">
@@ -137,12 +137,12 @@ const BigCalendar = () => {
 
         <Calendar
           localizer={localizer}
-        //   events={events}
+          events={events}
           startAccessor="start"
           endAccessor="end"
-        //   eventPropGetter={eventPropGetter}
+          eventPropGetter={eventPropGetter}
           style={{ height: "470px", width: "100%" }}
-        //   onSelectEvent={handleShowDeleteConfirmation}
+          onSelectEvent={handleShowDeleteConfirmation}
         />
 
         {/* Modal for adding events */}
@@ -192,7 +192,7 @@ const BigCalendar = () => {
               Close
             </Button>
                       <Button variant="primary"
-                        //   onClick={handleAddEvent}
+                          onClick={handleAddEvent}
                       >
               Save Event
             </Button>
@@ -218,7 +218,7 @@ const BigCalendar = () => {
               Cancel
             </Button>
                       <Button variant="danger"
-                        //   onClick={handleDeleteEvent}
+                          onClick={handleDeleteEvent}
                       >
               Delete
             </Button>

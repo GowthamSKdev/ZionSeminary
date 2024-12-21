@@ -1,20 +1,21 @@
 // src/components/Statistics.js
 import BigCalendar from "../Calendar/BigCalendar/BigCalendar";
 import Chart from "./Chart";
-// import CourseProgress from "./courseProgress";
+import CourseProgress from "./courseProgress";
 import MainEvents from "./MainEvents";
 import "./Statistics.css";
 
 const Statistics = () => {
-  const timeSpentData = {
-    Sunday: 5,
-    Monday: 10,
-    Tuesday: 7,
-    Wednesday: 12,
-    Thursday: 6,
-    Friday: 8,
-    Saturday: 14,
-  };
+  
+  // const timeSpentData = {
+  //   Sunday: 5,
+  //   Monday: 10,
+  //   Tuesday: 7,
+  //   Wednesday: 12,
+  //   Thursday: 6,
+  //   Friday: 8,
+  //   Saturday: 14,
+  // };
 
   return (
     <div className="statistics">

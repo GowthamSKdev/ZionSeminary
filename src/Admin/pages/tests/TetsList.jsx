@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import moreIcon from "../../Assets/Images/more.png";
 import searchIcon from "../../Assets/Images/search.png";
 import { useNavigate } from 'react-router-dom';
-import TestDetails from './TestDetails';
+// import TestDetails from './TestDetails';
 
 
 

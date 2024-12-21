@@ -5,23 +5,23 @@ import axios from "axios";
 // const apiBaeApi = process.env.REACT_APP_API_BASE_URL;
 
 const MainEvents = () => {
-  //     const [events, setEvents] = useState([]);
-  //   useEffect(() => {
-  //     const getEvent = async () => {
-  //       const resEvents = await axios.get(
-  //         `${apiBaeApi}/admin-event`
-  //       );
-  //       const { events } = resEvents.data;
-  //       setEvents(events);
-  //     };
-  //     getEvent();
-  //   }, []);
+      const [events, setEvents] = useState([]);
+    useEffect(() => {
+      const getEvent = async () => {
+        const resEvents = await axios.get(`/api/admin-event`);
+        console.log(resEvents);
+        const { events } = resEvents.data;
+        
+        setEvents(events);
+      };
+      getEvent();
+    }, []);
   return (
     <>
       <div className="Events">
         <h3>Events</h3>
         <div className="event-container">
-          {/* <ul>
+          <ul>
             {events.map((event) => {
               const formattedStartDate = new Date(event.startDate)
                 .toISOString()
@@ -43,8 +43,8 @@ const MainEvents = () => {
                 </li>
               );
             })}
-          </ul> */}
-          <ul>
+          </ul>
+          {/* <ul>
             <li className="event-card">
               <div className="event-content">
                 <h6 className="event-title">Event 1 </h6>
@@ -55,7 +55,7 @@ const MainEvents = () => {
                 </div>
               </div>
             </li>
-          </ul>
+          </ul> */}
         </div>
       </div>
     </>
