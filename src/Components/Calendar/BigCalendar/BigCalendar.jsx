@@ -37,7 +37,7 @@ const BigCalendar = () => {
     };
 
     getEvents();
-  }, [userid]);
+  }, []);
 
   // Add a new event
   const handleAddEvent = async () => {
@@ -84,20 +84,21 @@ const BigCalendar = () => {
     setNewEvent({ title: "", start: "", end: "" });
   };
 
-  // Handle event deletion
-  const handleDeleteEvent = async () => {
-    if (!eventToDelete || !eventToDelete.id) {
-      alert("No event selected for deletion.");
-      return;
-    }
-
-    try {
-      const response = await axios.delete(
-        `${apiBaseUrl}/api/event/${eventToDelete.id}`
-      );
-      if (response.status === 200 || response.status === 204) {
-        setEvents((prevEvents) =>
-          prevEvents.filter((event) => event.id !== eventToDelete.id)
+    
+    // Handle event deletion
+    const handleDeleteEvent = async () => {
+      if (!eventToDelete || !eventToDelete.id) {
+        alert("No event selected for deletion.");
+        return;
+      }
+      
+      try {
+        const response = await axios.delete(
+          `${apiBaseUrl}/api/event/${eventToDelete.id}`
+        );
+        if (response.status === 200 || response.status === 204) {
+          setEvents((prevEvents) =>
+            prevEvents.filter((event) => event.id !== eventToDelete.id)
         );
         setShowDeleteConfirmation(false);
         alert("Event deleted successfully.");
@@ -120,11 +121,11 @@ const BigCalendar = () => {
     setShowDeleteConfirmation(true);
   };
 
-  const eventPropGetter = (event) => ({
-    style: {
-      position: "relative",
-    },
-  });
+  // const eventPropGetter = (event) => ({
+  //   style: {
+  //     position: "relative",
+  //   },
+  // });
 
   return (
     <div className="react-Big-calendar">
@@ -141,8 +142,8 @@ const BigCalendar = () => {
           events={events}
           startAccessor="start"
           endAccessor="end"
-          eventPropGetter={eventPropGetter}
-          style={{ height: "470px", width: "100%" }}
+          // eventPropGetter={eventPropGetter}
+          style={{ height: "88%", width: "100%" }}
           onSelectEvent={handleShowDeleteConfirmation}
         />
 
