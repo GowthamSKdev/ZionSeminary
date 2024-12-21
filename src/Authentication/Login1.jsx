@@ -8,11 +8,11 @@ import logo from "./assets/logo.png";
 import google from "./assets/google.png"; 
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import UserContext from '../context/UserContext';
-
+// import UserContext from '../context/UserContext';
+ const apiBaseUrl = process.env.BASE_API
 function Login() {
 
-  const { setUserInfo } = useContext(UserContext);
+  // const { setUserInfo } = useContext(UserContext);
   // const { register, handleSubmit } = useForm();
   // const navigate = useNavigate();
   // const [userdata, setUserdata] = useState(null);
@@ -133,9 +133,9 @@ function Login() {
 
   const onSubmit = async (data) => {
     try {
-      const res = await axios.post("/api/users/login", data);
+      const res = await axios.post(`${apiBaseUrl}/api/users/login`, data);
       const { user } = res.data;
-      const findUser = await axios.get(`api/users/${user.id}`)
+      const findUser = await axios.get(`${apiBaseUrl}/api/users/${user.id}`)
       const findUserData = findUser.data
       const CurrentUser = findUserData.user
       console.log(CurrentUser);
