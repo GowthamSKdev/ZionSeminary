@@ -18,6 +18,8 @@ function Register() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState("");
 
+  const apiBaseUrl = process.env.BASE_API
+
   const onSubmit = async (data) => {
     setIsSubmitting(true);
     setServerError("");
@@ -25,7 +27,7 @@ function Register() {
       // Exclude confirmPassword from the payload
       const { confirmPassword, ...formData } = data;
 
-      const response = await axios.post("/api/users/signup", formData);
+      const response = await axios.post(`${apiBaseUrl}/api/users/signup`, formData);
       navigate("/login");
       // if (response.status === 200) {
       //   reset();
