@@ -6,6 +6,7 @@ import axios from "axios";
 import UserContext from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 
+const apiBaseUrl = process.env.BASE_API;
 const EntryLevelForm = () => {
   const {
     register,
@@ -19,7 +20,7 @@ const EntryLevelForm = () => {
 
   useEffect(() => {
     const fetchDegrees = async () => {
-      const { data } = await axios.get("/api/degrees");
+      const { data } = await axios.get(`${apiBaseUrl}/api/degrees`);
       const { degrees } = data;
       console.log(degrees);
 
@@ -114,11 +115,15 @@ const EntryLevelForm = () => {
       data.append("userId", userId);
       // data.append('details',true)// Add userId explicitly
 
-      const response = await axios.post("/api/users/profile", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        `${apiBaseUrl}/api/users/profile`,
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       console.log("Profile updated successfully:", response.data);
       navigate("/home");
@@ -130,7 +135,6 @@ const EntryLevelForm = () => {
       alert("Error updating profile. Please try again.");
     }
   };
-
 
   return (
     <div className="register min-vh-100 h-100 w-100 elf">
