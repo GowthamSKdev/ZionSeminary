@@ -39,12 +39,12 @@ const CourseContent = () => {
   // api data
   const [completedUserData, setCompletedUserData] = useState([]);
 
-
   const apiBaseUrl = process.env.REACT_APP_BASE_API;
 
   // const apiBaseUrl = process.env
 
   const userInfo = JSON.parse(localStorage.getItem("userdata"));
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -68,43 +68,58 @@ const CourseContent = () => {
     };
     fetchData();
   }, []);
-
-
+  
+  console.log(courseData);
   useEffect(() => {
     const fetchCompletedVideos = async () => {
       if (!userId) return;
       try {
-        const response = await axios.get(`${apiBaseUrl}/api/users/progress/${userInfo._id}/${userInfo.applyingFor}`);
-          // const response = await getCompletionDetails(userId, courseId);
-        console.log('recevice complete', response);
-      const {data} = response;
+        const response = await axios.get(
+          `${apiBaseUrl}/api/complete/${userInfo._id}/${courseId}/`
+        );
+        // const response = await getCompletionDetails(userId, courseId);
+        console.log("recevice complete", response);
+        const { data } = response.data;
+        console.log(data);
+        
 
         if (data.length > 0) {
           const firstItem = data[0];
-          const completedTitles = courses;
-
+          const completedTitles = data[0];
+          // const completedSet = new Set(
+          //   firstItem.completedLessons.flatMap((videoTitle) =>
+          //     courseData.chapters.flatMap((chapter, chapterIndex) =>
+          //       chapter.lessons.flatMap((video, videoIndex) =>
+          //         video.title === videoTitle
+          //           ? `${chapterIndex}-${videoIndex}`
+          //           : []
+          //       )
+          //     )
+          //   )
+          // )
           const completedSet = new Set(
-            firstItem.completedVideos.flatMap((videoTitle) =>
+            firstItem.completeLessons.flatMap((videoTitle) =>
               courseData.chapters.flatMap((chapter, chapterIndex) =>
                 chapter.lesson.flatMap((video, videoIndex) =>
-                  video.title === videoTitle
-                    ? [`${chapterIndex}-${videoIndex}`]
+                  video.title===videoTitle ? `${chapterIndex}-${videoIndex}`
                     : []
                 )
               )
             )
-          );
-            // const completedSet = new Set(
-            //   firstItem.completedVideos.flatMap((videoTitle) =>
-            //     courseData.chapters.flatMap((chapter, chapterIndex) =>
-            //       chapter.lessons.flatMap((video, videoIndex) =>
-            //         video.title === videoTitle
-            //           ? `${chapterIndex}-${videoIndex}`
-            //           : []
-            //       )
-            //     )
-            //   )
-            // );
+          )
+
+          // const completedSet = new Set(
+          //   firstItem.completedVideos.flatMap((videoTitle) =>
+          //     courseData.chapters.flatMap((chapter, chapterIndex) =>
+          //       chapter.lesson.flatMap((video, videoIndex) =>
+          //         video.title === videoTitle
+          //           ? [`${chapterIndex}-${videoIndex}`]
+          //           : []
+          //       )
+          //     )
+          //   )
+          // );
+
           setCompletedExercises(completedSet);
           setFetchedID(firstItem.id);
           setWatchedVideoTitles(completedTitles);
@@ -123,24 +138,25 @@ const CourseContent = () => {
 
             try {
               const payload = {
-                userId:userInfo._id,
-                degreeId:userInfo.applyingFor,
-                // completedVideos: [],
-                courseId:courseData._id,
+                userId: userInfo._id,
+                degreeId: userInfo.applyingFor,
+                completedVideos: [],
+                courseId: courseData._id,
                 // courseDataIndex: courseData,
-                currentLessonIndex,
-                currentVideoIndex
-              }
-              const res = 
-                await axios.post(`${apiBaseUrl}/api/users/progress`,payload
-              //     {
-              //   // userId,
-              //   // courseId,
-              //   // completedVideos: [],
-              // }
-              )
+                // currentLessonIndex,
+                currentVideoIndex,
+              };
+              const res = await axios.post(
+                `${apiBaseUrl}/api/users/progress`,
+                payload
+                //     {
+                //   // userId,
+                //   // courseId,
+                //   // completedVideos: [],
+                // }
+              );
               console.log(res);
-              
+
               // await markLessonAsCompleted({
               //   userId,
               //   courseId,
@@ -164,7 +180,6 @@ const CourseContent = () => {
     fetchCompletedVideos();
   }, []);
 
-
   const progress_data = () => {
     // Calculate total exercises and progress percentage
     const totalExercises = courseData.chapters?.reduce(
@@ -184,16 +199,15 @@ const CourseContent = () => {
     localStorage.setItem(`courseProgress-${courseId}`, watchedPercentage);
   };
 
-//   const progress_data = () => {
-//     const totalExercises = courseData.chapters?.reduce(
-//       (total, chapter) => total + chapter.lesson?.length,
-//       0
-//     );
-//     const progress =
-//       totalExercises > 0 ? (completedExercises.size / totalExercises) * 100 : 0;
-//  localStorage.setItem(`courseProgress-${courseId}`, progress);
-//   }
-
+  //   const progress_data = () => {
+  //     const totalExercises = courseData.chapters?.reduce(
+  //       (total, chapter) => total + chapter.lesson?.length,
+  //       0
+  //     );
+  //     const progress =
+  //       totalExercises > 0 ? (completedExercises.size / totalExercises) * 100 : 0;
+  //  localStorage.setItem(`courseProgress-${courseId}`, progress);
+  //   }
 
   const handleLessonComplete = (lessonIndex, chapterIndex) => {
     progress_data(lessonIndex, chapterIndex);
@@ -207,79 +221,68 @@ const CourseContent = () => {
   // Example: Call this function after a user completes a chapter
   handleLessonComplete(currentLessonIndex, currentVideoIndex);
 
+  // const handleNext = async () => {
+  //   if (courseData.lessons) {
+  //     const currentLesson = courseData.lessons[currentLessonIndex];
 
-    // const handleNext = async () => {
-    //   if (courseData.lessons) {
-    //     const currentLesson = courseData.lessons[currentLessonIndex];
-
-    //     if (currentLessonIndex === 0 && currentVideoIndex === -1) {
-    //       // If it's the first lesson and no video has been viewed yet, load the first video
-    //       handleCurrentContent(currentLesson.chapter[0], currentLessonIndex, 0);
-    //       // Update progress state
-    //       setCurrentVideoIndex(0);
-    //     } else if (currentVideoIndex < currentLesson.chapter.length - 1) {
-    //       // If there are more videos in the current lesson, load the next video
-    //       handleCurrentContent(
-    //         currentLesson.chapter[currentVideoIndex + 1],
-    //         currentLessonIndex,
-    //         currentVideoIndex + 1
-    //       );
-    //       // Update progress state
-    //       setCurrentVideoIndex(currentVideoIndex + 1);
-    //     } else if (currentLessonIndex < courseData.lessons.length - 1) {
-    //       // If this is the last video in the current lesson, move to the next lesson
-    //       const nextLesson = courseData.lessons[currentLessonIndex + 1];
-    //       handleCurrentContent(
-    //         nextLesson.chapter[0],
-    //         currentLessonIndex + 1,
-    //         0
-    //       );
-    //       // Update progress state
-    //       setCurrentLessonIndex(currentLessonIndex + 1);
-    //       setCurrentVideoIndex(0); // Reset to first video of the next lesson
-    //     }
-    //   }
+  //     if (currentLessonIndex === 0 && currentVideoIndex === -1) {
+  //       // If it's the first lesson and no video has been viewed yet, load the first video
+  //       handleCurrentContent(currentLesson.chapter[0], currentLessonIndex, 0);
+  //       // Update progress state
+  //       setCurrentVideoIndex(0);
+  //     } else if (currentVideoIndex < currentLesson.chapter.length - 1) {
+  //       // If there are more videos in the current lesson, load the next video
+  //       handleCurrentContent(
+  //         currentLesson.chapter[currentVideoIndex + 1],
+  //         currentLessonIndex,
+  //         currentVideoIndex + 1
+  //       );
+  //       // Update progress state
+  //       setCurrentVideoIndex(currentVideoIndex + 1);
+  //     } else if (currentLessonIndex < courseData.lessons.length - 1) {
+  //       // If this is the last video in the current lesson, move to the next lesson
+  //       const nextLesson = courseData.lessons[currentLessonIndex + 1];
+  //       handleCurrentContent(
+  //         nextLesson.chapter[0],
+  //         currentLessonIndex + 1,
+  //         0
+  //       );
+  //       // Update progress state
+  //       setCurrentLessonIndex(currentLessonIndex + 1);
+  //       setCurrentVideoIndex(0); // Reset to first video of the next lesson
+  //     }
+  //   }
   // };
-  
-    const handleNext = async () => {
-      if (courseData.chapters) {
-        const currentLesson = courseData.chapters[currentLessonIndex];
 
-        if (currentLessonIndex === 0 && currentVideoIndex === -1) {
-          // If it's the first lesson and no video has been viewed yet, load the first video
-          // handleCurrentContent(currentLesson?.lesson[0], currentLessonIndex, 0);
-          handleCurrentContent(currentLesson?.lessons[0], currentLessonIndex, 0);
-          // Update progress state
-          setCurrentVideoIndex(0);
-        } else if (currentVideoIndex < currentLesson.lessons?.length - 1) {
-          // If there are more videos in the current lesson, load the next video
-          handleCurrentContent(
-            currentLesson.lessons[currentVideoIndex + 1],
-            currentLessonIndex,
-            currentVideoIndex + 1
-          );
-          // Update progress state
-          setCurrentVideoIndex(currentVideoIndex + 1);
-        } else if (currentLessonIndex < courseData.chapters.length - 1) {
-          // If this is the last video in the current lesson, move to the next lesson
-          const nextLesson = courseData.chapters[currentLessonIndex + 1];
-          handleCurrentContent(
-            nextLesson.lessons[0],
-            currentLessonIndex + 1,
-            0
-          );
-          // Update progress state
-          setCurrentLessonIndex(currentLessonIndex + 1);
-          setCurrentVideoIndex(0); // Reset to first video of the next lesson
-        }
+  const handleNext = async () => {
+    if (courseData.chapters) {
+      const currentLesson = courseData.chapters[currentLessonIndex];
+
+      if (currentLessonIndex === 0 && currentVideoIndex === -1) {
+        // If it's the first lesson and no video has been viewed yet, load the first video
+        // handleCurrentContent(currentLesson?.lesson[0], currentLessonIndex, 0);
+        handleCurrentContent(currentLesson?.lessons[0], currentLessonIndex, 0);
+        // Update progress state
+        setCurrentVideoIndex(0);
+      } else if (currentVideoIndex < currentLesson.lessons?.length - 1) {
+        // If there are more videos in the current lesson, load the next video
+        handleCurrentContent(
+          currentLesson.lessons[currentVideoIndex + 1],
+          currentLessonIndex,
+          currentVideoIndex + 1
+        );
+        // Update progress state
+        setCurrentVideoIndex(currentVideoIndex + 1);
+      } else if (currentLessonIndex < courseData.chapters.length - 1) {
+        // If this is the last video in the current lesson, move to the next lesson
+        const nextLesson = courseData.chapters[currentLessonIndex + 1];
+        handleCurrentContent(nextLesson.lessons[0], currentLessonIndex + 1, 0);
+        // Update progress state
+        setCurrentLessonIndex(currentLessonIndex + 1);
+        setCurrentVideoIndex(0); // Reset to first video of the next lesson
       }
+    }
   };
-  
-
-
-
-
-
 
   const handleCurrentContent = async (data, lessonIndex, exerciseIndex) => {
     console.log("Selected Content Data:", data);
@@ -302,6 +305,25 @@ const CourseContent = () => {
     setActiveAccordion(lessonIndex);
 
     // console.log("Current content set:", modifiedData);
+
+    try {
+      const videoAlreadyCompleted = completedUserData.includes(data.title);
+
+      if (!videoAlreadyCompleted) {
+        // const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
+
+        await axios.post(`${apiBaseUrl}/api/complete/`, {
+          userId: userInfo._id,
+          degreeId: userInfo.applyingFor,
+          courseId: courseId,
+          lessonTitle: data.title,
+        });
+        console.log("Content completion updated on the server:", data.title);
+      }
+    } catch (err) {
+      console.error("Error updating content progress:", err);
+    }
+   
   };
 
   const renderContent = (
@@ -331,7 +353,6 @@ const CourseContent = () => {
         </>
       );
     } else if (typeManual === "audio/mpeg") {
-      
       return (
         <>
           <div className="embed-responsive-item">
@@ -350,16 +371,13 @@ const CourseContent = () => {
             <audio
               controls
               style={{ width: "100%", marginTop: "1em" }}
-              onEnded={() =>
-              {
-
+              onEnded={() => {
                 handleMediaEnd(
                   { title: `${data?.title}` },
                   lessonIndex,
                   exerciseIndex
-                )
-              }
-              }
+                );
+              }}
             >
               <source src={link} type="audio/mp3" />
             </audio>
@@ -441,14 +459,13 @@ const CourseContent = () => {
 
   //     const currentVideo =
   //       courseData.chapters[currentLessonIndex].lesson[currentVideoIndex];
-     
 
   //     setWatchedVideoTitles((prevTitles) => {
   //       const updatedTitles = new Set(prevTitles);
   //       updatedTitles.add(currentVideo.title);
   //       return Array.from(updatedTitles);
   //     });
-      
+
   //     // Check if the chapter is completed
   //     const isChapterCompleted = courseData.chapters[
   //       currentLessonIndex
@@ -484,6 +501,8 @@ const CourseContent = () => {
       });
 
       progress_data(currentLessonIndex, currentVideoIndex);
+
+       
     }
   };
   // const calculateProgress = () => {
@@ -542,17 +561,12 @@ const CourseContent = () => {
               {truncateText(courseData.title, 45)}
               {/* {courseDetails.title} */}
             </div>
-            <button
-              className="NextBtn"
-              onClick={() => handleNext()}
-            >
+            <button className="NextBtn" onClick={() => handleNext()}>
               Next
             </button>
           </div>
           <div className="courseContentProgressBar">
-            <ProgressBar
-            progress={calculateProgress()}
-            />
+            <ProgressBar progress={calculateProgress()} />
           </div>
         </div>
         <div className="row secondRow">
@@ -567,7 +581,9 @@ const CourseContent = () => {
                     !currentCourseData.file
                       ? courseData.videoUrl
                       : currentCourseData.file,
-                  !currentCourseData.file ? "video" : currentCourseData.fileType
+                    !currentCourseData.file
+                      ? "video"
+                      : currentCourseData.fileType
                   )}
                 {/* <img src={courseData.thumbnail} alt="" /> */}
               </div>
@@ -739,7 +755,6 @@ const CourseContent = () => {
 
 export default CourseContent;
 
-
 // import React, { useState, useEffect } from "react";
 // import axios from "axios";
 // import "./CourseContent.css";
@@ -776,10 +791,8 @@ export default CourseContent;
 //   // api data
 //   const [completedUserData, setCompletedUserData] = useState([]);
 
-  
 //   const userInfo = JSON.parse(localStorage.getItem("userdata"));
 //   console.log(userInfo);
-  
 
 //   useEffect(() => {
 //     const fetchData = async () => {
@@ -796,7 +809,6 @@ export default CourseContent;
 //         // console.log(courses);
 //         setCourseData(CourseDetails)
 //         console.log(courseData);
-        
 
 //         // console.log(userInfo)
 //         if (userInfo) {
@@ -1182,7 +1194,7 @@ export default CourseContent;
 //                           {lesson.chapter?.map((video, vidIndex) => (
 //                             <li
 //                               key={vidIndex}
-//                               className={`list-group-item 
+//                               className={`list-group-item
 //              ${
 //                currentCourseData.title === video.title
 //                  ? "list-group-item-active"

@@ -13,7 +13,7 @@
   position: fixed !important;
   top: 0;
   left: 0;
-  height: 100vh;
+  height: 100dvh;
   z-index: 991;
   /* padding: 12px; */
   background-color: white;

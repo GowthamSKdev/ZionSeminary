@@ -28,10 +28,10 @@ const NewDegree = () => {
 
   const navigate = useNavigate();
   const [degreeData, setDegreeData] = useState({
-    name: "",
+    title: "",
     description: "",
     price: null,
-    thumbnail: null,
+    degreeThumbnail: null,
     courses: [],
   });
 
@@ -49,21 +49,59 @@ const NewDegree = () => {
     setDegreeData({ ...degreeData, courses: newCourses });
   };
 
-  const addCoursetoDegree = (course) => {
+  // const addCoursetoDegree = (course) => {
+  //   console.log(course);
+  //   const newCourses = [...degreeData.courses];
+  //   if (course.updateIndex === null) {
+  //     newCourses.push({
+  //       ...course,
+  //       updateIndex: newCourses?.length > 0 ? newCourses?.length : 0,
+  //     });
+  //     setDegreeData({ ...degreeData, courses: newCourses });
+  //   } else {
+  //     newCourses[course.updateIndex] = course;
+  //     setDegreeData({ ...degreeData, courses: newCourses });
+  //   }
+  //   setPopupOpen({ open: false });
+  // };
+
+  const addCoursetoDegree = (course) => { 
     console.log(course);
-    const newCourses = [...degreeData.courses];
+    const newDegree = [...degreeData.courses];
     if (course.updateIndex === null) {
-      newCourses.push({
+      newDegree.push({
         ...course,
-        updateIndex: newCourses?.length > 0 ? newCourses?.length : 0,
-      });
-      setDegreeData({ ...degreeData, courses: newCourses });
+        updateIndex: newDegree?.length > 0 ? newDegree?.length : 0,
+      })
+      setDegreeData({ ...degreeData, courses: newDegree });
     } else {
-      newCourses[course.updateIndex] = course;
-      setDegreeData({ ...degreeData, courses: newCourses });
+      newDegree[course.updateIndex] = course;
+      setDegreeData({ ...degreeData, courses: newDegree });
     }
     setPopupOpen({ open: false });
-  };
+  }
+  // const handledirectInput = (type, value) => {
+  //   setDegreeData((prevState) => ({
+  //     ...prevState,
+  //     [type]: value,
+  //   }));
+  // };
+
+  // const addCoursetoDegree = (course) => {
+  //   setDegreeData((prevState) => ({
+  //     ...prevState,
+  //     courses:
+  //       course.updateIndex === null
+  //         ? [
+  //             ...prevState.courses,
+  //             { ...course, updateIndex: prevState.courses.length },
+  //           ]
+  //         : prevState.courses.map((c, idx) =>
+  //             idx === course.updateIndex ? course : c
+  //           ),
+  //   }));
+  // };
+
 
   // const uploadDegree = async () => {
   //   if (degreeData.name && degreeData.price && degreeData.description) {
@@ -78,24 +116,44 @@ const NewDegree = () => {
   //     toast.error("Please fill in all degree details, including at least one course.");
   //   }
   // };
+  // const uploadDegree = async () => {
+  //   if (degreeData.name && degreeData.price && degreeData.description) {
+  //     const response = await toast.promise(
+  //       axios.post(`${apiBaseUrl}/api/degrees`, degreeData),
+  //       {
+  //         pending: "Adding degree...",
+  //         success: "Degree added successfully!",
+  //         error: "An error occurred while adding the new degree.",
+  //       }
+  //     );
+  //     console.log(response);
+  //     if (response) navigate("/admin");
+  //   } else {
+  //     toast.error(
+  //       "Please fill in all degree details, including at least one course."
+  //     );
+  //   }
+  // };
   const uploadDegree = async () => {
-    if (degreeData.name && degreeData.price && degreeData.description) {
-      const response = await toast.promise(
-        axios.post(`${apiBaseUrl}/api/degrees`, degreeData),
-        {
-          pending: "Adding degree...",
-          success: "Degree added successfully!",
-          error: "An error occurred while adding the new degree.",
-        }
+    // const errorMessage = validateDegreeData();
+    // if (errorMessage) {
+    //   toast.error(errorMessage);
+    //   return;
+    // }
+    try {
+      const response = await axios.post(
+        `${apiBaseUrl}/api/degrees`,
+        degreeData
       );
-      console.log(response);
-      if (response) navigate("/admin");
-    } else {
-      toast.error(
-        "Please fill in all degree details, including at least one course."
-      );
+      console.log("Degree added successfully:", response.data);
+      toast.success("Degree added successfully!");
+      navigate("/admin");
+    } catch (error) {
+      console.error("Error uploading degree:", error);
+      toast.error("An error occurred while adding the degree.");
     }
   };
+
 
   console.log(degreeData);
 
@@ -128,9 +186,9 @@ const NewDegree = () => {
             <p>Enter degree Name</p>
             <input
               type="text"
-              value={degreeData.name}
+              value={degreeData.title}
               className="name-input"
-              onChange={(e) => handledirectInput("name", e.target.value)}
+              onChange={(e) => handledirectInput("title", e.target.value)}
             />
           </div>
 
@@ -162,9 +220,15 @@ const NewDegree = () => {
             <input
               type="file"
               accept="image/png, image/svg+xml"
-              onChange={(e) =>
-                setDegreeData({ ...degreeData, thumbnail: e.target.files[0] })
-              }
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (file) {
+                  setDegreeData({
+                    ...degreeData,
+                    degreeThumbnail: file,
+                  });
+                }
+              }}
               className="styled-input"
             />
           </div>

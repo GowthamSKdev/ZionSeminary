@@ -47,44 +47,79 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
     setCourseData({ ...courseData, chapters: newChapterData });
   }
 
+  const addChapterToCourse = (chapter) => {
+    console.log(chapter);
+    const newCourse = [...courseData.chapters];
+    if (chapter.updateIndex === null) {
+      newCourse.push({
+        ...chapter,
+        updateIndex: newCourse?.length > 0 ? newCourse?.length : 0,
+      });
+      setCourseData({ ...courseData, chapters: newCourse });
+    } else {
+      newCourse[chapter.updateIndex] = chapter;
+      setCourseData({ ...courseData, chapters: newCourse });
+    }
+    setPopupOpen({ open: false });
+    // addDegree(courseData)
+  };
+
   // const addChapterToCourse = (chapter) => {
-  //   console.log(chapter);
-  //   const newCourse = [...courseData.chapters];
-  //   if (chapter.updateIndex === null) {
-  //     newCourse.push({
-  //       ...chapter,
-  //       updateIndex: newCourse?.length > 0 ? newCourse?.length : 0,
-  //     });
-  //     setCourseData({ ...courseData, chapters: newCourse });
-  //   } else {
-  //     newCourse[chapter.updateIndex] = chapter;
-  //     setCourseData({ ...courseData, chapters: newCourse });
-  //   }
+  //   setCourseData((prevState) => {
+  //     const newChapters = [...prevState.chapters];
+  //     if (chapter.updateIndex === null) {
+  //       newChapters.push({ ...chapter, updateIndex: newChapters.length });
+  //     } else {
+  //       newChapters[chapter.updateIndex] = chapter;
+  //     }
+  //     return { ...prevState, chapters: newChapters };
+  //   });
   //   setPopupOpen({ open: false });
   // };
 
+
   // const uploadCourse = async () => {
-  //   if (
-  //     courseData.name &&
-  //     courseData.description &&
-  //     courseData.courses.length > 0
-  //     // courseData.price
-  //   ) {
-  //     // const courseFormData = convertToCourseFormData(courseData)
-  //     const response = await toast.promise(addDegree(courseData), {
-  //       pending: "adding degree...",
-  //       success: "Degree added successfully",
-  //       error: "An error occurred while adding new Degree"
-  //     })
-  //     console.log(response);
-  //     if (response) navigate('/admin')
-  //   } else {
-  //     toast.error('Please add at least one course and degree details')
-  //   }
+  //   addDegree(courseData)
+  //   // if (
+  //   //   courseData.name &&
+  //   //   courseData.description &&
+  //   //   courseData.courses.length > 0
+  //   //   // courseData.price
+  //   // ) {
+  //   //   // const courseFormData = convertToCourseFormData(courseData)
+  //   //   const response = await toast.promise(addDegree(courseData), {
+  //   //     pending: "adding degree...",
+  //   //     success: "Degree added successfully",
+  //   //     error: "An error occurred while adding new Degree"
+  //   //   })
+  //   //   console.log(response);
+  //   //   if (response) navigate('/admin')
+  //   // } else {
+  //   //   toast.error('Please add at least one course and degree details')
+  //   // }
   // };
+  // // const uploadCourse = async () => {
+  // //   addDegree(courseData)
+  // // }
+
   const uploadCourse = async () => {
-    addDegree(courseData)
-  }
+    // if (!courseData.title || !courseData.description) {
+    //   toast.error("Please provide title and description.");
+    //   return;
+    // }
+    // try {
+    //   await toast.promise(addDegree(courseData), {
+    //     pending: "Adding course...",
+    //     success: "Course added successfully!",
+    //     error: "Failed to add course.",
+    //   });
+    //   navigate("/admin");
+    // } catch (error) {
+    //   console.error(error);
+    // }
+    addDegree(courseData);
+  };
+
 
   console.log(courseData)
 
