@@ -9,9 +9,7 @@ const MainEvents = () => {
     useEffect(() => {
       const getEvent = async () => {
         const resEvents = await axios.get(`${apiBaseUrl}/api/admin-event`);
-        console.log(resEvents);
         const { events } = resEvents.data;
-        
         setEvents(events);
       };
       getEvent();

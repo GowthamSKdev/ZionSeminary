@@ -1,22 +1,22 @@
 // src/components/Statistics.js
 import BigCalendar from "../Calendar/BigCalendar/BigCalendar";
-// import Chart from "./Chart";
+import Chart from "./Chart";
 // import CourseProgress from "./courseProgress";
-import CourseProgress from './CourseProgress'
+// import CourseProgress from './CourseProgress'
 import MainEvents from "./MainEvents";
 import "./Statistics.css";
 
 const Statistics = () => {
   
-  // const timeSpentData = {
-  //   Sunday: 5,
-  //   Monday: 10,
-  //   Tuesday: 7,
-  //   Wednesday: 12,
-  //   Thursday: 6,
-  //   Friday: 8,
-  //   Saturday: 14,
-  // };
+  const timeSpentData = {
+    Sunday: 5,
+    Monday: 10,
+    Tuesday: 7,
+    Wednesday: 12,
+    Thursday: 6,
+    Friday: 8,
+    Saturday: 14,
+  };
 
   return (
     <div className="statistics">
@@ -54,8 +54,8 @@ const Statistics = () => {
       </div>
       <div className="completion">
         <h3>Completion</h3>
-        {/* <Chart data={{ completed: 25, inProgress: 12, notStarted: 17 }} /> */}
-        <CourseProgress/>
+        <Chart data={{ completed: 25, inProgress: 12, notStarted: 17 }} />
+        {/* <CourseProgress/> */}
       </div>
       <div className="completion">
         <BigCalendar/>

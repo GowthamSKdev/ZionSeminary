@@ -1,9 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import searchIcon from "../../assets/Images/search.png";
 import addIcon from "../../assets/Images/plus.png";
 import UsersList from "./UsersList";
-
+import axios from "axios";
+  const apiBaseUrl = process.env.REACT_APP_BASE_API;
 const Users = ({ openNewUser, openEditUser }) => {
+   const [userList, setUserList] = useState(null);
+  useEffect(() => {
+
+    const getUsers = async () => {
+      console.log("strict");
+      try {
+        // const usersSnapshot = await getAllUsers();
+        // setUserList(usersSnapshot);
+        const responseUsers = await axios.get(`${apiBaseUrl}/api/users`);
+        const { users } = responseUsers.data;
+        setUserList(users);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUsers();
+  }, [])
+  
   return (
     <div className="user-page">
       <>
@@ -12,7 +31,7 @@ const Users = ({ openNewUser, openEditUser }) => {
       <div className="users-list-header">
         <h2 className="h2-user-title">
           All users
-          <span> 44</span>
+          <span> {userList?.length}</span>
         </h2>
         <div className="users-header-actions-cnt">
           <div className="search-user-cnt">

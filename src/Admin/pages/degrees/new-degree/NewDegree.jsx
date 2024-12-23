@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import NewCourse from '../../courses/new-course/NewCourse'
 import axios from "axios";
 import AddnewCourse from "../../courses/new-course/AddnewCourse";
+const apiBaseUrl = process.env.REACT_APP_BASE_API;
 
 const NewDegree = () => {
   const [popupOpen, setPopupOpen] = useState({ open: false, data: null });
@@ -15,15 +16,15 @@ const NewDegree = () => {
   //   return await axios.post("/api/degree/", courseData);
   // };
 
-  const addnewDegree = async (courseData) => {
-    try {
-      const response = await axios.post("/api/degree", courseData);
-      return response.data;
-    } catch (error) {
-      console.error("Error adding degree:", error);
-      throw error;
-    }
-  };
+  // const addnewDegree = async (degreeData) => {
+  //   try {
+  //     const response = await axios.post(`${apiBaseUrl}/api/degree`, degreeData);
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error("Error adding degree:", error);
+  //     throw error;
+  //   }
+  // };
 
   const navigate = useNavigate();
   const [degreeData, setDegreeData] = useState({
@@ -48,33 +49,51 @@ const NewDegree = () => {
     setDegreeData({ ...degreeData, courses: newCourses });
   };
 
-  const addLessontoCourse = (lesson) => {
-    console.log(lesson);
+  const addCoursetoDegree = (course) => {
+    console.log(course);
     const newCourses = [...degreeData.courses];
-    if (lesson.updateIndex === null) {
+    if (course.updateIndex === null) {
       newCourses.push({
-        ...lesson,
+        ...course,
         updateIndex: newCourses?.length > 0 ? newCourses?.length : 0,
       });
       setDegreeData({ ...degreeData, courses: newCourses });
     } else {
-      newCourses[lesson.updateIndex] = lesson;
+      newCourses[course.updateIndex] = course;
       setDegreeData({ ...degreeData, courses: newCourses });
     }
     setPopupOpen({ open: false });
   };
 
+  // const uploadDegree = async () => {
+  //   if (degreeData.name && degreeData.price && degreeData.description) {
+  //     const response = await toast.promise(addnewDegree(degreeData), {
+  //       pending: "Adding degree...",
+  //       success: "Degree added successfully!",
+  //       error: "An error occurred while adding the new degree.",
+  //     });
+  //     console.log(response);
+  //     if (response) navigate("/admin");
+  //   } else {
+  //     toast.error("Please fill in all degree details, including at least one course.");
+  //   }
+  // };
   const uploadDegree = async () => {
     if (degreeData.name && degreeData.price && degreeData.description) {
-      const response = await toast.promise(addnewDegree(degreeData), {
-        pending: "Adding degree...",
-        success: "Degree added successfully!",
-        error: "An error occurred while adding the new degree.",
-      });
+      const response = await toast.promise(
+        axios.post(`${apiBaseUrl}/api/degrees`, degreeData),
+        {
+          pending: "Adding degree...",
+          success: "Degree added successfully!",
+          error: "An error occurred while adding the new degree.",
+        }
+      );
       console.log(response);
       if (response) navigate("/admin");
     } else {
-      toast.error("Please fill in all degree details, including at least one course.");
+      toast.error(
+        "Please fill in all degree details, including at least one course."
+      );
     }
   };
 
@@ -171,12 +190,19 @@ const NewDegree = () => {
                 >
                   <h1 className="lesson-number">{index + 1}</h1>
                   <div className="lesson-title-cnt">
-                    <h3 className="lesson-title">{course?.name}</h3>
+                    <h3 className="lesson-title">{course?.title}</h3>
                   </div>
-                  <ul className="lesson-subtitle-cnt">
+                  {/* <ul className="lesson-subtitle-cnt">
                     {course?.lessons?.map((sublesson, idx) => (
                       <li key={idx}>
                         <p className="lesson-subtitle">{sublesson?.name}</p>
+                      </li>
+                    ))}
+                  </ul> */}
+                  <ul className="lesson-subtitle-cnt">
+                    {course?.chapters?.map((chapter, idx) => (
+                      <li key={idx}>
+                        <p className="lesson-subtitle">{chapter?.title}</p>
                       </li>
                     ))}
                   </ul>
@@ -195,8 +221,14 @@ const NewDegree = () => {
         </form>
       </div>
       {popupOpen.open && (
-        <NewChapter
-          addCourse={(course) => addLessontoCourse(course)}
+        // <NewChapter
+        //   addCourse={(course) => addLessontoCourse(course)}
+        //   editData={popupOpen?.data}
+        //   cancel={() => setPopupOpen({ open: false, data: null })}
+        //   removeThisCourse={(index) => handleDeleteCourse(index)}
+        // />
+        <NewCourse
+          addDegree={addCoursetoDegree}
           editData={popupOpen?.data}
           cancel={() => setPopupOpen({ open: false, data: null })}
           removeThisCourse={(index) => handleDeleteCourse(index)}

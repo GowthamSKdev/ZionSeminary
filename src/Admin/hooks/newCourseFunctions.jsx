@@ -6,7 +6,9 @@ export const findFileType = (file) => {
       "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
     file.type === "application/vnd.ms-powerpoint"
   )
+    
     return "ppt";
+  if (file.type?.startsWith("audio/")) return "audio";
 };
 
 export const convertToUTC = (timeLimit) => {

@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import Select from 'react-select';
 import { getAllDegrees } from "../../firebase/degreeApi";
 import { addUser } from "../../firebase/userApi";
+import axios from "axios";
 // import { addnewUser } from "../../api/baseApi";
+const apiBaseUrl = process.env.REACT_APP_BASE_API;
+
+
 
 const options = {
   maritalStatus: [
@@ -20,6 +24,8 @@ const options = {
 
 
 const AddnewUser = ({ closeNewUser }) => {
+
+  
 
   const [newUserData, setNewUserData] = useState({
     firstName: '',
@@ -43,25 +49,41 @@ const AddnewUser = ({ closeNewUser }) => {
 
 
   useEffect(() => {
-    const fetchCourses = async () => {
-      const coursesSnapshot = await getAllDegrees();
-      const coursesList = coursesSnapshot?.map((doc) => ({
-        value: doc?.id,
-        label: doc.data()?.domain,
+    // const fetchCourses = async () => {
+    //   const coursesSnapshot = await getAllDegrees();
+    //   const coursesList = coursesSnapshot?.map((doc) => ({
+    //     value: doc?.id,
+    //     label: doc.data()?.domain,
+    //   }));
+    //   setCourseOptions(coursesList);
+    // };
+    
+    // fetchCourses();
+    const AllDegrees = async () => { 
+      const response = await axios.get(`${apiBaseUrl}/api/degrees`);
+      const { degrees } = response.data
+      console.log(degrees);
+      const coursesList = degrees?.map((doc) => ({
+        value: doc?._id,
+        label: doc?.title,
       }));
       setCourseOptions(coursesList);
-    };
-
-    fetchCourses();
+      
+    }
+    AllDegrees()
   }, []);
 
   const handleChangeData = (type, value) => {
     setNewUserData({ ...newUserData, [type]: value });
   };
 
+ 
   const createNewUser = async () => {
-    const res = await addUser(newUserData)
-    res && closeNewUser()
+    // const res = await addUser(newUserData)
+    const response = await axios.post(`${apiBaseUrl}/api/users`, newUserData);
+    console.log(response.data);
+    
+    response && closeNewUser()
   };
 
   console.log(newUserData)

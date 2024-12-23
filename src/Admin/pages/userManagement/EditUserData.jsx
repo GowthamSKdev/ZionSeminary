@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import Select from 'react-select';
 import { getAllDegrees } from "../../firebase/degreeApi";
 import { editUser } from "../../firebase/userApi";
-
+import axios from "axios";
+const apiBaseUrl = process.env.REACT_APP_BASE_API;
 const options = {
   maritalStatus: [
     { value: 'single', label: 'Single' },
@@ -29,10 +30,12 @@ const EditUserData = ({ closeEditUser, currentData }) => {
 
   useEffect(() => {
     const fetchCourses = async () => {
-      const coursesSnapshot = await getAllDegrees();
-      const coursesList = coursesSnapshot?.map((doc) => ({
-        value: doc?.id,
-        label: doc.data()?.domain,
+      const response = await axios.get(`${apiBaseUrl}/api/degrees`);
+      const { degrees } = response.data;
+      console.log(degrees);
+      const coursesList = degrees?.map((doc) => ({
+        value: doc?._id,
+        label: doc?.title,
       }));
       setCourseOptions(coursesList);
     };
@@ -47,7 +50,8 @@ const EditUserData = ({ closeEditUser, currentData }) => {
 
   const updateData = async () => {
     try {
-      const res = await editUser(userData)
+      // const res = await editUser(userData)
+      const res = await axios.put(`${apiBaseUrl}/api/users/${userData._id}`, userData);
       res && closeEditUser()
     } catch (error) {
       console.log(error);
@@ -99,7 +103,9 @@ const EditUserData = ({ closeEditUser, currentData }) => {
               className="name-input "
               value={userData?.theologicalQualification}
               placeholder="Enter theological Qualification"
-              onChange={(e) => handleValueChange("theologicalQualification", e.target.value)}
+              onChange={(e) =>
+                handleValueChange("theologicalQualification", e.target.value)
+              }
             />
           </div>
           <div className="course-name-cnt user-input">
@@ -109,7 +115,9 @@ const EditUserData = ({ closeEditUser, currentData }) => {
               className="name-input "
               value={userData?.presentAddress}
               placeholder="Enter Present Address"
-              onChange={(e) => handleValueChange("presentAddress", e.target.value)}
+              onChange={(e) =>
+                handleValueChange("presentAddress", e.target.value)
+              }
             />
           </div>
           <div className="course-name-cnt user-input">
@@ -125,9 +133,11 @@ const EditUserData = ({ closeEditUser, currentData }) => {
             <input
               type="text"
               placeholder="Enter ministry experience"
-              value={userData?.ministryExperience || ''}
+              value={userData?.ministryExperience || ""}
               className="name-input "
-              onChange={(e) => handleValueChange("ministryExperience", e.target.value)}
+              onChange={(e) =>
+                handleValueChange("ministryExperience", e.target.value)
+              }
             />
           </div>
           <div className="course-name-cnt user-input">
@@ -135,21 +145,21 @@ const EditUserData = ({ closeEditUser, currentData }) => {
             <input
               type="text"
               placeholder="Enter user email"
-              value={userData?.email || ''}
+              value={userData?.email || ""}
               className="name-input "
               onChange={(e) => handleValueChange("email", e.target.value)}
             />
           </div>
           <div className="course-name-cnt user-input">
-            <p>Salvation Experience *
-            </p>
+            <p>Salvation Experience *</p>
             <input
               type="text"
               placeholder="Enter salvation experience"
-              value={userData?.salvationExperience || ''}
+              value={userData?.salvationExperience || ""}
               className="name-input "
-
-              onChange={(e) => handleValueChange("salvationExperience", e.target.value)}
+              onChange={(e) =>
+                handleValueChange("salvationExperience", e.target.value)
+              }
             />
           </div>
           <div className="course-name-cnt user-input">
@@ -167,7 +177,9 @@ const EditUserData = ({ closeEditUser, currentData }) => {
               className="name-input "
               value={userData?.educationalQualification}
               placeholder="Enter Educational Qualification"
-              onChange={(e) => handleValueChange("educationalQualification", e.target.value)}
+              onChange={(e) =>
+                handleValueChange("educationalQualification", e.target.value)
+              }
             />
           </div>
           <div className="course-name-cnt user-input">
@@ -176,7 +188,7 @@ const EditUserData = ({ closeEditUser, currentData }) => {
               type="text"
               className="name-input "
               placeholder="Enter user name"
-            // onChange={(e) => handleChnageData("", e.target.value)}
+              // onChange={(e) => handleChnageData("", e.target.value)}
             />
           </div>
           <div className="course-name-cnt user-input">
@@ -210,12 +222,16 @@ const EditUserData = ({ closeEditUser, currentData }) => {
             className="course-name-cnt name-input user-input "
             style={{ position: "relative" }}
           >
-            <p className="file-upload ">{userData?.signatureURL[0]?.name ? userData?.signatureURL[0]?.name.slice(0, 20) : "Upload Signature *"}</p>
+            <p className="file-upload ">
+              {userData?.signatureFile[0]?.name
+                ? userData?.signatureFile[0]?.name.slice(0, 20)
+                : "Upload Signature *"}
+            </p>
             <input
               type="file"
               className="name-input file-input-hide "
               onChange={(e) =>
-                handleValueChange('signatureURL', e.target.files)
+                handleValueChange("signatureFile", e.target.files)
               }
             />
           </div>
@@ -223,12 +239,16 @@ const EditUserData = ({ closeEditUser, currentData }) => {
             className="course-name-cnt name-input user-input "
             style={{ position: "relative" }}
           >
-            <p className="file-upload ">{userData?.passportPhotoURL[0]?.name ? userData?.passportPhotoURL[0]?.name.slice(0, 20) : "Upload Passport Size Photo *"}</p>
+            <p className="file-upload ">
+              {userData?.passportPhotoFile[0]?.name
+                ? userData?.passportPhotoFile[0]?.name.slice(0, 20)
+                : "Upload Passport Size Photo *"}
+            </p>
             <input
               type="file"
               className="name-input file-input-hide "
               onChange={(e) =>
-                handleValueChange('passportPhotoURL', e.target.files)
+                handleValueChange("passportPhotoFile", e.target.files)
               }
             />
           </div>
@@ -236,12 +256,16 @@ const EditUserData = ({ closeEditUser, currentData }) => {
             className="course-name-cnt name-input user-input "
             style={{ position: "relative" }}
           >
-            <p className="file-upload ">{userData?.educationCertURL[0]?.name ? userData?.educationCertURL[0]?.name.slice(0, 20) : "Upload Education Certificate *"}</p>
+            <p className="file-upload ">
+              {userData?.educationCertFile[0]?.name
+                ? userData?.educationCertFile[0]?.name.slice(0, 20)
+                : "Upload Education Certificate *"}
+            </p>
             <input
               type="file"
               className="name-input file-input-hide "
               onChange={(e) =>
-                handleValueChange('educationCertURL', e.target.files)
+                handleValueChange("educationCertFile", e.target.files)
               }
             />
           </div>

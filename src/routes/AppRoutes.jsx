@@ -21,6 +21,7 @@ import CoursePage from "../Components/Courses/CoursePage";
 import CourseContent from "../Components/CourseContent/CourseContent";
 import EntryLevelFrom from "../Authentication/EntryLevelFrom";
 import Rough from "../Components/test";
+import EventPage from "../Admin/pages/Events/EventPage";
 
 const AppRoutes = () => {
   return (
@@ -51,7 +52,9 @@ const AppRoutes = () => {
         <Route path="/admin" element={<AllDegrees />} />
         <Route path="/admin/chapter" element={<AddnewChapter />} />
         <Route path="/admin/degrees/new" element={<AddnewDegree />} />
+        
         <Route path="/admin/degrees/edit" element={<EditDegree />} />
+        <Route path="/admin/events" element={<EventPage />} />
         <Route path="/admin/users" element={<Allusers />} />
         <Route path="/admin/tests" element={<AllTests />} />
         <Route path="/admin/tests/details" element={<TestDetails />} />

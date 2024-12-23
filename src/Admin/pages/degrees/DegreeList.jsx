@@ -6,8 +6,9 @@ import axios from "axios";
 // import courseList from "../Assets/Data/courseList.json";
 import { useNavigate } from "react-router-dom";
 // import { getDegrees } from "../../firebase/degreeApi";
-import { getAllDegrees } from '../../firebase/degreeApi'
+// import { getAllDegrees } from '../../firebase/degreeApi'
 
+const apiBaseUrl = process.env.REACT_APP_BASE_API;
 const DegreeList = () => {
   const navigate = useNavigate();
   const [courses, SetCourses] = useState(null);
@@ -19,8 +20,10 @@ const DegreeList = () => {
           // const QueryDocumentSnapshots = await getAllDegrees();
           // console.log(QueryDocumentSnapshots)
           // SetCourses(QueryDocumentSnapshots);
-             const responseDegrees = await axios.get("/api/degree");
-             SetCourses(responseDegrees.data);
+          const responseDegrees = await axios.get(`${apiBaseUrl}/api/degrees`);
+          const {degrees} = responseDegrees.data;
+          console.log(degrees);
+             SetCourses(degrees);
         }
       } catch (error) {
         console.log(error);
@@ -28,7 +31,7 @@ const DegreeList = () => {
     };
 
     fetchCourses()
-  }, [courses])
+  }, [])
 
 
   return (
@@ -41,7 +44,9 @@ const DegreeList = () => {
       </div>
       <div className="course-list">
         {courses && courses?.map((course, index) => (
-          <DegreeCard data={course} key={index} />
+          <div className="" key={index}>
+          <DegreeCard data={course} />
+          </div>
         ))}
       </div>
     </div>

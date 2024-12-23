@@ -143,31 +143,55 @@ function Login() {
 
       console.log(user);
 
+      // if (CurrentUser) {
+      //   setUserdata(CurrentUser);
+      //   // setUserInfo(user);
+      //   localStorage.setItem("userdata", JSON.stringify(CurrentUser));
+      //   localStorage.setItem("isloggedin", true);
+      //   toast.success("Login Successful");
+
+      //   // Check if the user has the 'details' field and navigate accordingly
+        
+      //   if (CurrentUser.details===true) {
+      //     // Navigate to '/home' or '/admin' based on the role
+      //     const userRole = CurrentUser.role ? CurrentUser.role.toLowerCase() : null;
+      //     if (userRole === "admin") {
+      //       navigate("/admin");
+      //     } else if (userRole === "client") {
+      //       navigate("/home");
+      //     } else {
+      //       toast.error("Role not recognized");
+      //     }
+      //   } else {
+      //     // Navigate to '/elf' if 'details' is false
+      //     navigate("/elf");
+      //   }
+      // } else {
+      //   toast.error("Invalid username or password");
+      // }
+
       if (CurrentUser) {
         setUserdata(CurrentUser);
-        // setUserInfo(user);
         localStorage.setItem("userdata", JSON.stringify(CurrentUser));
         localStorage.setItem("isloggedin", true);
         toast.success("Login Successful");
 
-        // Check if the user has the 'details' field and navigate accordingly
-        if (CurrentUser.details===true) {
-          // Navigate to '/home' or '/admin' based on the role
-          const userRole = CurrentUser.role ? CurrentUser.role.toLowerCase() : null;
-          if (userRole === "admin") {
-            navigate("/admin");
-          } else if (userRole === "client") {
-            navigate("/home");
-          } else {
-            toast.error("Role not recognized");
-          }
+        const userRole = CurrentUser.role
+          ? CurrentUser.role.toLowerCase()
+          : null;
+        const hasDetails = CurrentUser.details === true;
+
+        if (userRole === "admin") {
+          navigate("/admin");
+        } else if (userRole === "client") {
+          navigate(hasDetails ? "/home" : "/elf");
         } else {
-          // Navigate to '/elf' if 'details' is false
-          navigate("/elf");
+          toast.error("Role not recognized");
         }
       } else {
         toast.error("Invalid username or password");
       }
+
     } catch (error) {
       console.error("Error fetching users: ", error);
       toast.error("An error occurred while logging in. Please try again.");

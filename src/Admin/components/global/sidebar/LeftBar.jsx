@@ -18,9 +18,9 @@ const LeftBar = () => {
           {/* <FontAwesomeIcon icon="fa-solid fa-fan" className="icon"/> */}
           <span>Dashboard</span>
         </Link>
-        {/* <Link to="../admin" className="menu-item">
-          <span>All Courses</span>
-        </Link> */}
+        <Link to="../admin/events" className="menu-item">
+          <span>Events</span>
+        </Link>
         <Link to="../admin/users" className={`menu-item ${location === '/admin/users' && 'menu-item-active'}`}>
           {/* <FontAwesomeIcon icon={"faSignOutAlt"} className="icon" /> */}
           <span>Users</span>

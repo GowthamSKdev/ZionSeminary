@@ -13,7 +13,7 @@ const CourseCard = ({ data }) => {
       onClick={() => navigate("courses/edit", { state: data })}
     >
       <img
-        src={DemoImage}
+        src={DemoImgae}
         alt={data?.image}
         className="course-img"
       />

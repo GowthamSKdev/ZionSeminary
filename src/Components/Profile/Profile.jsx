@@ -226,25 +226,25 @@ const Profile = () => {
       formData.append("profileBanner", selectedProfileBanner);
     }
 
-    // try {
-    //   const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
+    try {
+      const apiBaseUrl = process.env.REACT_APP_BASE_URL;
 
-    //   const response = await axios.put(
-    //     `${apiBaseUrl}/user/${profileData._id}`,
-    //     formData
-    //   );
+      const response = await axios.put(
+        `${apiBaseUrl}/user/${profileData._id}`,
+        formData
+      );
 
-    //   localStorage.setItem(
-    //     "userDataUpdated",
-    //     JSON.stringify(response.data.user)
-    //   );
+      localStorage.setItem(
+        "userDataUpdated",
+        JSON.stringify(response.data.user)
+      );
 
-    //   if (response.status !== 200) {
-    //     console.error("Error updating profile:", response.data);
-    //   }
-    // } catch (error) {
-    //   console.error("Network error updating profile:", error);
-    // }
+      if (response.status !== 200) {
+        console.error("Error updating profile:", response.data);
+      }
+    } catch (error) {
+      console.error("Network error updating profile:", error);
+    }
   };
 
   const handleProfileImageChange = (e) => {

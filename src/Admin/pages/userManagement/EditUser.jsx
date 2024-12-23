@@ -3,30 +3,49 @@ import potrate from "../../assets/Images/potrate-1.jpg";
 import Trash from "../../assets/Images/trash.png";
 import Edit from "../../assets/Images/edit.png";
 import { deleteUser } from "../../firebase/userApi";
+import defaultUserImg from "../../assets/Images/defaultPorfileSVG.svg";
+import axios from "axios";
 
+const apiBaseUrl = process.env.REACT_APP_BASE_API;
 const EditUser = ({ open, openEdit, data }) => {
-  const deleteAction = async (userID) => {
-    try {
-      const res = await deleteUser(userID);
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const deleteAction = async (userID) => {
+  //   try {
+  //     const res = await deleteUser(userID);
+  //     console.log(res);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  const deleteAction = async () => { 
+    const res = await axios.delete(`${apiBaseUrl}/api/users/${data?._id}`);
+    console.log(
+      res
+    );
+    
+  }
   return (
     <div
       className="edit-user-cnt"
-      style={{ right: open?.open ? "1rem" : " -28rem", display: open?.open ? "block" : "none" }}
+      style={{
+        right: open?.open ? "1rem" : " -28rem",
+        display: open?.open ? "block" : "none",
+      }}
     >
       <div className="profile-details-cnt">
-        <img src={data?.passportPhotoURL} alt="potrate" className="profile-details-img" />
-        <h4>{data?.firstName} {data?.lastName}</h4>
+        <img
+          src={data?.passportPhotoFile?data?.passportPhotoFile:defaultUserImg}
+          alt="potrate"
+          className="profile-details-img"
+        />
+        <h4>
+          {data?.firstName} {data?.lastName}
+        </h4>
         <div className="action-btn-cnt">
           <img
             src={Trash}
             alt="delete"
             className="action-img"
-            onClick={() => deleteAction(data?.id)}
+            onClick={() => deleteAction(data?._id)}
           />
           <img
             src={Edit}

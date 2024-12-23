@@ -2,8 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import moreIcon from "../../assets/Images/more.png";
 import EditUser from "./EditUser";
 import { getAllUsers } from "../../firebase/userApi";
+import defaultUserImg from "../../assets/Images/defaultPorfileSVG.svg";
+import axios from "axios";
 // import { allUsers } from "../../api/baseApi";
-
+  const apiBaseUrl = process.env.REACT_APP_BASE_API;
 const UsersList = ({ editAction }) => {
   const [editUser, setEditUser] = useState({ open: false, data: null });
   const [userList, setUserList] = useState(null);
@@ -30,8 +32,12 @@ const UsersList = ({ editAction }) => {
     const getUsers = async () => {
       console.log("strict");
       try {
-        const usersSnapshot = await getAllUsers();
-        setUserList(usersSnapshot);
+        // const usersSnapshot = await getAllUsers();
+        // setUserList(usersSnapshot);
+        const responseUsers = await axios.get(`${apiBaseUrl}/api/users`);
+        const { users } = responseUsers.data
+        setUserList(users);
+        
       } catch (error) {
         console.log(error);
       }
@@ -51,15 +57,17 @@ const UsersList = ({ editAction }) => {
 
       {userList &&
         userList?.map((user, index) => (
-          <div className="user-details-cnt" key={index}>
+          <div className="user-details-cnt" key={user._id}>
             <div className="user-name-cnt">
               <img
-                src={user.passportPhotoURL}
+                src={user.passportPhotoFile?user.passportPhotoFile:defaultUserImg}
                 alt="profile-icon"
                 className="profile-img"
               />
               <div className="name-cnt">
-                <h3>{user?.firstName} {user.lastName}</h3>
+                <h3>
+                  {user?.firstName} {user.lastName}
+                </h3>
                 <p>{user?.email}</p>
               </div>
             </div>
