@@ -4,7 +4,8 @@
   padding: 20px;
   cursor: default;
   overflow: hidden;
-  min-height: 100vh;
+  min-height: 100dvh;
+  height: 100%;
   align-items: center;
   flex-direction: column;
   justify-content: flex-start;
@@ -150,6 +151,7 @@
 .videoBox iframe {
   border-radius: 20px;
   box-shadow: 0px 4px 6px var(--shadow-color);
+  visibility: visible;
 }
 
 .videoBox div:first-child {
@@ -174,11 +176,17 @@
   display: flex;
   width: 100%;
   border-radius: 16px !important;
-  background-color: var(--primary-bg);
+  background-color: var(--primary-color);
   transition: border-radius 0.3s ease, background-color 0.3s;
 }
 
 /* .CCaccordianBox .accordion-button .accr-btn-active, */
+
+
+.accordion-button:not(.collapsed) {
+  background-color: var(--primary-bg) !important;
+  /* color: white !important; */
+}
 .CCaccordianBox .accordion-button:hover,
 .CCaccordianBox .accr-btn-active button {
   color: white;
@@ -287,13 +295,14 @@
   }
 }
 
-/* 
-COMPLETED LESSON CSS DA ETHU REMOVE PANATHA LATER USE AAGUM
+
+/* COMPLETED LESSON CSS DA ETHU REMOVE PANATHA LATER USE AAGUM */
 .completedLesson,
 .CCaccordianBox .accordion-body .completedLesson .video-number a {
   color: white !important;
-  background-color: #d3abf9 !important;
-} */
+  /* background-color: #d3abf9 !important; */
+  background-color: var(--primary-color) !important;
+}
 
 .CClesson-meta {
   width: 92%;

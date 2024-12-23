@@ -28,7 +28,10 @@ function Register() {
       // Exclude confirmPassword from the payload
       const { confirmPassword, ...formData } = data;
 
-      const response = await axios.post(`${apiBaseUrl}/api/users/signup`, formData);
+      const response = await axios.post(
+        `${apiBaseUrl}/api/users/signup`,
+        formData
+      );
       navigate("/login");
       // if (response.status === 200) {
       //   reset();
@@ -79,12 +82,8 @@ function Register() {
     }
   };
 
-
   return (
-    <div
-      className="register"
-      style={{ height: "100%", minHeight: "100vh" }}
-    >
+    <div className="register" style={{ height: "100%", minHeight: "100vh" }}>
       <div className="register-container d-flex justify-content-center align-items-center min-vh-100">
         <div className="register-card d-flex flex-column flex-lg-row shadow-lg rounded">
           {/* Left Column (Form) */}
@@ -105,7 +104,9 @@ function Register() {
                 Sign In
               </a> */}
               <Link to={"/login"}>
-                <p className="text-decoration-underline fw-semibold text-primary">Sign In</p>
+                <p className="text-decoration-underline fw-semibold text-primary">
+                  Sign In
+                </p>
               </Link>
             </p>
             <form onSubmit={handleSubmit(onSubmit)}>
