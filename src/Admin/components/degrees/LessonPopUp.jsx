@@ -19,7 +19,7 @@ const initialState = {
   title: "",
   // duration: "",
   link: "",
-  lessonFiles,
+  lessonFiles:[],
   updateIndex: null,
   type: null,
   testId: null,
