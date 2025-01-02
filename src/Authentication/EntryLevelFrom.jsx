@@ -67,7 +67,7 @@ const EntryLevelForm = () => {
   //  };
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("userdata"));
-    //setUserId(userData._id);
+    setUserId(userData._id);
     // if (userData) {
     //   // Optionally, set default values if needed
     //   // setValue("firstName", userData.firstName);

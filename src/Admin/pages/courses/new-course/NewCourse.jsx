@@ -13,20 +13,16 @@ import NewChapter from "./NewChapter";
 
 const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
   const [popupOpen, setPopupOpen] = useState({ open: false, data: null });
-  // const [currentOverview, setCurrentOverview] = useState({
-  //   heading: "",
-  //   content: "",
-  //   updateIndex: null,
-  // });
 
   const navigate = useNavigate();
   const [courseData, setCourseData] = useState({
     title: "",
     description: "",
     // price: null,
-    thumbnail: null,
+    courseThumbnails: null,
     // overviewPoints: [],
     chapters: [],
+    updateIndex : null
   });
 
   useEffect(() => {
@@ -64,43 +60,6 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
     // addDegree(courseData)
   };
 
-  // const addChapterToCourse = (chapter) => {
-  //   setCourseData((prevState) => {
-  //     const newChapters = [...prevState.chapters];
-  //     if (chapter.updateIndex === null) {
-  //       newChapters.push({ ...chapter, updateIndex: newChapters.length });
-  //     } else {
-  //       newChapters[chapter.updateIndex] = chapter;
-  //     }
-  //     return { ...prevState, chapters: newChapters };
-  //   });
-  //   setPopupOpen({ open: false });
-  // };
-
-
-  // const uploadCourse = async () => {
-  //   addDegree(courseData)
-  //   // if (
-  //   //   courseData.name &&
-  //   //   courseData.description &&
-  //   //   courseData.courses.length > 0
-  //   //   // courseData.price
-  //   // ) {
-  //   //   // const courseFormData = convertToCourseFormData(courseData)
-  //   //   const response = await toast.promise(addDegree(courseData), {
-  //   //     pending: "adding degree...",
-  //   //     success: "Degree added successfully",
-  //   //     error: "An error occurred while adding new Degree"
-  //   //   })
-  //   //   console.log(response);
-  //   //   if (response) navigate('/admin')
-  //   // } else {
-  //   //   toast.error('Please add at least one course and degree details')
-  //   // }
-  // };
-  // // const uploadCourse = async () => {
-  // //   addDegree(courseData)
-  // // }
 
   const uploadCourse = async () => {
     // if (!courseData.title || !courseData.description) {
@@ -117,6 +76,8 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
     // } catch (error) {
     //   console.error(error);
     // }
+    console.log(courseData);
+    
     addDegree(courseData);
   };
 
@@ -192,13 +153,16 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
             <div className="course-name-cnt">
               <p>Upload degree thumbnail</p>
               <input
-                type="file"
-                accept="png,svg,jpg"
-                onChange={(e) =>
-                  setCourseData({ ...courseData, thumbnail: e.target.files[0] })
+              type="file"
+              accept="image/png, image/svg+xml"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (file) {
+                  setCourseData({ ...courseData, courseThumbnails: file })
                 }
-                className="styled-input"
-              />
+              }}
+              className="styled-input"
+            />
             </div>
           </form>
           <form className="form-right">

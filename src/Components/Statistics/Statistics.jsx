@@ -98,9 +98,15 @@ const Statistics = () => {
   // Function to fetch the degree percentage
   const fetchDegreePercentage = async () => {
     try {
-      const response = await axios.get(`${apiBaseUrl}/api/users/${userInfo._id}/watchPercent`);
-      const { watchPercent } = response.data;
-      setWatchPercent(watchPercent);  // Store the value in the state
+      const response = await axios.get(`${apiBaseUrl}/api/users/${userInfo._id}`);
+      const { user } = response.data
+      // const { watchPercent } = response.data;
+      const findWatchPercentage = user.degreeProgress.map(data => data.progressPercentage)
+      console.log(findWatchPercentage);
+      
+      setWatchPercent(findWatchPercentage[0] || 0);  // Store the first percentage or 0 if empty
+      console.log(user);
+      
     } catch (error) {
       console.error("Error fetching watch percent:", error);
     }

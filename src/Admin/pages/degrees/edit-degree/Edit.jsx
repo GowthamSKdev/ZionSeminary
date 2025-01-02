@@ -12,6 +12,8 @@ import { deleteDegree, editDegree } from "../../../firebase/degreeApi";
 import { toast } from "react-toastify";
 
 const Edit = ({ courseDetails }) => {
+  // console.log(courseDetails);
+  
   const [popupOpen, setPopupOpen] = useState({ open: false, data: null });
   const [editCourse, setEditCourse] = useState(false);
   const [currentOverview, setCurrentOverview] = useState({

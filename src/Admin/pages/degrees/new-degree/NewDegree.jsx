@@ -12,20 +12,6 @@ const apiBaseUrl = process.env.REACT_APP_BASE_API;
 const NewDegree = () => {
   const [popupOpen, setPopupOpen] = useState({ open: false, data: null });
 
-  // const addnewDegree = async(courseData) => {
-  //   return await axios.post("/api/degree/", courseData);
-  // };
-
-  // const addnewDegree = async (degreeData) => {
-  //   try {
-  //     const response = await axios.post(`${apiBaseUrl}/api/degree`, degreeData);
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error("Error adding degree:", error);
-  //     throw error;
-  //   }
-  // };
-
   const navigate = useNavigate();
   const [degreeData, setDegreeData] = useState({
     title: "",
@@ -33,6 +19,7 @@ const NewDegree = () => {
     price: null,
     degreeThumbnail: null,
     courses: [],
+    updateIndex : null
   });
 
   useEffect(() => {
@@ -68,11 +55,13 @@ const NewDegree = () => {
   const addCoursetoDegree = (course) => { 
     console.log(course);
     const newDegree = [...degreeData.courses];
+    
     if (course.updateIndex === null) {
       newDegree.push({
         ...course,
         updateIndex: newDegree?.length > 0 ? newDegree?.length : 0,
       })
+      console.log(newDegree);
       setDegreeData({ ...degreeData, courses: newDegree });
     } else {
       newDegree[course.updateIndex] = course;
@@ -80,76 +69,35 @@ const NewDegree = () => {
     }
     setPopupOpen({ open: false });
   }
-  // const handledirectInput = (type, value) => {
-  //   setDegreeData((prevState) => ({
-  //     ...prevState,
-  //     [type]: value,
-  //   }));
-  // };
 
-  // const addCoursetoDegree = (course) => {
-  //   setDegreeData((prevState) => ({
-  //     ...prevState,
-  //     courses:
-  //       course.updateIndex === null
-  //         ? [
-  //             ...prevState.courses,
-  //             { ...course, updateIndex: prevState.courses.length },
-  //           ]
-  //         : prevState.courses.map((c, idx) =>
-  //             idx === course.updateIndex ? course : c
-  //           ),
-  //   }));
-  // };
-
-
-  // const uploadDegree = async () => {
-  //   if (degreeData.name && degreeData.price && degreeData.description) {
-  //     const response = await toast.promise(addnewDegree(degreeData), {
-  //       pending: "Adding degree...",
-  //       success: "Degree added successfully!",
-  //       error: "An error occurred while adding the new degree.",
-  //     });
-  //     console.log(response);
-  //     if (response) navigate("/admin");
-  //   } else {
-  //     toast.error("Please fill in all degree details, including at least one course.");
-  //   }
-  // };
-  // const uploadDegree = async () => {
-  //   if (degreeData.name && degreeData.price && degreeData.description) {
-  //     const response = await toast.promise(
-  //       axios.post(`${apiBaseUrl}/api/degrees`, degreeData),
-  //       {
-  //         pending: "Adding degree...",
-  //         success: "Degree added successfully!",
-  //         error: "An error occurred while adding the new degree.",
-  //       }
-  //     );
-  //     console.log(response);
-  //     if (response) navigate("/admin");
-  //   } else {
-  //     toast.error(
-  //       "Please fill in all degree details, including at least one course."
-  //     );
-  //   }
-  // };
   const uploadDegree = async () => {
-    // const errorMessage = validateDegreeData();
-    // if (errorMessage) {
-    //   toast.error(errorMessage);
-    //   return;
-    // }
     try {
-      const response = await axios.post(
-        `${apiBaseUrl}/api/degrees`,
-        degreeData
-      );
+      console.log(degreeData.courses);
+      
+      // Create FormData for the request
+      const formData = new FormData();
+      formData.append("title", degreeData.title);
+      formData.append("description", degreeData.description);
+      formData.append("price", degreeData.price);
+      formData.append("degreeThumbnail", degreeData.degreeThumbnail);
+      formData.append("courses", degreeData.courses); // Serialize courses  
+
+      console.log("FormData before upload:", formData);
+
+      const response = await axios.post(`${apiBaseUrl}/api/degrees`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
       console.log("Degree added successfully:", response.data);
       toast.success("Degree added successfully!");
       navigate("/admin");
     } catch (error) {
-      console.error("Error uploading degree:", error);
+      console.error(
+        "Error uploading degree:",
+        error.response?.data || error.message
+      );
       toast.error("An error occurred while adding the degree.");
     }
   };
