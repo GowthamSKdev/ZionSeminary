@@ -80,7 +80,7 @@ const NewDegree = () => {
       formData.append("description", degreeData.description);
       formData.append("price", degreeData.price);
       formData.append("degreeThumbnail", degreeData.degreeThumbnail);
-      formData.append("courses", degreeData.courses); // Serialize courses  
+      formData.append("courses", JSON.stringify(degreeData.courses)); // Serialize courses  
 
       console.log("FormData before upload:", formData);
 

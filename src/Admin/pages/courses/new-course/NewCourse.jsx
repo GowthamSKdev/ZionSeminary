@@ -19,7 +19,7 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
     title: "",
     description: "",
     // price: null,
-    courseThumbnails: null,
+    courseThumbnails: [],
     // overviewPoints: [],
     chapters: [],
     updateIndex : null
