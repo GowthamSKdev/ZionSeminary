@@ -55,13 +55,11 @@ const NewDegree = () => {
   const addCoursetoDegree = (course) => { 
     console.log(course);
     const newDegree = [...degreeData.courses];
-    
     if (course.updateIndex === null) {
       newDegree.push({
         ...course,
         updateIndex: newDegree?.length > 0 ? newDegree?.length : 0,
       })
-      console.log(newDegree);
       setDegreeData({ ...degreeData, courses: newDegree });
     } else {
       newDegree[course.updateIndex] = course;
@@ -72,22 +70,28 @@ const NewDegree = () => {
 
   const uploadDegree = async () => {
     try {
-      console.log(degreeData.courses);
-      
-      // Create FormData for the request
+
       const formData = new FormData();
+      console.log(degreeData.title);
       formData.append("title", degreeData.title);
+      console.log(degreeData.description);
       formData.append("description", degreeData.description);
+      console.log(degreeData.price);
       formData.append("price", degreeData.price);
+      console.log(degreeData.degreeThumbnail);
       formData.append("degreeThumbnail", degreeData.degreeThumbnail);
-      formData.append("courses", JSON.stringify(degreeData.courses)); // Serialize courses  
+      console.log(degreeData.courses);
+      formData.append("courses", JSON.stringify(degreeData?.courses));
+      
 
-      console.log("FormData before upload:", formData);
-
+      // Send the final payload
+      console.log("FormData : " + formData);
+      
       const response = await axios.post(`${apiBaseUrl}/api/degrees`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        withCredentials :true
       });
 
       console.log("Degree added successfully:", response.data);
@@ -101,7 +105,6 @@ const NewDegree = () => {
       toast.error("An error occurred while adding the degree.");
     }
   };
-
 
   console.log(degreeData);
 

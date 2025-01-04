@@ -58,6 +58,8 @@ const CourseContent = () => {
           `${apiBaseUrl}/api/users/progress/${userInfo._id}/${userInfo.applyingFor}`
         );
         const data = res.data.degreeProgress;
+        console.log(data);
+        
         setDegreeProgress(data)
     
         const completed = new Set();
@@ -66,9 +68,7 @@ const CourseContent = () => {
     
         data.courses.forEach((course) => {
           course.chapters.forEach((chapter) => {
-            totalChapterProgress += chapter.progressPercentage || 0; // Add chapter progress
-            totalChapters += 1; // Count each chapter
-    
+            setProgressPercentage(course.progressPercentage)
             chapter.lessons.forEach((lesson) => {
               if (lesson.isComplete) {
                 completed.add(`${chapter.chapterId}-${lesson.lessonId}`);
@@ -78,7 +78,7 @@ const CourseContent = () => {
         });
     
         const averageProgress = totalChapters > 0 ? totalChapterProgress / totalChapters : 0;
-        setProgressPercentage(averageProgress); // Set average progress percentage
+        // setProgressPercentage(averageProgress); // Set average progress percentage
     
         setCompletedLessons(completed);
         console.log("Completed Lessons:", completed);
@@ -277,13 +277,13 @@ const CourseContent = () => {
     console.log(lessonIndex, chapterIndex);
 
     // Calculate total exercises and progress percentage
-    const totalExercises = degreeProgress.chapters?.reduce(
+    const totalExercises = degreeProgress.courses?.reduce(
       (total, chapter) => total + chapter.lessons?.length,
       0
     );
 
     const progress_percentage =
-      totalExercises > 0 ? (completedExercises.size / totalExercises) * 100 : 0;
+    totalExercises > 0 ? (completedExercises.size / totalExercises) * 100 : 0;
 
     const watchedPercentage = progress_percentage;
 
@@ -321,29 +321,18 @@ const CourseContent = () => {
     }
   };
 
+  // const calculateProgress = (courseData, completedLessons) => {
+  //   if (!courseData?.chapters?.length) return 0;
 
-const calculateProgress = () => {
-  console.log(courseData.chapters);
+  //   const totalLessons = courseData.chapters.reduce(
+  //     (total, chapter) => total + (chapter.lessons?.length || 0),
+  //     0
+  //   );
   
-  const totalExercises = courseData.chapters?.reduce(
-    (total, chapter) =>{
-      console.log( chapter.lessons?.length);
-      total + chapter.lessons?.length,
-      0
-    }
-  );
-
-  const lessonProgress = progressPercentage > 0 ? (completedExercises.size / progressPercentage) * 100 : 0;
-
-  // Combine lesson progress and chapter progress
-  const overallProgress = (lessonProgress) ;
-
-  localStorage.setItem(`courseProgress-${courseId}`, overallProgress);
-
-  return overallProgress;
-};
-
-
+  //   const completedCount = completedLessons.size;
+  //   return totalLessons > 0 ? (completedCount / totalLessons) * 100 : 0;
+  // };
+const calculateProgress = progressPercentage
   const truncateText = (text, maxLength) => {
     if (text?.length > maxLength) {
       return text.slice(0, maxLength) + "...";
@@ -376,7 +365,7 @@ const calculateProgress = () => {
           </button>
         </div>
         <div className="courseContentProgressBar">
-          <ProgressBar progress={calculateProgress()} />
+          <ProgressBar progress={calculateProgress} />
         </div>
       </div>
       <div className="row secondRow">

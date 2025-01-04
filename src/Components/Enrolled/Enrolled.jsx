@@ -768,7 +768,7 @@ const Enrolled = () => {
                               isCompleted ? "btn-success" : "btn-danger"
                             }`}
                             onClick={() =>
-                              navigate(`/home/courseContent/${course. course.courseId}`, {
+                              navigate(`/home/courseContent/${course.courseId}`, {
                                 state: course,
                               })
                             }

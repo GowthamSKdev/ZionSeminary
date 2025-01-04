@@ -179,7 +179,7 @@ const NewLesson = ({ addLesson, cancel, editData, removeThisLesson }) => {
             )}
             <div
               className="add-new-lesson-btn"
-              onClick={() => validateAndUpdateLesson()}
+              onClick={() => validateAndUpdateLesson}
             >
               {editData?.updateIndex ? "Add to Course" : " Update Course"}
             </div>

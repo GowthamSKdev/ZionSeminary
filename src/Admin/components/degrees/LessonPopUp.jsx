@@ -44,13 +44,52 @@ const LessonPopUp = ({
   const [uploadingFile, setUploadingFile] = useState(false);
   const [openLessonTest, setOpenLessonTest] = useState(false);
 
-  const handleAddFile = async (file) => {
-    console.log(file);
-    setUploadingFile(true);
-    const filetype = findFileType(file);
-    setCurrentSublesson({ ...currentSublesson, lessonFiles : file, type: filetype });
-    setUploadingFile(false);
+  // const handleAddFile = async (file) => {
+  //   console.log(file);
+  //   setUploadingFile(true);
+  //   const filetype = findFileType(file);
+  //   setCurrentSublesson({ ...currentSublesson, lessonFiles : file, type: filetype });
+  //   setUploadingFile(false);
+  // };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0]; // Get the selected file
+    if (!file) return; // If no file is selected, exit
+  
+    const supportedTypes = [
+      "video",
+      "audio",
+      "application/pdf",
+      "application/vnd.ms-powerpoint",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ];
+  
+    const fileType = file.type.split("/")[0]; // Get the major type (e.g., "video")
+    const isValidType =
+      supportedTypes.includes(file.type) || supportedTypes.includes(fileType);
+  
+    if (!isValidType) {
+      toast.error("Unsupported file type. Please upload a valid file.");
+      return;
+    }
+  
+    const reader = new FileReader(); // Initialize FileReader
+  
+    reader.onloadend = () => {
+      setCurrentSublesson({
+        ...currentSublesson,
+        lessonFiles: reader.result, // Base64 string
+        type: file.type,
+      });
+    };
+  
+    reader.onerror = () => {
+      toast.error("Failed to read file. Please try again.");
+    };
+  
+    reader.readAsDataURL(file); // Convert file to Base64
   };
+  
 
   const handleSubLessonsInput = (type, value) => {
     setCurrentSublesson({ ...currentSublesson, [type]: value });
@@ -78,7 +117,7 @@ const LessonPopUp = ({
     setCurrentUpdateIndex(null);
   };
 
-  const validateAndUpdateLesson = async () => {
+  const validateAndUpdateLesson = () => {
     addChapter(currentLesson);
    }
 
@@ -219,7 +258,7 @@ const LessonPopUp = ({
                       alt="imag"
                       className={`${!uploadingFile ? "test-icon" : "gif-icon"}`}
                     />
-                  <input
+                  {/* <input
                     type="file"
                     name="video-upload"
                     accept="video/,audio/,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation"
@@ -227,6 +266,14 @@ const LessonPopUp = ({
                     id=""
                     className="file-title-input"
                     onChange={(e) => handleAddFile(e.target.files[0])}
+                  /> */}
+                  <input
+                    type="file"
+                    name="lesson-upload"
+                    accept="video/*,audio/*,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                    style={{ position: "absolute" }}
+                    className="file-title-input"
+                    onChange={handleFileUpload}
                   />
                 </div>
                 <div

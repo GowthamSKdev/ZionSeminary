@@ -8,8 +8,6 @@ import { toast } from "react-toastify";
 // import NewChapter from "./NewChapter";
 import LessonPopUp from "../../../components/degrees/LessonPopUp";
 import NewChapter from "./NewChapter";
-// import { addnewCourse } from "../../../api/baseApi";
-// import { convertToCourseFormData } from "../../../hooks/newCourseFunctions";
 
 const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
   const [popupOpen, setPopupOpen] = useState({ open: false, data: null });
@@ -18,9 +16,7 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
   const [courseData, setCourseData] = useState({
     title: "",
     description: "",
-    // price: null,
-    courseThumbnails: [],
-    // overviewPoints: [],
+    courseThumbnails: null,
     chapters: [],
     updateIndex : null
   });
@@ -62,27 +58,21 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
 
 
   const uploadCourse = async () => {
-    // if (!courseData.title || !courseData.description) {
-    //   toast.error("Please provide title and description.");
-    //   return;
-    // }
-    // try {
-    //   await toast.promise(addDegree(courseData), {
-    //     pending: "Adding course...",
-    //     success: "Course added successfully!",
-    //     error: "Failed to add course.",
-    //   });
-    //   navigate("/admin");
-    // } catch (error) {
-    //   console.error(error);
-    // }
-    console.log(courseData);
+    if (!courseData.title || !courseData.courseThumbnails) {
+      toast.error("Please provide title and description.");
+      return;
+    }
+    const courseDataObj = {
+      title : courseData.title,
+      description : courseData.description,
+      courseThumbnails : courseData.courseThumbnails,
+      chapters : courseData.chapters,
+      updateIndex : courseData.updateIndex
+    }
+    console.log(courseDataObj);
     
-    addDegree(courseData);
+    addDegree(courseDataObj);
   };
-
-
-  console.log(courseData)
 
   return (
     <div className="lesson-popup-cnt" style={{ height: "100% !important" }}>
@@ -152,7 +142,7 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
           </div> */}
             <div className="course-name-cnt">
               <p>Upload degree thumbnail</p>
-              <input
+              {/* <input
               type="file"
               accept="image/png, image/svg+xml"
               onChange={(e) => {
@@ -162,7 +152,28 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
                 }
               }}
               className="styled-input"
-            />
+            /> */}
+            <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    const reader = new FileReader();
+
+                    // Read the file as a Data URL (Base64 string)
+                    reader.onloadend = () => {
+                      setCourseData({
+                        ...courseData,
+                        courseThumbnails: reader.result, // Base64 string of the image
+                      });
+                    };
+
+                    reader.readAsDataURL(file); // Converts the file to Base64
+                  }
+                }}
+                className="styled-input"
+              />
             </div>
           </form>
           <form className="form-right">
