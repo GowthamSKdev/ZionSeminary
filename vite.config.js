@@ -10,23 +10,4 @@ export default defineConfig({
     "process.env": process.env,
   },
   base: "/",
-  // server: {
-  //   port: 3005,
-  //   open: true,
-  // },
-  // server: {
-  //   proxy: "https://zion-backend.onrender.com/api/"
-  // },
-  // server: {
-  //   port: 3000,
-  //   open: true,
-  //   proxy: {
-  //     "/api": {
-  //       // target: "https://zion-backend.onrender.com",
-  //       target: "https://z-backend-2xag.onrender.com",
-  //       changeOrigin: true,
-  //       secure: false,
-  //     },
-  //   },
-  // },
 });

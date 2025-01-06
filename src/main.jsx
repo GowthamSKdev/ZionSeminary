@@ -1,5 +1,4 @@
-// import { configDotenv } from "dotenv";
-// import { StrictMode } from "react";
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -10,12 +9,12 @@ import "./index.css";
 import { UserProvider } from "./context/UserContext.jsx";
 
 createRoot(document.getElementById("root")).render(
-  // <StrictMode>
+  <StrictMode>
     <BrowserRouter>
       <UserProvider>
         <AppRoutes />
         <ToastContainer />
       </UserProvider>
     </BrowserRouter>
-  // </StrictMode>
+  </StrictMode>
 );
