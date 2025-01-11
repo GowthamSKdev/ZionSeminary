@@ -38,7 +38,7 @@ function Login() {
         
 
         const userRole = CurrentUser.role ? CurrentUser.role.toLowerCase() : null;
-        const hasDetails = CurrentUser
+        const hasDetails = CurrentUser.details
 
         if (userRole === "admin") {
           navigate("/admin");
@@ -314,6 +314,3 @@ function Login() {
 }
 
 export default Login;
-
-
-
