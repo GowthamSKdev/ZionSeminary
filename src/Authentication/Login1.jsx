@@ -1,592 +1,33 @@
-// import React, { useContext, useState } from 'react';
-// import { useForm } from 'react-hook-form';
-// import { Link, useNavigate } from 'react-router-dom';
-// import './Register.css'; // Reuse the same CSS file
-// // import { getAllUsers } from '../Admin/firebase/userApi';
-// // import bcrypt from 'bcryptjs';
-// import logo from "./assets/logo.png";
-// import google from "./assets/google.png"; 
-// import { toast } from 'react-toastify';
-// import axios from 'axios';
-// // import UserContext from '../context/UserContext';
-//  const apiBaseUrl = process.env.REACT_APP_BASE_API;
-// function Login() {
-
-//   // const { setUserInfo } = useContext(UserContext);
-//   // const { register, handleSubmit } = useForm();
-//   // const navigate = useNavigate();
-//   // const [userdata, setUserdata] = useState(null);
-
-//   // const onSubmit = async (data) => {
-//   //   try {
-//   //     const res = await getAllUsers();
-//   //     console.log(res); // Log to ensure you're getting the user data
-
-//   //     let foundUser = null;
-//   //     res.forEach(user => {
-//   //       if (user.username === data.username) {
-//   //         const isPasswordValid = bcrypt.compareSync(data.password, user.password);
-//   //         if (isPasswordValid) {
-//   //           foundUser = user;
-//   //         }
-//   //       }
-//   //     });
-
-//   //     // If user is found, log them in
-//   //     if (foundUser) {
-//   //       setUserdata(foundUser);
-//   //       localStorage.setItem("userdata", JSON.stringify(foundUser));
-//   //       toast.success("Login Successful");
-//   //       localStorage.setItem("isloggedin",true);
-//   //       navigate("/home");
-//   //     } else {
-//   //       alert('Invalid username or password');
-//   //     }
-//   //   } catch (error) {
-//   //     console.error("Error fetching users: ", error);
-//   //     alert('An error occurred while logging in. Please try again.');
-//   //   }
-//   // };
-  
-
-//    const { register, handleSubmit } = useForm();
-//    const navigate = useNavigate();
-//   const [userdata, setUserdata] = useState(null);
-  
-//   // const onSubmit = async (data) => {
-//   //   try {
-//   //     // Fetch all users from the backend
-//   //     const res = await axios.post('/api/users/login', data)
-//   //     console.log(res);
-      
-
-//   //     // let foundUser = null;
-
-//   //     // // Validate username and password
-//   //     // res.forEach((user) => {
-//   //     //   if (user.username === data.username) {
-//   //     //     const isPasswordValid = bcrypt.compareSync(
-//   //     //       data.password,
-//   //     //       user.password
-//   //     //     );
-//   //     //     if (isPasswordValid) {
-//   //     //       foundUser = user;
-//   //     //     }
-//   //     //   }
-//   //     // });
-
-//   //     if (res.data) {
-//   //       setUserdata(res.data);
-//   //       localStorage.setItem("userdata", JSON.stringify(userdata));
-//   //       localStorage.setItem("isloggedin", true);
-//   //       toast.success("Login Successful");
-
-//   //       // Redirect based on user role
-//   //       if (res.data.role === "admin") {
-//   //         navigate("/admin");
-//   //       } else if (res.data.role === "client") {
-//   //         navigate("/home");
-//   //       } else {
-//   //         toast.error("Role not recognized");
-//   //       }
-//   //     } else {
-//   //       toast.error("Invalid username or password");
-//   //     }
-//   //   } catch (error) {
-//   //     console.error("Error fetching users: ", error);
-//   //     toast.error("An error occurred while logging in. Please try again.");
-//   //   }
-//   // };
-
-//   // const onSubmit = async (data) => {
-//   //   try {
-//   //     const res = await axios.post("/api/users/login", data);
-//   //     const {user} = res.data
-//   //     console.log(user);
-
-//   //     if (user) {
-
-//   //       setUserdata(user);
-//   //       setUserInfo(user);
-//   //       localStorage.setItem("userdata", JSON.stringify(user));
-//   //       localStorage.setItem("isloggedin", true);
-//   //       toast.success("Login Successful");
-
-//   //       // Check if role exists and is valid
-//   //       const userRole = user.role ? user.role.toLowerCase() : null; // Normalize the role (e.g., lowercase)
-
-//   //       if (userRole === "admin") {
-//   //         navigate("/admin");
-//   //       } else if (userRole === "client") {
-//   //         navigate("/elf");
-//   //       } else {
-//   //         toast.error("Role not recognized");
-//   //       }
-//   //     } else {
-//   //       toast.error("Invalid username or password");
-//   //     }
-//   //   } catch (error) {
-//   //     console.error("Error fetching users: ", error);
-//   //     toast.error("An error occurred while logging in. Please try again.");
-//   //   }
-//   // };
-
-//   const onSubmit = async (data) => {
-//     try {
-//       const res = await axios.post(`${apiBaseUrl}/api/users/login`, data);
-//       const { user } = res.data;
-//       const findUser = await axios.get(`${apiBaseUrl}/api/users/${user.id}`)
-//       const findUserData = findUser.data
-//       const CurrentUser = findUserData.user
-//       console.log(CurrentUser);
-      
-
-//       console.log(user);
-
-//       // if (CurrentUser) {
-//       //   setUserdata(CurrentUser);
-//       //   // setUserInfo(user);
-//       //   localStorage.setItem("userdata", JSON.stringify(CurrentUser));
-//       //   localStorage.setItem("isloggedin", true);
-//       //   toast.success("Login Successful");
-
-//       //   // Check if the user has the 'details' field and navigate accordingly
-        
-//       //   if (CurrentUser.details===true) {
-//       //     // Navigate to '/home' or '/admin' based on the role
-//       //     const userRole = CurrentUser.role ? CurrentUser.role.toLowerCase() : null;
-//       //     if (userRole === "admin") {
-//       //       navigate("/admin");
-//       //     } else if (userRole === "client") {
-//       //       navigate("/home");
-//       //     } else {
-//       //       toast.error("Role not recognized");
-//       //     }
-//       //   } else {
-//       //     // Navigate to '/elf' if 'details' is false
-//       //     navigate("/elf");
-//       //   }
-//       // } else {
-//       //   toast.error("Invalid username or password");
-//       // }
-
-//       if (CurrentUser) {
-//         setUserdata(CurrentUser);
-//         localStorage.setItem("userdata", JSON.stringify(CurrentUser));
-//         localStorage.setItem("isloggedin", true);
-//         toast.success("Login Successful");
-
-//         const userRole = CurrentUser.role
-//           ? CurrentUser.role.toLowerCase()
-//           : null;
-//         const hasDetails = CurrentUser.details === true;
-
-//         if (userRole === "admin") {
-//           navigate("/admin");
-//         } else if (userRole === "client") {
-//           navigate(hasDetails ? "/home" : "/elf");
-//         } else {
-//           toast.error("Role not recognized");
-//         }
-//       } else {
-//         toast.error("Invalid username or password");
-//       }
-
-//     } catch (error) {
-//       console.error("Error fetching users: ", error);
-//       toast.error("An error occurred while logging in. Please try again.");
-//     }
-//   };
-
-// const handleGoogleLogin = async () => {
-//   try {
-//     // Call the Google login endpoint
-//     const res = await axios.post("/api/google-login");
-
-//     // Process the response
-//     if (res.status === 200) {
-//       const { user } = res.data;
-
-//       if (user) {
-//         // Save user data in local storage or context
-//         localStorage.setItem("userdata", JSON.stringify(user));
-//         localStorage.setItem("isloggedin", true);
-//         toast.success("Google Login Successful");
-
-//         // Redirect user based on their role
-//         const userRole = user.role ? user.role.toLowerCase() : null;
-//         if (userRole === "admin") {
-//           navigate("/admin");
-//         } else if (userRole === "client") {
-//           navigate("/home");
-//         } else {
-//           toast.error("Role not recognized");
-//         }
-//       } else {
-//         toast.error("Failed to retrieve user details.");
-//       }
-//     } else {
-//       toast.error("Google Login Failed. Please try again.");
-//     }
-//   } catch (error) {
-//     console.error("Error during Google login:", error);
-//     toast.error("An error occurred during Google Login.");
-//   }
-// };
-
-
-//   return (
-//     <div
-//       style={{ height: "100%", minHeight: "100dvh" }}
-//       className="register"
-//     >
-//       {/* <form className="my-form" onSubmit={handleSubmit(onSubmit)}>
-//         <h2 style={{ textAlign: 'center', marginBottom: "40px" }}>Login</h2>
-//         <div className="form-group">
-//           <label>Username</label>
-//           <input
-//             type="text"
-//             placeholder="Enter Username"
-//             {...register('username', { required: true })}
-//           />
-//         </div>
-//         <div className="form-group">
-//           <label>Password</label>
-//           <input
-//             type="password"
-//             placeholder="Enter Password"
-//             {...register('password', { required: true })}
-//           />
-//         </div>
-//         <div className="form-group">
-//           <input type="submit" className='submit-btn' value="Login" />
-//         </div>
-//       </form> */}
-//       <div className="register-container d-flex justify-content-center align-items-center">
-//         <div className="register-card d-flex flex-column flex-md-row shadow-lg rounded">
-//           {/* Left Column (Form) */}
-//           <div className="form-container d-flex flex-column w-100 w-md-50 px-5 py-4 bg-light">
-//             <img
-//               src={logo}
-//               alt="Zion Seminary Portal"
-//               style={{ width: "80px" }}
-//               className="rounded mb-2"
-//             />
-//             <h4 className="text-left text-dark fw-bold mb-3">Sign In</h4>
-//             <p className="text-muted">
-//               Don't have an account?{" "}
-//               {/* <a
-//                 href="/"
-//                 className="text-decoration-underline fw-semibold text-primary"
-//               >
-//                 Create now
-//               </a> */}
-//               <Link to={"/"}>
-//                 <p className="text-decoration-underline fw-semibold text-primary"> Create Now</p>
-//               </Link>
-//             </p>
-
-//             <form onSubmit={handleSubmit(onSubmit)}>
-//               <div className="form-group mb-3">
-//                 <label className="form-label fw-semibold">E-mail</label>
-//                 <input
-//                   type="email"
-//                   className="form-control"
-//                   placeholder="Enter email Id"
-//                   {...register("email", { required: true })}
-//                 />
-//               </div>
-
-//               <div className="form-group mb-3">
-//                 <label className="form-label fw-semibold">Password</label>
-//                 <input
-//                   type="password"
-//                   className="form-control"
-//                   placeholder="Enter Password"
-//                   {...register("password", { required: true })}
-//                 />
-//               </div>
-
-//               <div className="form-check d-flex justify-content-between mb-3">
-//                 <div>
-//                   <input
-//                     type="checkbox"
-//                     className="form-check-input"
-//                     id="rememberMe"
-//                   />
-//                   <label className="form-check-label" htmlFor="rememberMe">
-//                     Remember me
-//                   </label>
-//                 </div>
-//                 <a className="text-decoration-underline" href="">
-//                   Forgot Password?
-//                 </a>
-//               </div>
-
-//               <button
-//                 type="submit"
-//                 className="btn btn-primary w-100 mb-3 rounded-pill"
-//               >
-//                 Sign In
-//               </button>
-
-//               {/* <div className="text-center mb-3">
-//                 <div className="d-flex align-items-center mb-3">
-//                   <hr className="flex-grow-1" />
-//                   <span className="mx-2 fw-semibold">Or</span>
-//                   <hr className="flex-grow-1" />
-//                 </div>
-
-//                 <button
-//                   type="button"
-//                   className="btn btn-white w-100 mb-3 rounded-pill border d-flex align-items-center"
-//                   onClick={handleGoogleLogin}
-//                 >
-//                   <img
-//                     src={google}
-//                     alt="Google"
-//                     style={{ width: "30px" }}
-//                     className="rounded mb-0"
-//                   />
-//                   <span className="flex-grow-1 text-center">
-//                     Sign in with Google
-//                   </span>
-//                 </button>
-//               </div> */}
-//             </form>
-//           </div>
-
-//           {/* Right Column (Content) */}
-//           <div className="content-container w-100 w-md-50 p-4 bg-primary text-white d-flex flex-column justify-content-center">
-//             <h2 className="fw-bold mb-4 text-center">
-//               Welcome to Zion Seminary
-//             </h2>
-//             <p className="mb-4 text-center">
-//               Zion Seminary's <strong>Education Management System (EMS)</strong>{" "}
-//               offers:
-//             </p>
-
-//             <ul className="list-unstyled">
-//               <li className="d-flex mb-1">
-//                 <i
-//                   className="bi bi-check-circle-fill me-3"
-//                   style={{ fontSize: "1.5rem", color: "#ffd800" }}
-//                 ></i>
-//                 <span>
-//                   Comprehensive tools for administrators to manage data
-//                   efficiently.
-//                 </span>
-//               </li>
-//               <li className="d-flex mb-1">
-//                 <i
-//                   className="bi bi-check-circle-fill me-3"
-//                   style={{ fontSize: "1.5rem", color: "#ffd800" }}
-//                 ></i>
-//                 <span>
-//                   Enhanced teaching tools for educators to simplify course
-//                   management.
-//                 </span>
-//               </li>
-//               <li className="d-flex mb-1">
-//                 <i
-//                   className="bi bi-check-circle-fill me-3"
-//                   style={{ fontSize: "1.5rem", color: "#ffd800" }}
-//                 ></i>
-//                 <span>
-//                   User-friendly interface for students to track their progress.
-//                 </span>
-//               </li>
-//               <li className="d-flex mb-1">
-//                 <i
-//                   className="bi bi-check-circle-fill me-3"
-//                   style={{ fontSize: "1.5rem", color: "#ffd800" }}
-//                 ></i>
-//                 <span>
-//                   Seamless integration of academic and administrative workflows.
-//                 </span>
-//               </li>
-//             </ul>
-
-//             <p className="mt-4 text-center">
-//               Join us today and transform your educational experience with Zion
-//               Seminary!
-//             </p>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default Login;
-
 import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import "./Register.css"; // Reuse the same CSS file
-// import { getAllUsers } from '../Admin/firebase/userApi';
-// import bcrypt from 'bcryptjs';
+import "./Register.css";
 import logo from "./assets/logo.png";
 import google from "./assets/google.png";
 import { toast } from "react-toastify";
 import axios from "axios";
-// import UserContext from '../context/UserContext';
+
+// Firebase imports
+import { auth, googleProvider, signInWithPopup } from "../Admin/firebase/firebase";
+
+// API base URL from environment variables
 const apiBaseUrl = process.env.REACT_APP_BASE_API;
+
 function Login() {
-  // const { setUserInfo } = useContext(UserContext);
-  // const { register, handleSubmit } = useForm();
-  // const navigate = useNavigate();
-  // const [userdata, setUserdata] = useState(null);
-
-  // const onSubmit = async (data) => {
-  //   try {
-  //     const res = await getAllUsers();
-  //     console.log(res); // Log to ensure you're getting the user data
-
-  //     let foundUser = null;
-  //     res.forEach(user => {
-  //       if (user.username === data.username) {
-  //         const isPasswordValid = bcrypt.compareSync(data.password, user.password);
-  //         if (isPasswordValid) {
-  //           foundUser = user;
-  //         }
-  //       }
-  //     });
-
-  //     // If user is found, log them in
-  //     if (foundUser) {
-  //       setUserdata(foundUser);
-  //       localStorage.setItem("userdata", JSON.stringify(foundUser));
-  //       toast.success("Login Successful");
-  //       localStorage.setItem("isloggedin",true);
-  //       navigate("/home");
-  //     } else {
-  //       alert('Invalid username or password');
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching users: ", error);
-  //     alert('An error occurred while logging in. Please try again.');
-  //   }
-  // };
-
+  const [isSigningIn, setIsSigningIn] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [userdata, setUserdata] = useState(null);
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
-  const [userdata, setUserdata] = useState(null);
 
-  // const onSubmit = async (data) => {
-  //   try {
-  //     // Fetch all users from the backend
-  //     const res = await axios.post('/api/users/login', data)
-  //     console.log(res);
-
-  //     // let foundUser = null;
-
-  //     // // Validate username and password
-  //     // res.forEach((user) => {
-  //     //   if (user.username === data.username) {
-  //     //     const isPasswordValid = bcrypt.compareSync(
-  //     //       data.password,
-  //     //       user.password
-  //     //     );
-  //     //     if (isPasswordValid) {
-  //     //       foundUser = user;
-  //     //     }
-  //     //   }
-  //     // });
-
-  //     if (res.data) {
-  //       setUserdata(res.data);
-  //       localStorage.setItem("userdata", JSON.stringify(userdata));
-  //       localStorage.setItem("isloggedin", true);
-  //       toast.success("Login Successful");
-
-  //       // Redirect based on user role
-  //       if (res.data.role === "admin") {
-  //         navigate("/admin");
-  //       } else if (res.data.role === "client") {
-  //         navigate("/home");
-  //       } else {
-  //         toast.error("Role not recognized");
-  //       }
-  //     } else {
-  //       toast.error("Invalid username or password");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching users: ", error);
-  //     toast.error("An error occurred while logging in. Please try again.");
-  //   }
-  // };
-
-  // const onSubmit = async (data) => {
-  //   try {
-  //     const res = await axios.post("/api/users/login", data);
-  //     const {user} = res.data
-  //     console.log(user);
-
-  //     if (user) {
-
-  //       setUserdata(user);
-  //       setUserInfo(user);
-  //       localStorage.setItem("userdata", JSON.stringify(user));
-  //       localStorage.setItem("isloggedin", true);
-  //       toast.success("Login Successful");
-
-  //       // Check if role exists and is valid
-  //       const userRole = user.role ? user.role.toLowerCase() : null; // Normalize the role (e.g., lowercase)
-
-  //       if (userRole === "admin") {
-  //         navigate("/admin");
-  //       } else if (userRole === "client") {
-  //         navigate("/elf");
-  //       } else {
-  //         toast.error("Role not recognized");
-  //       }
-  //     } else {
-  //       toast.error("Invalid username or password");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching users: ", error);
-  //     toast.error("An error occurred while logging in. Please try again.");
-  //   }
-  // };
-
+  // Handle form submission
   const onSubmit = async (data) => {
     try {
       const res = await axios.post(`${apiBaseUrl}/api/users/login`, data);
       const { user } = res.data;
-      const findUser = await axios.get(`${apiBaseUrl}/api/users/${user.id}`);
-      const findUserData = findUser.data;
-      const CurrentUser = findUserData.user;
-      console.log(CurrentUser);
-
-      console.log(user);
-
-      // if (CurrentUser) {
-      //   setUserdata(CurrentUser);
-      //   // setUserInfo(user);
-      //   localStorage.setItem("userdata", JSON.stringify(CurrentUser));
-      //   localStorage.setItem("isloggedin", true);
-      //   toast.success("Login Successful");
-
-      //   // Check if the user has the 'details' field and navigate accordingly
-
-      //   if (CurrentUser.details===true) {
-      //     // Navigate to '/home' or '/admin' based on the role
-      //     const userRole = CurrentUser.role ? CurrentUser.role.toLowerCase() : null;
-      //     if (userRole === "admin") {
-      //       navigate("/admin");
-      //     } else if (userRole === "client") {
-      //       navigate("/home");
-      //     } else {
-      //       toast.error("Role not recognized");
-      //     }
-      //   } else {
-      //     // Navigate to '/elf' if 'details' is false
-      //     navigate("/elf");
-      //   }
-      // } else {
-      //   toast.error("Invalid username or password");
-      // }
+      const findUser = await axios.get(`${apiBaseUrl}/api/users/${user.id}`)
+      const CurrentUser = findUser.data.user;
 
       if (CurrentUser) {
         setUserdata(CurrentUser);
@@ -594,15 +35,13 @@ function Login() {
         localStorage.setItem("isloggedin", true);
         toast.success("Login Successful");
 
-        const userRole = CurrentUser.role
-          ? CurrentUser.role.toLowerCase()
-          : null;
-        const hasDetails = CurrentUser.details === true;
+        const userRole = CurrentUser.role ? CurrentUser.role.toLowerCase() : null;
+        const hasDetails = CurrentUser.details === false;
 
         if (userRole === "admin") {
           navigate("/admin");
         } else if (userRole === "client") {
-          navigate(hasDetails ? "/home" : "/elf");
+          navigate(hasDetails ? "/waitAuth" : "/elf", {state:{userId:user._id}});
         } else {
           toast.error("Role not recognized");
         }
@@ -615,90 +54,131 @@ function Login() {
     }
   };
 
-  const handleGoogleLogin = async () => {
+  // Handle Google Sign-In
+  // const handleGoogleSignIn = async () => {
+  //   if (isSigningIn) return; // Prevent duplicate sign-in attempts
+
+  //   setIsSigningIn(true);
+
+  //   try {
+  //     const result = await signInWithPopup(auth, googleProvider);
+  //     const token = await result.user.getIdToken();
+  //     console.log("Google Sign-In Success:", result.user);
+
+  //     // Send the token to the backend
+  //     const response = await axios.post(`${apiBaseUrl}/api/users/auth/google`, { token });
+  //     console.log(response);
+      
+
+  //     if (response.status === 200) {
+  //       const { user } = response.data;
+  //       if (user) {
+  //         localStorage.setItem("userdata", JSON.stringify(user));
+  //         localStorage.setItem("isloggedin", true);
+  //         toast.success("Google Login Successful");
+
+  //         const userRole = user.role
+  //           // ? user.role.toLowerCase() : null;
+  //         if (userRole === "admin") {
+  //           navigate("/admin");
+  //         } else if (userRole === "client") {
+  //           navigate(hasDetails ? "/elf" : "/waitAuth", {state:{userId:user.id}});
+  //         } else {
+  //           toast.error("Role not recognized");
+  //         }
+  //       } else {
+  //         toast.error("Failed to retrieve user details.");
+  //       }
+  //     } else {
+  //       toast.error("Google Login Failed. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     toast.error("Google Sign-In Failed:", error);
+  //   } finally {
+  //     setIsSigningIn(false); // Reset flag after sign-in completes
+  //   }
+  // };
+
+  const handleGoogleSignIn = async () => {
+    if (isSigningIn) return; // Prevent duplicate sign-in attempts
+
+    setIsSigningIn(true);
+
     try {
-      // Call the Google login endpoint
-      const res = await axios.post("/api/google-login");
+      const result = await signInWithPopup(auth, googleProvider);
+      const token = await result.user.getIdToken(); // Get Firebase authentication token
+      console.log("Google Sign-In Success:", result.user);
 
-      // Process the response
-      if (res.status === 200) {
-        const { user } = res.data;
+      // Send the token to the backend
+      const response = await axios.post(`${apiBaseUrl}/api/users/auth/google`, {
+        token,
+      });
 
-        if (user) {
-          // Save user data in local storage or context
-          localStorage.setItem("userdata", JSON.stringify(user));
-          localStorage.setItem("isloggedin", true);
-          toast.success("Google Login Successful");
+      // Process the backend response
+      const { user } = response.data;
+      if (user) {
+        const findUser = await axios.get(`${apiBaseUrl}/api/users/${user.id}`);
+        const CurrentUser = findUser.data.user;
+        localStorage.setItem("userdata", JSON.stringify(CurrentUser));
+        localStorage.setItem("isloggedin", true);
+        toast.success("Google Login Successful");
 
-          // Redirect user based on their role
-          const userRole = user.role ? user.role.toLowerCase() : null;
-          if (userRole === "admin") {
-            navigate("/admin");
-          } else if (userRole === "client") {
-            navigate("/home");
-          } else {
-            toast.error("Role not recognized");
-          }
+        // Determine the user role and navigate accordingly
+        const userRole = user.role ? user.role.toLowerCase() : null;
+        const hasDetails = user.details === false;
+
+        if (userRole === "admin") {
+          navigate("/admin");
+        } else if (userRole === "client") {
+          navigate(hasDetails ? "/waitAuth" : "/elf", {
+            state: { userId: user._id },
+          });
         } else {
-          toast.error("Failed to retrieve user details.");
+          toast.error("Role not recognized");
         }
       } else {
-        toast.error("Google Login Failed. Please try again.");
+        toast.error("Failed to retrieve user details.");
       }
     } catch (error) {
-      console.error("Error during Google login:", error);
-      toast.error("An error occurred during Google Login.");
+      console.error("Google Sign-In Error:", error);
+      toast.error("Google Sign-In Failed. Please try again.");
+    } finally {
+      setIsSigningIn(false); // Reset the signing-in flag
+    }
+  };
+
+
+  // Handle forgot password
+  const handleForgotPassword = async () => {
+    if (!forgotEmail) {
+      toast.error("Please enter your email.");
+      return;
+    }
+    try {
+      const response = await axios.post(`${apiBaseUrl}/api/users/forgot-password`, { email: forgotEmail });
+      if (response.status === 200) {
+        toast.success("Password reset link sent to your email.");
+        setShowForgotPassword(false);
+        setForgotEmail("");
+      }
+    } catch (error) {
+      console.error("Error sending reset link: ", error);
+      toast.error("Failed to send password reset link. Please try again.");
     }
   };
 
   return (
-    <div style={{ height: "100%", minHeight: "100dvh" }} className="register">
-      {/* <form className="my-form" onSubmit={handleSubmit(onSubmit)}>
-        <h2 style={{ textAlign: 'center', marginBottom: "40px" }}>Login</h2>
-        <div className="form-group">
-          <label>Username</label>
-          <input
-            type="text"
-            placeholder="Enter Username"
-            {...register('username', { required: true })}
-          />
-        </div>
-        <div className="form-group">
-          <label>Password</label>
-          <input
-            type="password"
-            placeholder="Enter Password"
-            {...register('password', { required: true })}
-          />
-        </div>
-        <div className="form-group">
-          <input type="submit" className='submit-btn' value="Login" />
-        </div>
-      </form> */}
+    <div className="register position-relative" style={{ height: "100%", minHeight: "100dvh" }}>
       <div className="register-container d-flex justify-content-center align-items-center">
         <div className="register-card d-flex flex-column flex-md-row shadow-lg rounded">
           {/* Left Column (Form) */}
           <div className="form-container d-flex flex-column w-100 w-md-50 px-5 py-4 bg-light">
-            <img
-              src={logo}
-              alt="Zion Seminary Portal"
-              style={{ width: "80px" }}
-              className="rounded mb-2"
-            />
+            <img src={logo} alt="Zion Seminary Portal" className="rounded mb-2" style={{ width: "80px" }} />
             <h4 className="text-left text-dark fw-bold mb-3">Sign In</h4>
             <p className="text-muted">
               Don't have an account?{" "}
-              {/* <a
-                href="/"
-                className="text-decoration-underline fw-semibold text-primary"
-              >
-                Create now
-              </a> */}
               <Link to={"/"}>
-                <p className="text-decoration-underline fw-semibold text-primary">
-                  {" "}
-                  Create Now
-                </p>
+                <p className="text-decoration-underline fw-semibold text-primary">Create Now</p>
               </Link>
             </p>
 
@@ -725,28 +205,21 @@ function Login() {
 
               <div className="form-check d-flex justify-content-between mb-3">
                 <div>
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="rememberMe"
-                  />
+                  <input type="checkbox" className="form-check-input" id="rememberMe" />
                   <label className="form-check-label" htmlFor="rememberMe">
                     Remember me
                   </label>
                 </div>
-                <a className="text-decoration-underline" href="">
+                <a className="text-decoration-underline" onClick={() => setShowForgotPassword(true)} style={{ cursor: "pointer" }}>
                   Forgot Password?
                 </a>
               </div>
 
-              <button
-                type="submit"
-                className="btn btn-primary w-100 mb-3 rounded-pill"
-              >
+              <button type="submit" className="btn btn-primary w-100 mb-3 rounded-pill">
                 Sign In
               </button>
 
-              {/* <div className="text-center mb-3">
+              <div className="text-center mb-3">
                 <div className="d-flex align-items-center mb-3">
                   <hr className="flex-grow-1" />
                   <span className="mx-2 fw-semibold">Or</span>
@@ -756,78 +229,71 @@ function Login() {
                 <button
                   type="button"
                   className="btn btn-white w-100 mb-3 rounded-pill border d-flex align-items-center"
-                  onClick={handleGoogleLogin}
+                  onClick={handleGoogleSignIn}
+                  disabled={isSigningIn}
                 >
-                  <img
-                    src={google}
-                    alt="Google"
-                    style={{ width: "30px" }}
-                    className="rounded mb-0"
-                  />
-                  <span className="flex-grow-1 text-center">
-                    Sign in with Google
-                  </span>
+                  <img src={google} alt="Google" className="rounded mb-0" style={{ width: "30px" }} />
+                  <span className="flex-grow-1 text-center">{isSigningIn ? "Signing in..." : "Sign in with Google"}</span>
                 </button>
-              </div> */}
+              </div>
             </form>
           </div>
 
           {/* Right Column (Content) */}
           <div className="content-container w-100 w-md-50 p-4 bg-primary text-white d-flex flex-column justify-content-center">
-            <h2 className="fw-bold mb-4 text-center">
-              Welcome to Zion Seminary
-            </h2>
+            <h2 className="fw-bold mb-4 text-center">Welcome to Zion Seminary</h2>
             <p className="mb-4 text-center">
-              Zion Seminary's <strong>Education Management System (EMS)</strong>{" "}
-              offers:
+              Zion Seminary's <strong>Education Management System (EMS)</strong> offers:
             </p>
 
             <ul className="list-unstyled">
               <li className="d-flex mb-1">
-                <i
-                  className="bi bi-check-circle-fill me-3"
-                  style={{ fontSize: "1.5rem", color: "#ffd800" }}
-                ></i>
-                <span>
-                  Comprehensive tools for administrators to manage data
-                  efficiently.
-                </span>
+                <i className="bi bi-check-circle-fill me-3" style={{ fontSize: "1.5rem", color: "#ffd800" }}></i>
+                <span>Comprehensive tools for administrators to manage data efficiently.</span>
               </li>
               <li className="d-flex mb-1">
-                <i
-                  className="bi bi-check-circle-fill me-3"
-                  style={{ fontSize: "1.5rem", color: "#ffd800" }}
-                ></i>
-                <span>
-                  Enhanced teaching tools for educators to simplify course
-                  management.
-                </span>
+                <i className="bi bi-check-circle-fill me-3" style={{ fontSize: "1.5rem", color: "#ffd800" }}></i>
+                <span>Enhanced teaching tools for educators to simplify course management.</span>
               </li>
               <li className="d-flex mb-1">
-                <i
-                  className="bi bi-check-circle-fill me-3"
-                  style={{ fontSize: "1.5rem", color: "#ffd800" }}
-                ></i>
-                <span>
-                  User-friendly interface for students to track their progress.
-                </span>
+                <i className="bi bi-check-circle-fill me-3" style={{ fontSize: "1.5rem", color: "#ffd800" }}></i>
+                <span>User-friendly interface for students to track their progress.</span>
               </li>
               <li className="d-flex mb-1">
-                <i
-                  className="bi bi-check-circle-fill me-3"
-                  style={{ fontSize: "1.5rem", color: "#ffd800" }}
-                ></i>
-                <span>
-                  Seamless integration of academic and administrative workflows.
-                </span>
+                <i className="bi bi-check-circle-fill me-3" style={{ fontSize: "1.5rem", color: "#ffd800" }}></i>
+                <span>Seamless integration of academic and administrative workflows.</span>
               </li>
             </ul>
 
             <p className="mt-4 text-center">
-              Join us today and transform your educational experience with Zion
-              Seminary!
+              Join us today and transform your educational experience with Zion Seminary!
             </p>
           </div>
+
+          {/* Forgot Password Popup */}
+          {showForgotPassword && (
+            <div className="popup-overlay position-absolute top-50 start-50 translate-middle-x translate-middle-y bg-light p-2 rounded-2 z-2 ">
+              <div className="popup-content">
+                <h4>Forgot Password</h4>
+                <p>Enter your email to receive a password reset link.</p>
+                <input
+                  type="email"
+                  className="form-control mb-3"
+                  placeholder="Enter your email"
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                />
+                <div className="d-flex justify-content-end">
+                  <button className="btn btn-secondary me-2" onClick={() => setShowForgotPassword(false)}>
+                    Cancel
+                  </button>
+                  <button className="btn btn-primary" onClick={handleForgotPassword}>
+                    Send Reset Link
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -835,3 +301,6 @@ function Login() {
 }
 
 export default Login;
+
+
+

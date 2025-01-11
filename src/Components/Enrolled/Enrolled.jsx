@@ -744,7 +744,8 @@ const Enrolled = () => {
                       <div className="zion-course-content">
                         <h3 className="zion-course-title">{course.title}</h3>
                         <p className="zion-course-description">
-                          {course.description}
+                          {truncateDescription(course.description)}
+                          {/* {course.description} */}
                         </p>
                         {/* <ul>
                           {course?.chapters

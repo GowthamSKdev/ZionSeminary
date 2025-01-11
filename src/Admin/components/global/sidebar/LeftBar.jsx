@@ -14,18 +14,38 @@ const LeftBar = () => {
         <img src={logoShort} alt="Logo" className="logo" />
       </div>
       <div className="menu">
-        <Link to="../admin" className={`menu-item ${location === '/admin' && 'menu-item-active'}`}>
+        <Link
+          to="../admin"
+          className={`menu-item ${
+            location === "/admin" && "menu-item-active"
+          }`}>
           {/* <FontAwesomeIcon icon="fa-solid fa-fan" className="icon"/> */}
           <span>Dashboard</span>
+        </Link>
+        <Link
+          to="../admin/degrees"
+          className={`menu-item ${
+            location === "/admin/degrees" && "menu-item-active"
+          }`}>
+          {/* <FontAwesomeIcon icon="fa-solid fa-fan" className="icon"/> */}
+          <span>Degrees</span>
         </Link>
         <Link to="../admin/events" className="menu-item">
           <span>Events</span>
         </Link>
-        <Link to="../admin/users" className={`menu-item ${location === '/admin/users' && 'menu-item-active'}`}>
+        <Link
+          to="../admin/users"
+          className={`menu-item ${
+            location === "/admin/users" && "menu-item-active"
+          }`}>
           {/* <FontAwesomeIcon icon={"faSignOutAlt"} className="icon" /> */}
           <span>Users</span>
         </Link>
-        <Link to="../admin/tests" className={`menu-item ${location === '/admin/tests' && 'menu-item-active'}`}>
+        <Link
+          to="../admin/tests"
+          className={`menu-item ${
+            location === "/admin/tests" && "menu-item-active"
+          }`}>
           {/* <FontAwesomeIcon icon={"faSignOutAlt"} className="icon" /> */}
           <span>Tests</span>
         </Link>

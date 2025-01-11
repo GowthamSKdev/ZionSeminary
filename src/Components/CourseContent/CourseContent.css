@@ -152,6 +152,7 @@
   border-radius: 20px;
   box-shadow: 0px 4px 6px var(--shadow-color);
   visibility: visible;
+  aspect-ratio: 16/9;
 }
 
 .videoBox div:first-child {

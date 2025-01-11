@@ -5,6 +5,8 @@ import axios from "axios";
 
 // import courseList from "../Assets/Data/courseList.json";
 import { useNavigate } from "react-router-dom";
+import Assignment from "../../components/Assignment/Assignment";
+import Payment from "../../components/Payment/Payment";
 // import { getDegrees } from "../../firebase/degreeApi";
 // import { getAllDegrees } from '../../firebase/degreeApi'
 
@@ -36,6 +38,12 @@ const DegreeList = () => {
 
   return (
     <div className="course-list-cnt">
+       {/* <div>
+              <Assignment/>
+      </div>
+      <div>
+        <Payment/>
+      </div> */}
       <div className="course-list-header">
         <h2 className="h2-user-title">All Degrees</h2>
         <div className="admin-add-course-btn" onClick={() => navigate("degrees/new")}>

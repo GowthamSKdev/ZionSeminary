@@ -3,8 +3,8 @@ import "./Register.css";
 import { useForm } from "react-hook-form";
 import { Button } from "react-bootstrap";
 import axios from "axios";
-import UserContext from "../context/UserContext";
-import { useNavigate } from "react-router-dom";
+// import UserContext from "../context/UserContext";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const apiBaseUrl = process.env.REACT_APP_BASE_API;
 const EntryLevelForm = () => {
@@ -13,10 +13,13 @@ const EntryLevelForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { userInfo } = useContext(UserContext);
+  const location = useLocation();
+  const {userId} = location.state
+  // const { userInfo } = useContext(UserContext);
   const [degrees, setdegrees] = useState([]);
-  const [userId, setUserId] = useState("");
+  // const [userId, setUserId] = useState("");
   const navigate = useNavigate();
+  const userInfo = JSON.parse(localStorage.getItem("userdata"));
 
   useEffect(() => {
     const fetchDegrees = async () => {
@@ -65,16 +68,16 @@ const EntryLevelForm = () => {
   //      // Handle the error appropriately
   //    }
   //  };
-  useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("userdata"));
-    setUserId(userData._id);
-    // if (userData) {
-    //   // Optionally, set default values if needed
-    //   // setValue("firstName", userData.firstName);
-    //   // setValue("lastName", userData.lastName);
-    //   // setValue("mobileNo", userData.mobileNo);
-    // }
-  }, []);
+  // useEffect(() => {
+  //   const userData = JSON.parse(localStorage.getItem("userdata"));
+  //   setUserId(userData.id);
+  //   // if (userData) {
+  //   //   // Optionally, set default values if needed
+  //   //   // setValue("firstName", userData.firstName);
+  //   //   // setValue("lastName", userData.lastName);
+  //   //   // setValue("mobileNo", userData.mobileNo);
+  //   // }
+  // }, []);
 
   // const onSubmit = async (data) => {
   //   console.log(data);
@@ -105,15 +108,54 @@ const EntryLevelForm = () => {
   //   }
   // };
 
+  // const onSubmit = async (formData) => {
+  //   try {
+  //     const data = new FormData();
+  //     Object.keys(formData).forEach((key) => {
+  //       data.append(key, formData[key]);
+  //     });
+
+  //     data.append("userId", userId);
+  //     // data.append('details',true)// Add userId explicitly
+
+  //     const response = await axios.post(
+  //       `${apiBaseUrl}/api/users/profile`,
+  //       data,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
+
+  //     console.log("Profile updated successfully:", response.data);
+  //     // navigate("/home");
+  //     navigate(`/waitAuth`,{state:{userId:userInfo.id}})
+  //   } catch (error) {
+  //     console.error(
+  //       "Error updating profile:",
+  //       error.response?.data || error.message
+  //     );
+  //     alert("Error updating profile. Please try again.");
+  //   }
+  // };
+
   const onSubmit = async (formData) => {
     try {
       const data = new FormData();
+
+      // Append all form fields to FormData
       Object.keys(formData).forEach((key) => {
-        data.append(key, formData[key]);
+        if (formData[key] instanceof FileList) {
+          // If the input is a file, append the first file from FileList
+          data.append(key, formData[key][0]);
+        } else {
+          data.append(key, formData[key]);
+        }
       });
 
-      data.append("userId", userId);
-      // data.append('details',true)// Add userId explicitly
+      // Append userId to the FormData
+      data.append("userId", userId || userInfo._id);
 
       const response = await axios.post(
         `${apiBaseUrl}/api/users/profile`,
@@ -126,7 +168,7 @@ const EntryLevelForm = () => {
       );
 
       console.log("Profile updated successfully:", response.data);
-      navigate("/home");
+      navigate(`/waitAuth`, { state: { userId: userId || userInfo._id } });
     } catch (error) {
       console.error(
         "Error updating profile:",
@@ -135,6 +177,7 @@ const EntryLevelForm = () => {
       alert("Error updating profile. Please try again.");
     }
   };
+
 
   return (
     <div className="register min-vh-100 h-100 w-100 elf">

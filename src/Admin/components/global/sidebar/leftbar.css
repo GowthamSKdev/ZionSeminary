@@ -6,6 +6,7 @@
   justify-content: space-between;
   width: 200px;
   height: 100%;
+  min-height: 100dvh;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   z-index: 1000; /* Ensure it's above the main content */

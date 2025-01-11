@@ -6,15 +6,15 @@ import AppRoutes from "./routes/AppRoutes.jsx";
 import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
-import { UserProvider } from "./context/UserContext.jsx";
+// import { UserProvider } from "./context/UserContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <UserProvider>
+      {/* <UserProvider> */}
         <AppRoutes />
         <ToastContainer />
-      </UserProvider>
+      {/* </UserProvider> */}
     </BrowserRouter>
   </StrictMode>
 );

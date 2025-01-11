@@ -22,6 +22,10 @@ import CourseContent from "../Components/CourseContent/CourseContent";
 import EntryLevelFrom from "../Authentication/EntryLevelFrom";
 import Rough from "../Components/test";
 import EventPage from "../Admin/pages/Events/EventPage";
+import AdminDashboard from "../Admin/pages/Dashboard/AdminDashboard";
+import WaitingAuth from "../Authentication/WaitingAuth";
+import UserDetails from "../Admin/pages/Dashboard/Admin_table/UserDetails/UserDetails";
+import AssessmentTest from "../Components/CourseContent/AssessmentTest/AssessmentTest";
 
 const AppRoutes = () => {
   return (
@@ -33,6 +37,7 @@ const AppRoutes = () => {
 
         <Route path="login" element={<Login />}></Route>
         <Route path="elf" element={<EntryLevelFrom />}></Route>
+        <Route path="waitAuth" element={<WaitingAuth />} />
         <Route path="home" element={<Dashboard />}>
           <Route index element={<Home />}></Route>
           <Route path="profile" element={<Profile />}></Route>
@@ -44,16 +49,19 @@ const AppRoutes = () => {
             element={<CourseDetails />}
           />
           <Route path="enrolled" element={<Enrolled />}></Route>
-          <Route
-            path="courseContent/:courseId"
-            element={<CourseContent />}
-          ></Route>
+          <Route path="courseContent/:courseId" element={<CourseContent />}>
+          </Route>
+            <Route
+              path="courseContent/:courseId/assessmentTest"
+              element={<AssessmentTest />}
+            />
         </Route>
-        <Route path="/admin" element={<AllDegrees />} />
-        <Route path="/admin/chapter" element={<AddnewChapter />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/userDetails" element={<UserDetails />} />
+        <Route path="/admin/degrees" element={<AllDegrees />} />
         <Route path="/admin/degrees/new" element={<AddnewDegree />} />
-        
         <Route path="/admin/degrees/edit" element={<EditDegree />} />
+        <Route path="/admin/chapter" element={<AddnewChapter />} />
         <Route path="/admin/events" element={<EventPage />} />
         <Route path="/admin/users" element={<Allusers />} />
         <Route path="/admin/tests" element={<AllTests />} />

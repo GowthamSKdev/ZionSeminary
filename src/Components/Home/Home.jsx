@@ -8,6 +8,9 @@ import Statistics from "../Statistics/Statistics.jsx";
 import LoadingPage from "../LoadingPage/LoadingPage";
 import CourseRecommendation from "../CourseRecomend/CourseRecommendation";
 import ErrorDataFetchOverlay from "../Error/ErrorDataFetchOverlay";
+import Table from "../Clienttable/Table.jsx";
+import MainEvents from "../Statistics/MainEvents.jsx";
+import BigCalendar from "../Calendar/BigCalendar/BigCalendar.jsx";
 
 function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -103,23 +106,44 @@ function Home() {
     <div className="mainContent">
       <TopBar />
       <div className="headerPart">
-        <Header />
+        <div className="h">
+          <Header />
+        </div>
+        <div className="m">
+          <MainEvents />
+        </div>
         {/* <CustomCalendar /> */}
       </div>
-      <Statistics />
-      {/* <div className="home-courseBox">
-        <h3>Recommended Courses</h3>
-        <div className="home-course">
-          {shuffledCourses.slice(0, 7).map((course, index) => (
-            <CourseRecommendation
-              key={index}
-              title={course.title}
-              courseId={course._id}
-              imgName={course.image}
-            />
-          ))}
+      <div className="headerPart">
+        <div className="h">
+          <Table />
         </div>
-      </div> */}
+        <div className="m">
+          {/* <Statistics /> */}
+          <BigCalendar />
+        </div>
+      </div>
+      {/* <div className="mainContent">
+    <TopBar />
+    <div className="headerPart">
+      <Header />
+         
+    </div>
+    <Statistics /> 
+     <div className="home-courseBox">
+    //     <h3>Recommended Courses</h3>
+    //     <div className="home-course">
+    //       {shuffledCourses.slice(0, 7).map((course, index) => (
+    //         <CourseRecommendation
+    //           key={index}
+    //           title={course.title}
+    //           courseId={course._id}
+    //           imgName={course.image}
+    //         />
+    //       ))}
+    //     </div>
+    //   </div> */}
+      {/* //{" "} */}
     </div>
   );
 }
