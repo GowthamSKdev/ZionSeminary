@@ -5,8 +5,8 @@ import axios from "axios";
 
 // import courseList from "../Assets/Data/courseList.json";
 import { useNavigate } from "react-router-dom";
-import Assignment from "../../components/Assignment/Assignment";
-import Payment from "../../components/Payment/Payment";
+// import Assignment from "../../components/Assignment/Assignment";
+// import Payment from "../../components/Payment/Payment";
 // import { getDegrees } from "../../firebase/degreeApi";
 // import { getAllDegrees } from '../../firebase/degreeApi'
 
