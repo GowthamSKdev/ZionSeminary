@@ -41,7 +41,11 @@ function Login() {
         if (userRole === "admin") {
           navigate("/admin");
         } else if (userRole === "client") {
-          navigate(hasDetails ? "/waitAuth" : "/elf", {state:{userId:user._id}});
+          if (hasDetails === true) {
+            navigate("waitAuth", { state: { userId: CurrentUser._id } });
+          } else (
+            navigate("/elf", {state:{userId:CurrentUser._id}})
+          )
         } else {
           toast.error("Role not recognized");
         }

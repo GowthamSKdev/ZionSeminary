@@ -115,13 +115,13 @@ function Home() {
         {/* <CustomCalendar /> */}
       </div>
       <div className="headerPart">
-        <div className="h">
+          <Statistics />
+        {/* <div className="h">
           <Table />
         </div>
         <div className="m">
-          {/* <Statistics /> */}
           <BigCalendar />
-        </div>
+        </div> */}
       </div>
       {/* <div className="mainContent">
     <TopBar />
