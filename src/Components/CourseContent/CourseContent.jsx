@@ -700,7 +700,7 @@ const CourseContent = () => {
                                         </li>
                                       );
                                     })}
-                                    {lesson.test && (
+                                    {/* {lesson.test && (
                                       <div className="testButtonBox">
                                         <div className="testButtonInr">
                                           <div className="testButtonTxt">
@@ -720,7 +720,7 @@ const CourseContent = () => {
                                           </button>
                                         </div>
                                       </div>
-                                    )}
+                                    )} */}
                                   </ul>
                                 ) : (
                                   <div>No Sub-Lessons Available</div>
@@ -729,7 +729,7 @@ const CourseContent = () => {
                             </Accordion.Item>
                           );
                         })}
-                        {chapter.test && (
+                        {/* {chapter.test && (
                           <div className="testButtonBox">
                             <div className="testButtonInr">
                               <div className="testButtonTxt">
@@ -747,7 +747,7 @@ const CourseContent = () => {
                               </button>
                             </div>
                           </div>
-                        )}
+                        )} */}
                       </Accordion>
                     </Accordion.Body>
                   </Accordion.Item>
