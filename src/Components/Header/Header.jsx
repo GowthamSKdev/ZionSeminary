@@ -2,10 +2,10 @@
 import "./Header.css";
 
 const Header = () => {
-  const resuser = localStorage.getItem('userdata')
-  const {username} = JSON.parse(resuser)
+  const user = JSON.parse(localStorage.getItem('userdata'))
+  // const {username} = JSON.parse(resuser)
   // console.log(username);
-  const user = username;
+  // const user = username;
   
   return (
     <header className="header">
