@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./AssessmentTest.css";
-// import logoela from "../asset/brand-footer.png";
+import logoela from "../assets/brand-footer.png";
 // import questionData from './Questionsdata.json';
 import { FaCheckCircle } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,7 +10,7 @@ import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 
 //react-router
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 // import { Elacompleted, elaTestScore } from "../../api/baseapi";
 
@@ -18,16 +18,25 @@ const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
 
 const AssessmentTest = () => {
   const navigate = useNavigate();
+  const location = useLocation()
+  const { test } = location.state
+  console.log(test);
+  
+  
+  const [ currentQuestionIndex, setCurrentQuestionIndex ] = useState(0);
+  const [ selectedOptions, setSelectedOptions ] = useState({});
+  const [ score, setScore ] = useState({});
+  const [ timeLeft, setTimeLeft ] = useState(3600); // 23 minutes and 46 seconds
+  const [ selectedUserDropdown, setSelectedUserDropdown ] = useState(1);
+  const [ currentSectionIndex, setCurrentSectionIndex ] = useState(0);
+  const [ bookmarkedQuestions, setBookmarkedQuestions ] = useState({});
+  // var questionData = JSON.parse(localStorage.getItem("questionData"));
+  // var questionData = test[0];
+  var questionData = test?.[0] || {};
 
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedOptions, setSelectedOptions] = useState({});
-  const [score, setScore] = useState({});
-  const [timeLeft, setTimeLeft] = useState(3600); // 23 minutes and 46 seconds
-  const [selectedUserDropdown, setSelectedUserDropdown] = useState(1);
-  const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
-  const [bookmarkedQuestions, setBookmarkedQuestions] = useState({});
-  var questionData = JSON.parse(localStorage.getItem("questionData"));
-  const [finalScore, setFinalScore] = useState(0);
+  console.log(questionData);
+  
+  const [ finalScore, setFinalScore ] = useState(0);
 
   useEffect(() => {
     setTimeLeft(localStorage.getItem("TimeLeft"));
@@ -52,7 +61,7 @@ const AssessmentTest = () => {
     // );
     setBookmarkedQuestions({
       ...bookmarkedQuestions,
-      [`${currentSectionIndex}-${currentQuestionIndex}`]:
+      [ `${currentSectionIndex}-${currentQuestionIndex}` ]:
         bookmarkedQuestions[
           `${currentSectionIndex}-${currentQuestionIndex}`
         ] === "true"
@@ -62,7 +71,7 @@ const AssessmentTest = () => {
   };
 
   const handleNavigation = (direction) => {
-    const currentSection = questionData.sections[currentSectionIndex];
+    const currentSection = questionData.sections[ currentSectionIndex ];
     const currentSectionQuestions = currentSection.questions.slice(0, 20);
 
     if (
@@ -78,11 +87,11 @@ const AssessmentTest = () => {
   const handleOptionChange = (event) => {
     setSelectedOptions({
       ...selectedOptions,
-      [`${currentSectionIndex}-${currentQuestionIndex}`]: event.target.value,
+      [ `${currentSectionIndex}-${currentQuestionIndex}` ]: event.target.value,
     });
     setScore({
       ...score,
-      [`${currentSectionIndex}-${currentQuestionIndex}`]:
+      [ `${currentSectionIndex}-${currentQuestionIndex}` ]:
         currentQuestion.answer === event.target.value ? 1 : 0,
     });
   };
@@ -165,22 +174,29 @@ const AssessmentTest = () => {
     return time;
   };
 
-  const sections = questionData?.sections;
-  const currentSection = sections[currentSectionIndex];
-  const currentSectionQuestions = currentSection.questions.slice(0, 20);
-  const currentQuestion = currentSectionQuestions[currentQuestionIndex];
+  // const sections = questionData?.sections;
+  // const currentSection = sections[currentSectionIndex];
+  // const currentSectionQuestions = questionData?.questions?.slice(0, 20) || [];
+  const currentSectionQuestions =  questionData?.questions|| [];
+  // const currentSectionQuestions = questionData.questions || [];
 
-  console.log("currentSection", currentSection);
+  const currentQuestion = currentSectionQuestions[currentQuestionIndex] || null;
+  // const currentQuestion = test?.questions[currentQuestionIndex] || null;
+
+
+  // console.log("currentSection", currentSection);
+  console.log(currentSectionQuestions);
+  
   console.log("currentQuestion", currentQuestion);
 
   let [totalQuestions, settotalQuestions] = useState(0);
-  useEffect(() => {
-    var total = 0;
-    for (var index in sections) {
-      total += sections[index].questions.length;
-    }
-    settotalQuestions(total);
-  }, [sections]);
+  // useEffect(() => {
+  //   var total = 0;
+  //   for (var index in sections) {
+  //     total += sections[index].questions.length;
+  //   }
+  //   settotalQuestions(total);
+  // }, [sections]);
 
   const answeredCount = Object.keys(selectedOptions).length;
   const bookmarkedCount = Object.keys(bookmarkedQuestions).length;
@@ -284,32 +300,29 @@ const AssessmentTest = () => {
           <div className="brand-logo">
             <img src={logoela} alt="C-Suite Academy" height="40px" />
           </div>
-          <>
+          {/* <>
             <Dropdown>
               <Dropdown.Toggle id="dropdown-basic">
                 {localStorage.getItem("name")}
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
-                {/* <Dropdown.Item>Profile</Dropdown.Item> */}
                 <Dropdown.Item
                   onClick={(e) => {
                     e.preventDefault();
                     logout();
-                  }}
-                >
+                  }}>
                   Log Out
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
-          </>
+          </> */}
           <button
             className="button-finish"
             onClick={(e) => {
               e.preventDefault();
               finishtest();
-            }}
-          >
+            }}>
             Finish
           </button>
         </div>
@@ -324,19 +337,17 @@ const AssessmentTest = () => {
                     <span>/</span>
                     {currentSectionQuestions?.length}
                   </p>
-                  <select
+                  {/* <select
                     className="change-selection"
                     value={selectedUserDropdown}
                     onChange={handleSelectChange}
                   >
-                    {" "}
-                    {/* Use selectedUserDropdown state here */}
                     {sections?.map((section, index) => (
                       <option key={index} value={index + 1}>{`Section - ${
                         index + 1
                       }`}</option>
                     ))}
-                  </select>
+                  </select> */}
                 </div>
 
                 <p className="question-style">{currentQuestion?.question}</p>
@@ -360,14 +371,15 @@ const AssessmentTest = () => {
                       </label>
                     </div>
                   ))}
+
+                  
                 </form>
 
-                <div className="navigation-button">
+                {/* <div className="navigation-button">
                   <button
                     className="button-previous"
                     onClick={() => handleNavigation("previous")}
-                    disabled={currentQuestionIndex === 0}
-                  >
+                    disabled={currentQuestionIndex === 0}>
                     Previous
                   </button>
                   {!(
@@ -380,8 +392,7 @@ const AssessmentTest = () => {
                       disabled={
                         currentQuestionIndex ===
                         currentSectionQuestions.length - 1
-                      }
-                    >
+                      }>
                       Next
                     </button>
                   )}
@@ -389,22 +400,20 @@ const AssessmentTest = () => {
                     currentSectionIndex < sections.length - 1 && (
                       <button
                         className="button-next"
-                        onClick={handleNextSection}
-                      >
+                        onClick={handleNextSection}>
                         Next Section
                       </button>
                     )}
                   <button
                     className="button-bookmark"
-                    onClick={handleBookmark}
-                  >{`${
+                    onClick={handleBookmark}>{`${
                     bookmarkedQuestions[
                       `${currentSectionIndex}-${currentQuestionIndex}`
                     ] === "true"
                       ? "Bookmarked"
                       : "Bookmark"
                   }`}</button>
-                </div>
+                </div> */}
               </main>
             </div>
             <div className="w-25 h-100 right-side">
@@ -417,43 +426,39 @@ const AssessmentTest = () => {
                     flexDirection: "column",
                     gap: "5px",
                     width: "100%",
-                  }}
-                >
+                  }}>
                   <div className="questions">
                     <p>Questions</p>
                   </div>
-                  <select
+                  {/* <select
                     className="change-selection-two"
                     value={selectedUserDropdown}
-                    onChange={handleSelectChange}
-                  >
+                    onChange={handleSelectChange}>
                     {sections.map((section, index) => (
                       <option key={index} value={index + 1}>{`Section ${
                         index + 1
                       }`}</option>
                     ))}
-                  </select>
+                  </select> */}
                   <div
                     id="Test-marks-container"
-                    style={{ width: "100%", paddingLeft: "2rem" }}
-                  >
+                    style={{ width: "100%", paddingLeft: "2rem" }}>
                     <div className="question-numbers">
                       {currentSectionQuestions.map((question, quesIndex) => (
                         <button
                           key={quesIndex}
                           className={`question-number ${
                             quesIndex === currentQuestionIndex ? "active" : ""
-                          } 
+                          }
                           ${
                             selectedOptions[
                               `${currentSectionIndex}-${quesIndex}`
                             ]
                               ? "answered"
                               : ""
-                          } 
+                          }
                           `}
-                          onClick={() => setCurrentQuestionIndex(quesIndex)}
-                        >
+                          onClick={() => setCurrentQuestionIndex(quesIndex)}>
                           {/* {`${(quesIndex + 1).toString().padStart(2, '0')}`} <FontAwesomeIcon icon={faCheckCircle} style={{color:`${!selectedOptions[`${currentSectionIndex}-${quesIndex}`] && bookmarkedQuestions[`${currentSectionIndex}-${quesIndex}`]=="true"? 'orange' : ''}`}}  size='1rem'className='icon-check pl-4' /> */}
                           {`${(quesIndex + 1).toString().padStart(2, "0")}`}
                           <FontAwesomeIcon

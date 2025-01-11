@@ -642,65 +642,65 @@ const CourseContent = () => {
                                   <ul className="list-group">
                                     {lesson.subLessons.map((subLesson) => {
                                       return (
-                                        <li
-                                          key={subLesson.subLessonId}
-                                          className={`list-group-item ${
-                                            completedExercises.has(
-                                              `${chapter.chapterId}-${lesson.lessonId}-${subLesson.subLessonId}`
-                                            )
-                                              ? "completedLesson"
-                                              : ""
-                                          }`}
-                                          onClick={() =>
-                                            handleCurrentContent(
-                                              subLesson,
-                                              chapter.chapterId,
-                                              lesson.lessonId,
-                                              subLesson.subLessonId
-                                            )
-                                          }>
-                                          <span className="video-number">
-                                            <span>{subLesson.title}</span>
-
-                                            {(completedExercises.has(
-                                              `${chapter.chapterId}-${lesson.lessonId}-${subLesson.subLessonId}`
-                                            ) ||
-                                              completedSublessons.has(
+                                        <>
+                                          <li
+                                            key={subLesson.subLessonId}
+                                            className={`list-group-item ${
+                                              completedExercises.has(
                                                 `${chapter.chapterId}-${lesson.lessonId}-${subLesson.subLessonId}`
-                                              )) && (
-                                              <img
-                                                className="content-watched"
-                                                src={tick}
-                                                alt="watched"
-                                              />
-                                            )}
-                                          </span>
+                                              )
+                                                ? "completedLesson"
+                                                : ""
+                                            }`}
+                                            onClick={() =>
+                                              handleCurrentContent(
+                                                subLesson,
+                                                chapter.chapterId,
+                                                lesson.lessonId,
+                                                subLesson.subLessonId
+                                              )
+                                            }>
+                                            <span className="video-number">
+                                              <span>{subLesson.title}</span>
 
-                                          {subLesson.fileType ===
-                                          "video/mp4" ? (
-                                            <span className="lesson-duration">
-                                              Duration:{" "}
-                                              {subLesson.duration
-                                                ? convertToReadableDuration(
-                                                    Math.floor(
-                                                      lesson.duration / 1000
-                                                    )
-                                                  )
-                                                : "N/A"}
-                                            </span>
-                                          ) : (
-                                            <span className="lesson-duration">
-                                              Type:{" "}
-                                              {truncateText(
-                                                subLesson?.fileType,
-                                                30
+                                              {(completedExercises.has(
+                                                `${chapter.chapterId}-${lesson.lessonId}-${subLesson.subLessonId}`
+                                              ) ||
+                                                completedSublessons.has(
+                                                  `${chapter.chapterId}-${lesson.lessonId}-${subLesson.subLessonId}`
+                                                )) && (
+                                                <img
+                                                  className="content-watched"
+                                                  src={tick}
+                                                  alt="watched"
+                                                />
                                               )}
                                             </span>
-                                          )}
-                                        </li>
-                                      );
-                                    })}
-                                    {/* {lesson.test && (
+
+                                            {subLesson.fileType ===
+                                            "video/mp4" ? (
+                                              <span className="lesson-duration">
+                                                Duration:{" "}
+                                                {subLesson.duration
+                                                  ? convertToReadableDuration(
+                                                      Math.floor(
+                                                        lesson.duration / 1000
+                                                      )
+                                                    )
+                                                  : "N/A"}
+                                              </span>
+                                            ) : (
+                                              <span className="lesson-duration">
+                                                Type:{" "}
+                                                {truncateText(
+                                                  subLesson?.fileType,
+                                                  30
+                                                )}
+                                              </span>
+                                            )}
+                                          </li>
+                                          <li>
+                                            {subLesson.test && (
                                       <div className="testButtonBox">
                                         <div className="testButtonInr">
                                           <div className="testButtonTxt">
@@ -713,14 +713,19 @@ const CourseContent = () => {
                                             onClick={() =>
                                               navigate(
                                                 `/home/courseContent/${courseId}/assessmentTest`,
-                                                { state: { test: lesson.test } }
+                                                { state: { test: subLesson.test } }
                                               )
                                             }>
                                             Take Test
                                           </button>
                                         </div>
                                       </div>
-                                    )} */}
+                                    )}
+                                          </li>
+                                        </>
+                                      );
+                                    })}
+                                   
                                   </ul>
                                 ) : (
                                   <div>No Sub-Lessons Available</div>

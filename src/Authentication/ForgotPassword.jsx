@@ -67,7 +67,7 @@ const ForgotPassword = () => {
                       id="newPassword"
                       name="newPassword"
                       className="form-control mt-3"
-                      value={ForgotPassword}
+                      value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
                       required
                     />
