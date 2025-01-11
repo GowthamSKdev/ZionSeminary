@@ -202,7 +202,7 @@ function Register() {
               </div>
 
               {/* Remember Me */}
-              <div className="form-check d-flex justify-content-between mb-2">
+              {/* <div className="form-check d-flex justify-content-between mb-2">
                 <div>
                   <input
                     type="checkbox"
@@ -219,7 +219,7 @@ function Register() {
                 >
                   Forgot Password?
                 </a>
-              </div>
+              </div> */}
 
               {/* Submit Button */}
               <button

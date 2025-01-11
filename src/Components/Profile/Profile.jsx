@@ -11,6 +11,8 @@ import mailSVG from "../Assets/SVG/mailSVG.svg";
 import defaultPorfileSVG from "../Assets/SVG/defaultPorfileSVG.svg";
 import defaultBannerSVG from "../Assets/SVG/defaultBannerSVG.svg";
 import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+import { User } from "lucide-react";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -32,25 +34,29 @@ const Profile = () => {
   });
   const [selectedProfileImage, setSelectedProfileImage] = useState(null);
   const [selectedProfileBanner, setSelectedProfileBanner] = useState(null);
+  const user  = JSON.parse(localStorage.getItem("userdata"))
   useEffect(()=>{
     if(localStorage.getItem("userdata")!=null){
-      const user  = JSON.parse(localStorage.getItem("userdata"))
       console.log(user)
       setProfileData({
         name: `${user.firstName} ${user.lastName}`,
         email: user.email,
         phoneNumber: user.mobileNo,
         gender: user.gender,
-        profilePic: user.passportPhotoURL ? user.passportPhotoURL : defaultPorfileSVG,
-        profileBanner: defaultBannerSVG,
+        passportPhotoFile: user.passportPhotoFile
+          ? user.passportPhotoFile
+          : defaultPorfileSVG,
+        profileBanner: user.profileBanner
+          ? user.profileBanner
+          : defaultBannerSVG,
         address: user.presentAddress,
         educationalQualification: user.educationalQualification,
-        maritalStatus:user.maritalStatus,
-        dob:user.dob,
-        ministryExperience:user.ministryExperience,
-        theologicalQualification:user.theologicalQualification,
-        salvationExperience:user.salvationExperience
-      })
+        maritalStatus: user.maritalStatus,
+        dob: user.dob,
+        ministryExperience: user.ministryExperience,
+        theologicalQualification: user.theologicalQualification,
+        salvationExperience: user.salvationExperience,
+      });
     }
     else{
       navigate("/login")
@@ -220,7 +226,7 @@ const Profile = () => {
       }
     }
     if (selectedProfileImage) {
-      formData.append("profilePic", selectedProfileImage);
+      formData.append("profilePhotoFile", selectedProfileImage);
     }
     if (selectedProfileBanner) {
       formData.append("profileBanner", selectedProfileBanner);
@@ -230,8 +236,13 @@ const Profile = () => {
       const apiBaseUrl = process.env.REACT_APP_BASE_URL;
 
       const response = await axios.put(
-        `${apiBaseUrl}/user/${profileData._id}`,
-        formData
+        `${apiBaseUrl}/user/profile/${user._id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
       localStorage.setItem(
@@ -251,13 +262,11 @@ const Profile = () => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setSelectedProfileImage(file);
-      const reader = new FileReader();
-      reader.onload = (e) =>
-        setProfileData((prevData) => ({
-          ...prevData,
-          profilePic: e.target.result,
-        }));
-      reader.readAsDataURL(file);
+      setProfileData((prevData) => ({
+        ...prevData,
+        passportPhotoFile: e.target.result,
+      }));
+      
     }
   };
 
@@ -265,13 +274,10 @@ const Profile = () => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setSelectedProfileBanner(file);
-      const reader = new FileReader();
-      reader.onload = (e) =>
-        setProfileData((prevData) => ({
-          ...prevData,
-          profileBanner: e.target.result,
-        }));
-      reader.readAsDataURL(file);
+      setProfileData((prevData) => ({
+        ...prevData,
+        profileBanner: e.target.result,
+      }));
     }
   };
 
@@ -322,8 +328,8 @@ const Profile = () => {
           <div className="profileImage">
             <img
               src={
-                profileData?.profilePic
-                  ? profileData?.profilePic
+                profileData?.passportPhotoFile
+                  ? profileData?.passportPhotoFile
                   : defaultPorfileSVG
               }
               alt="Profile"
@@ -356,8 +362,7 @@ const Profile = () => {
         <div className="profileSection">
           <div className="hh5">General Information</div>
           <div
-            className={`${inputClassName(profileData?.name)} profileDetails`}
-          >
+            className={`${inputClassName(profileData?.name)} profileDetails`}>
             <label>Name</label>
             <input
               type="text"
@@ -368,8 +373,7 @@ const Profile = () => {
             />
           </div>
           <div
-            className={`${inputClassName(profileData.gender)} profileDetails`}
-          >
+            className={`${inputClassName(profileData.gender)} profileDetails`}>
             {" "}
             <label>Gender</label>
             <input
@@ -381,8 +385,7 @@ const Profile = () => {
             />
           </div>
           <div
-            className={`${inputClassName(profileData.address)} profileDetails`}
-          >
+            className={`${inputClassName(profileData.address)} profileDetails`}>
             <label>Address</label>
             <textarea
               type="text"
@@ -397,8 +400,7 @@ const Profile = () => {
           <div
             className={`${inputClassName(
               profileData.email
-            )} profileDetails profileSPLBox`}
-          >
+            )} profileDetails profileSPLBox`}>
             <img src={phoneSVG} alt="phoneNumberSVG" />
             <label>Email</label>
             <input
@@ -412,8 +414,7 @@ const Profile = () => {
           <div
             className={`${inputClassName(
               profileData.phoneNumber
-            )} profileDetails profileSPLBox`}
-          >
+            )} profileDetails profileSPLBox`}>
             <img src={mailSVG} alt="mailSVG" />
             <label>Phone Number</label>
             <input
@@ -430,8 +431,7 @@ const Profile = () => {
           <div
             className={`${inputClassName(
               profileData.educationalQualification
-            )} profileDetails`}
-          >
+            )} profileDetails`}>
             <label>Education Qualification</label>
             <input
               type="text"
@@ -442,8 +442,9 @@ const Profile = () => {
             />
           </div>
           <div
-            className={`${inputClassName(profileData.maritalStatus)} profileDetails`}
-          >
+            className={`${inputClassName(
+              profileData.maritalStatus
+            )} profileDetails`}>
             <label>Marital Status</label>
             <input
               type="text"
@@ -453,9 +454,7 @@ const Profile = () => {
               disabled={!isEditing}
             />
           </div>
-          <div
-            className={`${inputClassName(profileData.dob)} profileDetails`}
-          >
+          <div className={`${inputClassName(profileData.dob)} profileDetails`}>
             <label>Date of Birth</label>
             <input
               type="text"
@@ -465,7 +464,10 @@ const Profile = () => {
               disabled={!isEditing}
             />
           </div>
-          <div className={`${inputClassName(profileData.ministryExperience)} profileDetails`}>
+          <div
+            className={`${inputClassName(
+              profileData.ministryExperience
+            )} profileDetails`}>
             <label>Ministry Experience</label>
             <textarea
               name="bio"
@@ -474,7 +476,10 @@ const Profile = () => {
               disabled={!isEditing}
             />
           </div>
-          <div className={`${inputClassName(profileData.theologicalQualification)} profileDetails`}>
+          <div
+            className={`${inputClassName(
+              profileData.theologicalQualification
+            )} profileDetails`}>
             <label>Theological Qualification</label>
             <textarea
               name="bio"
@@ -483,7 +488,10 @@ const Profile = () => {
               disabled={!isEditing}
             />
           </div>
-          <div className={`${inputClassName(profileData.salvationExperience)} profileDetails`}>
+          <div
+            className={`${inputClassName(
+              profileData.salvationExperience
+            )} profileDetails`}>
             <label>Salvation Experience</label>
             <textarea
               name="bio"

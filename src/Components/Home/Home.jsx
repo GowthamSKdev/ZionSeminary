@@ -105,45 +105,37 @@ function Home() {
   return (
     <div className="mainContent">
       <TopBar />
-      <div className="headerPart">
+      {/* <div className="headerPart">
         <div className="h">
           <Header />
         </div>
         <div className="m">
           <MainEvents />
         </div>
-        {/* <CustomCalendar /> */}
       </div>
       <div className="headerPart">
           <Statistics />
-        {/* <div className="h">
-          <Table />
-        </div>
-        <div className="m">
-          <BigCalendar />
-        </div> */}
-      </div>
-      {/* <div className="mainContent">
-    <TopBar />
+      </div> */}
+      {/* <div className="mainContent"> */}
+    {/* <TopBar /> */}
     <div className="headerPart">
       <Header />
          
     </div>
     <Statistics /> 
-     <div className="home-courseBox">
-    //     <h3>Recommended Courses</h3>
-    //     <div className="home-course">
-    //       {shuffledCourses.slice(0, 7).map((course, index) => (
-    //         <CourseRecommendation
-    //           key={index}
-    //           title={course.title}
-    //           courseId={course._id}
-    //           imgName={course.image}
-    //         />
-    //       ))}
-    //     </div>
-    //   </div> */}
-      {/* //{" "} */}
+     {/* <div className="home-courseBox">
+        <h3>Recommended Courses</h3>
+         <div className="home-course">
+           {shuffledCourses.slice(0, 7).map((course, index) => (
+             <CourseRecommendation
+               key={index}
+               title={course.title}
+               courseId={course._id}
+               imgName={course.image}
+             />
+           ))}
+         </div>
+       </div> */}
     </div>
   );
 }

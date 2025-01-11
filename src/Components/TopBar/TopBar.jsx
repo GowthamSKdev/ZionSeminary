@@ -5,9 +5,9 @@ import "./TopBar.css";
 import dp from "../Assets/Images/profileImage.jpeg";
 
 const TopBar = () => {
-  const resuser = localStorage.getItem("userdata");
-  const { username } = JSON.parse(resuser);
-  const user = username;
+  const user = JSON.parse(localStorage.getItem("userdata"));
+  // const { username } = JSON.parse(resuser);
+  // const user = username;
 
   return (
     <div className="top-bar">
@@ -17,10 +17,10 @@ const TopBar = () => {
       </div> */}
       <div className=""></div>
       <div className="user-info">
-        <img src={dp} alt="User Avatar" className="user-avatar" />
+        <img src={user.passportPhotoFile ? user.passportPhotoFile : dp} alt="User Avatar" className="user-avatar" />
         <div className="user-text">
           <span className="welcome-text">Welcome back</span>
-          <span className="user-name">{user}</span>
+          <span className="user-name">{user.username}</span>
         </div>
         {/* <div className="notification-icon">
           <FontAwesomeIcon icon={faBell} />

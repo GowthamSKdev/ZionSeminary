@@ -16,7 +16,7 @@ const apiBaseUrl = process.env.REACT_APP_BASE_API;
 function Login() {
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [forgotEmail, setForgotEmail] = useState("");
+  // const [forgotEmail, setForgotEmail] = useState("");
   const [userdata, setUserdata] = useState(null);
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
@@ -161,37 +161,46 @@ function Login() {
   };
 
 
-  // Handle forgot password
-  const handleForgotPassword = async () => {
-    if (!forgotEmail) {
-      toast.error("Please enter your email.");
-      return;
-    }
-    try {
-      const response = await axios.post(`${apiBaseUrl}/api/users/forgot-password`, { email: forgotEmail });
-      if (response.status === 200) {
-        toast.success("Password reset link sent to your email.");
-        setShowForgotPassword(false);
-        setForgotEmail("");
-      }
-    } catch (error) {
-      console.error("Error sending reset link: ", error);
-      toast.error("Failed to send password reset link. Please try again.");
-    }
-  };
+  // // Handle forgot password
+  // const handleForgotPassword = async () => {
+  //   if (!forgotEmail) {
+  //     toast.error("Please enter your email.");
+  //     return;
+  //   }
+  //   try {
+  //     const response = await axios.post(`${apiBaseUrl}/api/users/forgot-password`, { email: forgotEmail });
+  //     if (response.status === 200) {
+  //       toast.success("Password reset link sent to your email.");
+  //       setShowForgotPassword(false);
+  //       setForgotEmail("");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error sending reset link: ", error);
+  //     toast.error("Failed to send password reset link. Please try again.");
+  //   }
+  // };
 
   return (
-    <div className="register position-relative" style={{ height: "100%", minHeight: "100dvh" }}>
+    <div
+      className="register position-relative"
+      style={{ height: "100%", minHeight: "100dvh" }}>
       <div className="register-container d-flex justify-content-center align-items-center">
         <div className="register-card d-flex flex-column flex-md-row shadow-lg rounded">
           {/* Left Column (Form) */}
           <div className="form-container d-flex flex-column w-100 w-md-50 px-5 py-4 bg-light">
-            <img src={logo} alt="Zion Seminary Portal" className="rounded mb-2" style={{ width: "80px" }} />
+            <img
+              src={logo}
+              alt="Zion Seminary Portal"
+              className="rounded mb-2"
+              style={{ width: "80px" }}
+            />
             <h4 className="text-left text-dark fw-bold mb-3">Sign In</h4>
             <p className="text-muted">
               Don't have an account?{" "}
               <Link to={"/"}>
-                <p className="text-decoration-underline fw-semibold text-primary">Create Now</p>
+                <p className="text-decoration-underline fw-semibold text-primary">
+                  Create Now
+                </p>
               </Link>
             </p>
 
@@ -218,17 +227,26 @@ function Login() {
 
               <div className="form-check d-flex justify-content-between mb-3">
                 <div>
-                  <input type="checkbox" className="form-check-input" id="rememberMe" />
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    id="rememberMe"
+                  />
                   <label className="form-check-label" htmlFor="rememberMe">
                     Remember me
                   </label>
                 </div>
-                <a className="text-decoration-underline" onClick={() => setShowForgotPassword(true)} style={{ cursor: "pointer" }}>
+                <a
+                  className="text-decoration-underline"
+                  onClick={() => navigate(`/forgotPassword`)}
+                  style={{ cursor: "pointer" }}>
                   Forgot Password?
                 </a>
               </div>
 
-              <button type="submit" className="btn btn-primary w-100 mb-3 rounded-pill">
+              <button
+                type="submit"
+                className="btn btn-primary w-100 mb-3 rounded-pill">
                 Sign In
               </button>
 
@@ -243,10 +261,16 @@ function Login() {
                   type="button"
                   className="btn btn-white w-100 mb-3 rounded-pill border d-flex align-items-center"
                   onClick={handleGoogleSignIn}
-                  disabled={isSigningIn}
-                >
-                  <img src={google} alt="Google" className="rounded mb-0" style={{ width: "30px" }} />
-                  <span className="flex-grow-1 text-center">{isSigningIn ? "Signing in..." : "Sign in with Google"}</span>
+                  disabled={isSigningIn}>
+                  <img
+                    src={google}
+                    alt="Google"
+                    className="rounded mb-0"
+                    style={{ width: "30px" }}
+                  />
+                  <span className="flex-grow-1 text-center">
+                    {isSigningIn ? "Signing in..." : "Sign in with Google"}
+                  </span>
                 </button>
               </div>
             </form>
@@ -254,37 +278,59 @@ function Login() {
 
           {/* Right Column (Content) */}
           <div className="content-container w-100 w-md-50 p-4 bg-primary text-white d-flex flex-column justify-content-center">
-            <h2 className="fw-bold mb-4 text-center">Welcome to Zion Seminary</h2>
+            <h2 className="fw-bold mb-4 text-center">
+              Welcome to Zion Seminary
+            </h2>
             <p className="mb-4 text-center">
-              Zion Seminary's <strong>Education Management System (EMS)</strong> offers:
+              Zion Seminary's <strong>Education Management System (EMS)</strong>{" "}
+              offers:
             </p>
 
             <ul className="list-unstyled">
               <li className="d-flex mb-1">
-                <i className="bi bi-check-circle-fill me-3" style={{ fontSize: "1.5rem", color: "#ffd800" }}></i>
-                <span>Comprehensive tools for administrators to manage data efficiently.</span>
+                <i
+                  className="bi bi-check-circle-fill me-3"
+                  style={{ fontSize: "1.5rem", color: "#ffd800" }}></i>
+                <span>
+                  Comprehensive tools for administrators to manage data
+                  efficiently.
+                </span>
               </li>
               <li className="d-flex mb-1">
-                <i className="bi bi-check-circle-fill me-3" style={{ fontSize: "1.5rem", color: "#ffd800" }}></i>
-                <span>Enhanced teaching tools for educators to simplify course management.</span>
+                <i
+                  className="bi bi-check-circle-fill me-3"
+                  style={{ fontSize: "1.5rem", color: "#ffd800" }}></i>
+                <span>
+                  Enhanced teaching tools for educators to simplify course
+                  management.
+                </span>
               </li>
               <li className="d-flex mb-1">
-                <i className="bi bi-check-circle-fill me-3" style={{ fontSize: "1.5rem", color: "#ffd800" }}></i>
-                <span>User-friendly interface for students to track their progress.</span>
+                <i
+                  className="bi bi-check-circle-fill me-3"
+                  style={{ fontSize: "1.5rem", color: "#ffd800" }}></i>
+                <span>
+                  User-friendly interface for students to track their progress.
+                </span>
               </li>
               <li className="d-flex mb-1">
-                <i className="bi bi-check-circle-fill me-3" style={{ fontSize: "1.5rem", color: "#ffd800" }}></i>
-                <span>Seamless integration of academic and administrative workflows.</span>
+                <i
+                  className="bi bi-check-circle-fill me-3"
+                  style={{ fontSize: "1.5rem", color: "#ffd800" }}></i>
+                <span>
+                  Seamless integration of academic and administrative workflows.
+                </span>
               </li>
             </ul>
 
             <p className="mt-4 text-center">
-              Join us today and transform your educational experience with Zion Seminary!
+              Join us today and transform your educational experience with Zion
+              Seminary!
             </p>
           </div>
 
           {/* Forgot Password Popup */}
-          {showForgotPassword && (
+          {/* {showForgotPassword && (
             <div className="popup-overlay position-absolute top-50 start-50 translate-middle-x translate-middle-y bg-light p-2 rounded-2 z-2 ">
               <div className="popup-content">
                 <h4>Forgot Password</h4>
@@ -306,7 +352,7 @@ function Login() {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>

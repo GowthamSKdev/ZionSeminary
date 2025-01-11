@@ -15,7 +15,7 @@ const Header = () => {
           There are many variations of passages of Lorem Ipsum available, but
           the majority have suffered alteration
         </p>
-        <button>Get Started</button>
+        {/* <button>Get Started</button> */}
       </div>
     </header>
   );

@@ -26,6 +26,8 @@ import AdminDashboard from "../Admin/pages/Dashboard/AdminDashboard";
 import WaitingAuth from "../Authentication/WaitingAuth";
 import UserDetails from "../Admin/pages/Dashboard/Admin_table/UserDetails/UserDetails";
 import AssessmentTest from "../Components/CourseContent/AssessmentTest/AssessmentTest";
+import ForgotPassword from "../Authentication/ForgotPassword";
+import ResetPassword from "../Authentication/ResetPassword";
 
 const AppRoutes = () => {
   return (
@@ -34,8 +36,9 @@ const AppRoutes = () => {
         {/* <Route path="/" index element={<Dashboard />} /> */}
         <Route index element={<Register />}></Route>
         <Route path="rough" element={<Rough />}></Route>
-
         <Route path="login" element={<Login />}></Route>
+        <Route path="forgotPassword" element={<ForgotPassword />}></Route>
+        <Route path="reset-password" element={<ResetPassword />}></Route>
         <Route path="elf" element={<EntryLevelFrom />}></Route>
         <Route path="waitAuth" element={<WaitingAuth />} />
         <Route path="home" element={<Dashboard />}>
@@ -49,12 +52,13 @@ const AppRoutes = () => {
             element={<CourseDetails />}
           />
           <Route path="enrolled" element={<Enrolled />}></Route>
-          <Route path="courseContent/:courseId" element={<CourseContent />}>
-          </Route>
-            <Route
-              path="courseContent/:courseId/assessmentTest"
-              element={<AssessmentTest />}
-            />
+          <Route
+            path="courseContent/:courseId"
+            element={<CourseContent />}></Route>
+          <Route
+            path="courseContent/:courseId/assessmentTest"
+            element={<AssessmentTest />}
+          />
         </Route>
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/userDetails" element={<UserDetails />} />
