@@ -124,15 +124,20 @@ function Login() {
         toast.success("Google Login Successful");
 
         // Determine the user role and navigate accordingly
-        const userRole = user.role ? user.role.toLowerCase() : null;
-        const hasDetails = user.details === false;
+        const userRole = CurrentUser.role ? CurrentUser.role.toLowerCase() : null;
+        const hasDetails = CurrentUser.details
 
         if (userRole === "admin") {
           navigate("/admin");
         } else if (userRole === "client") {
-          navigate(hasDetails ? "/waitAuth" : "/elf", {
-            state: { userId: user._id },
-          });
+          if (hasDetails === true) {
+            navigate("/waitAuth", { state: { userId: CurrentUser._id } });
+          }
+          else {
+            navigate("/elf", {
+              state: { userId: user._id },
+            });
+          }
         } else {
           toast.error("Role not recognized");
         }
