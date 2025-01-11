@@ -63,7 +63,7 @@ const ForgotPassword = () => {
                   <div className="form-group mb-3 flex flex-column gap-3">
                     <label htmlFor="form-label fw-semibold mb-3">Email</label>
                     <input
-                      type="password"
+                      type="email"
                       id="newPassword"
                       name="newPassword"
                       className="form-control mt-3"
