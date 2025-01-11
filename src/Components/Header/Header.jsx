@@ -10,7 +10,7 @@ const Header = () => {
   return (
     <header className="header">
       <div className="welcome-message">
-        <h1>Welcome Back, {user}!</h1>
+        <h1>Welcome Back, {user.username}!</h1>
         <p>
           There are many variations of passages of Lorem Ipsum available, but
           the majority have suffered alteration

@@ -12,7 +12,7 @@ import defaultPorfileSVG from "../Assets/SVG/defaultPorfileSVG.svg";
 import defaultBannerSVG from "../Assets/SVG/defaultBannerSVG.svg";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
-import { User } from "lucide-react";
+// import { User } from "lucide-react";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -34,9 +34,9 @@ const Profile = () => {
   });
   const [selectedProfileImage, setSelectedProfileImage] = useState(null);
   const [selectedProfileBanner, setSelectedProfileBanner] = useState(null);
-  const user  = JSON.parse(localStorage.getItem("userdata"))
   useEffect(()=>{
     if(localStorage.getItem("userdata")!=null){
+      const user  = JSON.parse(localStorage.getItem("userdata"))
       console.log(user)
       setProfileData({
         name: `${user.firstName} ${user.lastName}`,
@@ -505,7 +505,7 @@ const Profile = () => {
           </div>
           <div
             className={`${inputClassName(
-              profileData.salvationExperience
+              profileData.signatureFile
             )} profileDetails`}>
             <label>signatureFile</label>
             <div className="profileBGBox">
@@ -532,7 +532,7 @@ const Profile = () => {
           </div>
           <div
             className={`${inputClassName(
-              profileData.salvationExperience
+              profileData.educationCertFile
             )} profileDetails`}>
             <label>Education CertFile</label>
             <div className="profileBGBox">
