@@ -56,6 +56,9 @@ const Profile = () => {
         ministryExperience: user.ministryExperience,
         theologicalQualification: user.theologicalQualification,
         salvationExperience: user.salvationExperience,
+
+        signatureFile: user.signatureFile,
+        educationCertFile: user.educationCertFile,
       });
     }
     else{
@@ -499,6 +502,60 @@ const Profile = () => {
               onChange={handleChange}
               disabled={!isEditing}
             />
+          </div>
+          <div
+            className={`${inputClassName(
+              profileData.salvationExperience
+            )} profileDetails`}>
+            <label>signatureFile</label>
+            <div className="profileBGBox">
+              <img
+                src={
+                  profileData?.signatureFile
+                    ? profileData?.signatureFile
+                    : defaultBannerSVG
+                }
+                alt="Banner"
+              />
+              {isEditing && (
+                <label className="custom-file-upload imageBanner">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleProfileBannerChange}
+                    className="imageBannerUpload"
+                  />
+                  Choose File for Profile Banner
+                </label>
+              )}
+            </div>
+          </div>
+          <div
+            className={`${inputClassName(
+              profileData.salvationExperience
+            )} profileDetails`}>
+            <label>Education CertFile</label>
+            <div className="profileBGBox">
+              <img
+                src={
+                  profileData?.educationCertFile
+                    ? profileData?.educationCertFile
+                    : defaultBannerSVG
+                }
+                alt="Banner"
+              />
+              {isEditing && (
+                <label className="custom-file-upload imageBanner">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleProfileBannerChange}
+                    className="imageBannerUpload"
+                  />
+                  Choose File for Profile Banner
+                </label>
+              )}
+            </div>
           </div>
         </div>
       </div>
