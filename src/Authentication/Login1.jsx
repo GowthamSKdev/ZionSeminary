@@ -34,18 +34,22 @@ function Login() {
         localStorage.setItem("userdata", JSON.stringify(CurrentUser));
         localStorage.setItem("isloggedin", true);
         toast.success("Login Successful");
+        console.log(CurrentUser);
+        
 
         const userRole = CurrentUser.role ? CurrentUser.role.toLowerCase() : null;
-        const hasDetails = CurrentUser.details === false;
+        const hasDetails = CurrentUser
 
         if (userRole === "admin") {
           navigate("/admin");
         } else if (userRole === "client") {
           if (hasDetails === true) {
-            navigate("waitAuth", { state: { userId: CurrentUser._id } });
-          } else (
-            navigate("/elf", {state:{userId:CurrentUser._id}})
-          )
+            navigate("/waitAuth", { state: { userId: CurrentUser._id } });
+          } else {
+            navigate("/elf", {
+              state: { userId: CurrentUser._id },
+            });
+          }
         } else {
           toast.error("Role not recognized");
         }
@@ -139,7 +143,7 @@ function Login() {
           }
           else {
             navigate("/elf", {
-              state: { userId: user._id },
+              state: { userId: CurrentUser._id },
             });
           }
         } else {
