@@ -38,7 +38,7 @@ const AppRoutes = () => {
         <Route path="rough" element={<Rough />}></Route>
         <Route path="login" element={<Login />}></Route>
         <Route path="forgotPassword" element={<ForgotPassword />}></Route>
-        <Route path="reset-password" element={<ResetPassword />}></Route>
+        <Route path="reset-password/:token" element={<ResetPassword />}></Route>
         <Route path="elf" element={<EntryLevelFrom />}></Route>
         <Route path="waitAuth" element={<WaitingAuth />} />
         <Route path="home" element={<Dashboard />}>
