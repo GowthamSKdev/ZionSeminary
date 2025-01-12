@@ -14,7 +14,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 // import { Elacompleted, elaTestScore } from "../../api/baseapi";
 
-const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
+const apiBaseUrl = process.env.REACT_APP_BASE_API;
+const userInfo = JSON.parse(localStorage.getItem('userdata'))
 
 const AssessmentTest = () => {
   const navigate = useNavigate();
@@ -241,7 +242,7 @@ const AssessmentTest = () => {
           {
             label: "Yes",
             onClick: () => {
-              localStorage.setItem("elacomplete", "true");
+              // localStorage.setItem("elacomplete", "true");
               testcomplete();
             },
           },
@@ -276,18 +277,25 @@ const AssessmentTest = () => {
       sum += Object.values(score)[i];
     }
     try {
-      const Id = localStorage.getItem("userid");
-      console.log(Id);
-      const res = await Elacompleted(Id, { testScore: sum, elaComplete: true });
-      console.log(res);
-      if (res) {
-        setFinalScore(sum);
-        await axios.put(`${apiBaseUrl}/user/updateElaScore/${Id}`, {
-          elaTestScore:sum
-        })
-        localStorage.setItem("finalScore", sum);
-        navigate("/finish-assessment");
+      const payload = { 
+        userId : userInfo._id,
+        degreeId : userInfo.applyingFor,
+        courseId,
+        subLessonId
       }
+      const res = await axios.put(`${apiBaseUrl}/api/users/answer/submit/`,payload)
+      console.log(res.data);
+      
+
+      navigate(-1);
+      // const Id = localStorage.getItem("userid");
+      // console.log(Id);
+      // const res = await Elacompleted(Id, { testScore: sum, elaComplete: true });
+      // console.log(res);
+      // if (res) {
+      //   setFinalScore(sum);
+      //   localStorage.setItem("finalScore", sum);
+      // }
     } catch (error) {
       console.log(error);
     }
