@@ -4,10 +4,22 @@ import { Button } from "react-bootstrap";
 const apiBaeApi = process.env.REACT_APP_BASE_API;
 
 const AddEvent = () => {
+  const [DegreeList, setDegreeList] = useState([]);
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [degreeId, setDegreeId] = useState("");
+
+  useEffect(() => {
+    const fetchDegree = async () => {
+      const response = await axios.get(`${apiBaeApi}/api/degrees`);
+      const { degrees } = await response.data;
+      setDegreeList(degrees);
+    };
+    fetchDegree();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,9 +28,10 @@ const AddEvent = () => {
       description: description,
       startDate: startDate,
       endDate: endDate,
+      degreeId:degreeId
     });
     console.log(resEvent);
-     window.location.reload();
+    window.location.reload();
   };
 
   return (
@@ -39,8 +52,7 @@ const AddEvent = () => {
             name=""
             id=""
             className="form-control"
-            onChange={(e) => setDescription(e.target.value)}
-          ></textarea>
+            onChange={(e) => setDescription(e.target.value)}></textarea>
         </div>
         <div className="">
           <label>Start Date</label>
@@ -57,6 +69,17 @@ const AddEvent = () => {
             className="form-control"
             onChange={(e) => setEndDate(e.target.value)}
           />
+        </div>
+        <div className="">
+          <label htmlFor="">Select Degree</label>
+          <select name="" id="" className="form-control" onChange={(e)=>setDegreeId(e.target.value)} value={degreeId}>
+            <option value="" disabled>
+              Select Degree
+            </option>
+            {DegreeList.map((degree) => (
+              <option value={degree._id}>{degree.title}</option>
+            ))}
+          </select>
         </div>
         <Button className="btn" type="submit">
           Add Event
