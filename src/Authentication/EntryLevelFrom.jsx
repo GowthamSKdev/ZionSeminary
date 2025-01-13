@@ -3,11 +3,8 @@ import "./Register.css";
 import { useForm } from "react-hook-form";
 import { Button } from "react-bootstrap";
 import axios from "axios";
-import UserContext from "../context/UserContext";
-import { useNavigate } from "react-router-dom";
-import { auth,  RecaptchaVerifier, signInWithPhoneNumber } from '../Admin/firebase/firebase';
-// import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-
+// import UserContext from "../context/UserContext";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const apiBaseUrl = process.env.REACT_APP_BASE_API;
 const EntryLevelForm = () => {
@@ -16,14 +13,13 @@ const EntryLevelForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { userInfo } = useContext(UserContext);
+  const location = useLocation();
+  const {userId} = location.state
+  // const { userInfo } = useContext(UserContext);
   const [degrees, setdegrees] = useState([]);
-  const [userId, setUserId] = useState("");
+  // const [userId, setUserId] = useState("");
   const navigate = useNavigate();
-  const [mobile, setMobile] = useState('');
-  const [otp, setOtp] = useState('');
-  const [verificationId, setVerificationId] = useState(null);
-  const [showOtpInput, setShowOtpInput] = useState(false);
+  const userInfo = JSON.parse(localStorage.getItem("userdata"));
 
   useEffect(() => {
     const fetchDegrees = async () => {
@@ -35,21 +31,131 @@ const EntryLevelForm = () => {
     };
     fetchDegrees();
   }, []);
-  
-  useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("userdata"));
-    setUserId(userData._id);
-  }, []);
+
+  // const userData = JSON.parse(localStorage.getItem("loginUserdata"));
+  // useEffect(() => {
+  //   setUserId(userData.id)
+  // }, [])
+  // console.log(userId);
+
+  // console.log(degrees, userInfo.id);
+  // const userId = userInfo.id
+
+  //  const onSubmit = async (data) => {
+  //    try {
+  //      // Append userId from context to the data
+  //     //  const formData = { data, userId };
+
+  //      // Sending the data to the API
+  //      const response = await axios.post(
+  //        "/api/users/profile", {
+
+  //          data,
+  //          headers: {
+  //            "Content-Type": "multipart/formData",
+  //          },
+  //          userId,
+  //          details:true
+  //         }
+
+  //      );
+
+  //      // Assuming you want to handle success
+  //      console.log("Profile updated successfully", response.data);
+  //      navigate("/home"); // Redirecting to profile page after successful submission
+  //    } catch (error) {
+  //      console.error("Error updating profile:", error);
+  //      // Handle the error appropriately
+  //    }
+  //  };
+  // useEffect(() => {
+  //   const userData = JSON.parse(localStorage.getItem("userdata"));
+  //   setUserId(userData.id);
+  //   // if (userData) {
+  //   //   // Optionally, set default values if needed
+  //   //   // setValue("firstName", userData.firstName);
+  //   //   // setValue("lastName", userData.lastName);
+  //   //   // setValue("mobileNo", userData.mobileNo);
+  //   // }
+  // }, []);
+
+  // const onSubmit = async (data) => {
+  //   console.log(data);
+  //   const payload = {
+  //     data,
+  //     // formData,
+  //     userId: userId,
+  //     // details:true
+  //   }
+
+  //   try {
+  //     const response = await axios.post(
+  //       "/api/users/profile",
+  //       // degreeId= ("applyingFor", data.applyingFor),
+  //       // details = true,
+  //       payload,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
+
+  //     console.log("Profile updated successfully", response.data);
+  //     navigate("/home");
+  //   } catch (error) {
+  //     console.error("Error updating profile:", error);
+  //   }
+  // };
+
+  // const onSubmit = async (formData) => {
+  //   try {
+  //     const data = new FormData();
+  //     Object.keys(formData).forEach((key) => {
+  //       data.append(key, formData[key]);
+  //     });
+
+  //     data.append("userId", userId);
+  //     // data.append('details',true)// Add userId explicitly
+
+  //     const response = await axios.post(
+  //       `${apiBaseUrl}/api/users/profile`,
+  //       data,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
+
+  //     console.log("Profile updated successfully:", response.data);
+  //     // navigate("/home");
+  //     navigate(`/waitAuth`,{state:{userId:userInfo.id}})
+  //   } catch (error) {
+  //     console.error(
+  //       "Error updating profile:",
+  //       error.response?.data || error.message
+  //     );
+  //     alert("Error updating profile. Please try again.");
+  //   }
+  // };
 
   const onSubmit = async (formData) => {
     try {
       const data = new FormData();
+
+      // Append all form fields to FormData
       Object.keys(formData).forEach((key) => {
-        data.append(key, formData[key]);
+        if (formData[key] instanceof FileList) {
+          // If the input is a file, append the first file from FileList
+          data.append(key, formData[key][0]);
+        } else {
+          data.append(key, formData[key]);
+        }
       });
 
-      data.append("userId", userId);
-      // data.append('details',true)// Add userId explicitly
+      // Append userId to the FormData
+      data.append("userId", userId || userInfo._id);
 
       const response = await axios.post(
         `${apiBaseUrl}/api/users/profile`,
@@ -62,7 +168,7 @@ const EntryLevelForm = () => {
       );
 
       console.log("Profile updated successfully:", response.data);
-      navigate("/home");
+      navigate(`/waitAuth`, { state: { userId: userId || userInfo._id } });
     } catch (error) {
       console.error(
         "Error updating profile:",
@@ -70,63 +176,6 @@ const EntryLevelForm = () => {
       );
       alert("Error updating profile. Please try again.");
     }
-  };
-
-
-  const setUpRecaptcha = () => {
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(
-        'recaptcha-container',
-        {
-          size: 'invisible',
-          callback: (response) => {
-            console.log('Recaptcha verified');
-          },
-        },
-        auth
-      );
-    }
-  };
-
-  const sendOtp = () => {
-    if (mobile.length !== 10) {
-      alert('Please enter a valid 10-digit mobile number');
-      return;
-    }
-
-    setUpRecaptcha();
-    const phoneNumber = +91`${mobile}`; // Adjust country code if necessary
-    const appVerifier = window.recaptchaVerifier;
-
-    signInWithPhoneNumber(auth, phoneNumber, appVerifier)
-      .then((confirmationResult) => {
-        setVerificationId(confirmationResult.verificationId);
-        setShowOtpInput(true);
-        alert('OTP sent successfully');
-      })
-      .catch((error) => {
-        console.error('Error sending OTP:', error);
-        alert('Failed to send OTP. Please try again.');
-      });
-  };
-
-  const verifyOtp = () => {
-    if (!verificationId) {
-      alert('Please request OTP first');
-      return;
-    }
-
-    const credential = auth.PhoneAuthProvider.credential(verificationId, otp);
-
-    auth.signInWithCredential(credential)
-      .then((result) => {
-        alert('Phone number verified successfully');
-        console.log('User:', result.user);
-      })
-      .catch((error) => {
-        console.error('Error verifying OTP:', error);
-        alert('Invalid OTP');
-      });
   };
 
 
@@ -174,33 +223,19 @@ const EntryLevelForm = () => {
 
               {/* Mobile Number */}
               <div className="form-group mb-2">
-                    {!showOtpInput ? (
-              <div>
-                <label>Mobile Number:</label>
+                <label className="form-label fw-semibold">Mobile Number</label>
                 <input
-                  type="text"
-                  value={mobile}
-                  onChange={(e) => setMobile(e.target.value)}
-                  placeholder="Enter 10-digit mobile number"
+                  type="number"
+                  className="form-control"
+                  placeholder="Enter Mobile Number"
+                  {...register("mobileNo", {
+                    required: "Mobile Number is required",
+                  })}
                 />
-                <button onClick={sendOtp}>Send OTP</button>
+                {errors.mobileNo && (
+                  <p className="text-danger">{errors.mobileNo.message}</p>
+                )}
               </div>
-            ) : (
-              <div>
-                <label>Enter OTP:</label>
-                <input
-                  type="text"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  placeholder="Enter OTP"
-                />
-                <button onClick={verifyOtp}>Verify OTP</button>
-              </div>
-            )}
-
-            {/* Invisible Recaptcha container */}
-            <div id="recaptcha-container"></div>
-          </div>
 
               {/* Marital Status */}
               <div className="form-group mb-2">
