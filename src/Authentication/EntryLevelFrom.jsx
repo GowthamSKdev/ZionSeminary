@@ -95,7 +95,7 @@ const EntryLevelForm = () => {
     }
 
     setUpRecaptcha();
-    const phoneNumber = +91${mobile}; // Adjust country code if necessary
+    const phoneNumber = +91`${mobile}`; // Adjust country code if necessary
     const appVerifier = window.recaptchaVerifier;
 
     signInWithPhoneNumber(auth, phoneNumber, appVerifier)
