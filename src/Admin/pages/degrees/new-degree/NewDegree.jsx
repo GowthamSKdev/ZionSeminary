@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import NewChapter from "../../chapter/NewChapter";
 // import { addDegree } from "../../../firebase/degreeApi"; // Firebase API integration for adding a degree
 import { toast } from "react-toastify";
-import NewCourse from '../../courses/new-course/NewCourse'
+import NewCourse from "../../courses/new-course/NewCourse";
 import axios from "axios";
 import AddnewCourse from "../../courses/new-course/AddnewCourse";
 const apiBaseUrl = process.env.REACT_APP_BASE_API;
@@ -19,7 +19,7 @@ const NewDegree = () => {
     price: null,
     degreeThumbnail: null,
     courses: [],
-    updateIndex : null
+    updateIndex: null,
   });
 
   useEffect(() => {
@@ -36,62 +36,63 @@ const NewDegree = () => {
     setDegreeData({ ...degreeData, courses: newCourses });
   };
 
-  // const addCoursetoDegree = (course) => {
-  //   console.log(course);
-  //   const newCourses = [...degreeData.courses];
-  //   if (course.updateIndex === null) {
-  //     newCourses.push({
-  //       ...course,
-  //       updateIndex: newCourses?.length > 0 ? newCourses?.length : 0,
-  //     });
-  //     setDegreeData({ ...degreeData, courses: newCourses });
-  //   } else {
-  //     newCourses[course.updateIndex] = course;
-  //     setDegreeData({ ...degreeData, courses: newCourses });
-  //   }
-  //   setPopupOpen({ open: false });
-  // };
-
-  const addCoursetoDegree = (course) => { 
+  const addCoursetoDegree = (course) => {
     console.log(course);
-    const newDegree = [...degreeData.courses];
+    const newCourses = [...degreeData.courses];
     if (course.updateIndex === null) {
-      newDegree.push({
+      newCourses.push({
         ...course,
-        updateIndex: newDegree?.length > 0 ? newDegree?.length : 0,
-      })
-      setDegreeData({ ...degreeData, courses: newDegree });
+        updateIndex: newCourses?.length > 0 ? newCourses?.length : 0,
+      });
+      setDegreeData({ ...degreeData, courses: newCourses });
     } else {
-      newDegree[course.updateIndex] = course;
-      setDegreeData({ ...degreeData, courses: newDegree });
+      newCourses[course.updateIndex] = course;
+      setDegreeData({ ...degreeData, courses: newCourses });
     }
     setPopupOpen({ open: false });
-  }
+  };
 
   const uploadDegree = async () => {
     try {
-
       const formData = new FormData();
-      console.log(degreeData.title);
+      // console.log(degreeData.title);
       formData.append("title", degreeData.title);
-      console.log(degreeData.description);
+      // console.log(degreeData.description);
       formData.append("description", degreeData.description);
-      console.log(degreeData.price);
+      // console.log(degreeData.price);
       formData.append("price", degreeData.price);
-      console.log(degreeData.degreeThumbnail);
+
       formData.append("degreeThumbnail", degreeData.degreeThumbnail);
-      console.log(degreeData.courses);
-      formData.append("courses", JSON.stringify(degreeData?.courses));
+
+      degreeData.courses.forEach((course) => {
+        formData.append("courseThumbnails", course.courseThumbnail);
+        // Append course thumbnail if available
+        //  if (course.courseThumbnail) {
+        //    formData.append("courseThumbnails", course.courseThumbnail);
+        //  }
+        course.chapters.forEach((chapter) => {
+          chapter.lessons.forEach((lesson) => {
+            // formData.append("lessonFiles", lesson.file);
+            lesson.subLessons.forEach((subLesson) => {
+              formData.append("subLessonFiles", subLesson.subLessonFiles);
+            });
+          });
+        });
+      });
+
+      console.log(degreeData);
       
+
+      formData.append("courses", JSON.stringify(degreeData?.courses));
 
       // Send the final payload
       console.log("FormData : " + formData);
-      
-      const response = await axios.post(`${apiBaseUrl}/api/degrees`, formData, {
+
+        const response = await axios.post(`${apiBaseUrl}/api/degrees`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        withCredentials :true
+        // withCredentials: true,
       });
 
       console.log("Degree added successfully:", response.data);
@@ -105,6 +106,82 @@ const NewDegree = () => {
       toast.error("An error occurred while adding the degree.");
     }
   };
+
+
+  // const uploadDegree = async () => {
+  //   try {
+  //     const formData = new FormData();
+
+  //     // Append basic degree details
+  //     formData.append("title", degreeData.title);
+  //     formData.append("description", degreeData.description);
+  //     formData.append("price", degreeData.price);
+
+  //     // Append degree thumbnail
+  //     if (degreeData.degreeThumbnail) {
+  //       formData.append(
+  //         "degreeThumbnail",
+  //         degreeData.degreeThumbnail,
+  //         degreeData.degreeThumbnail.name
+  //       );
+  //     }
+
+  //     // Append courses and files
+  //     degreeData.courses.forEach((course) => {
+  //       if (course.courseThumbnail) {
+  //         formData.append(
+  //           "courseThumbnails",
+  //           course.courseThumbnail,
+  //           course.courseThumbnail.name
+  //         );
+  //       }
+
+  //       course.chapters.forEach((chapter) => {
+  //         chapter.lessons.forEach((lesson) => {
+  //           lesson.subLessons.forEach((subLesson) => {
+  //             if (subLesson.file) {
+  //               formData.append(
+  //                 "subLessonFiles",
+  //                 subLesson.subLessonFiles,
+  //                 subLesson.file.name
+  //               );
+  //             } else {
+  //               console.warn("SubLesson file is missing for:", subLesson);
+  //             }
+  //           });
+  //         });
+  //       });
+  //     });
+
+  //     // Append JSON data
+  //     formData.append("courses", JSON.stringify(degreeData.courses));
+
+  //     // Log FormData contents for debugging
+  //     for (let pair of formData.entries()) {
+  //       console.log(pair[0], pair[1]);
+  //     }
+
+  //     // Send the request
+  //     const response = await axios.post(`${apiBaseUrl}/api/degrees`, formData, {
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     });
+
+  //     console.log("Degree added successfully:", response.data);
+  //     toast.success("Degree added successfully!");
+  //     navigate("/admin");
+  //   } catch (error) {
+  //     console.error(
+  //       "Error uploading degree:",
+  //       error.response?.data || error.message || "Unknown error"
+  //     );
+  //     toast.error("An error occurred while adding the degree.");
+  //   }
+  // };
+
+  
+
 
   console.log(degreeData);
 
@@ -172,13 +249,14 @@ const NewDegree = () => {
               type="file"
               accept="image/png, image/svg+xml"
               onChange={(e) => {
-                const file = e.target.files[0];
-                if (file) {
+                // const file = e.target.files[0];
+                // if (file) {
                   setDegreeData({
                     ...degreeData,
-                    degreeThumbnail: file,
+                    // degreeThumbnail: file,
+                    degreeThumbnail:e.target.files[0]
                   });
-                }
+                // }
               }}
               className="styled-input"
             />
@@ -236,12 +314,7 @@ const NewDegree = () => {
         </form>
       </div>
       {popupOpen.open && (
-        // <NewChapter
-        //   addCourse={(course) => addLessontoCourse(course)}
-        //   editData={popupOpen?.data}
-        //   cancel={() => setPopupOpen({ open: false, data: null })}
-        //   removeThisCourse={(index) => handleDeleteCourse(index)}
-        // />
+      
         <NewCourse
           addDegree={addCoursetoDegree}
           editData={popupOpen?.data}

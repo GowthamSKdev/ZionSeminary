@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 // import NewChapter from "./NewChapter";
 import LessonPopUp from "../../../components/degrees/LessonPopUp";
 import NewChapter from "./NewChapter";
+import ChapterPopUp from "../../../components/degrees/ChapterPopUp";
 
 const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
   const [popupOpen, setPopupOpen] = useState({ open: false, data: null });
@@ -18,26 +19,30 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
     description: "",
     courseThumbnails: null,
     chapters: [],
-    updateIndex : null
+    updateIndex: null,
   });
 
   useEffect(() => {
     if (popupOpen) window.scrollTo(0, 0);
   }, [popupOpen]);
 
-    useEffect(() => {
-      if (editData) setCurrentLesson(editData);
-    }, [editData]);
+  useEffect(() => {
+    if (editData) setCurrentLesson(editData);
+  }, [editData]);
 
-  const handledirectInput = (type, value) => {
+  const handledirectInput = ( type, value) => {
     setCourseData({ ...courseData, [type]: value });
   };
 
+  
+
+
+
   const handleDeleteCourse = (courseIndex) => {
-    const newCourseData = [...courseData.chapters]
+    const newCourseData = [...courseData.chapters];
     newCourseData.splice(courseIndex, 1);
     setCourseData({ ...courseData, chapters: newChapterData });
-  }
+  };
 
   const addChapterToCourse = (chapter) => {
     console.log(chapter);
@@ -56,21 +61,21 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
     // addDegree(courseData)
   };
 
-
   const uploadCourse = async () => {
     if (!courseData.title || !courseData.courseThumbnails) {
       toast.error("Please provide title and description.");
       return;
     }
     const courseDataObj = {
-      title : courseData.title,
-      description : courseData.description,
-      courseThumbnails : courseData.courseThumbnails,
-      chapters : courseData.chapters,
-      updateIndex : courseData.updateIndex
-    }
+      title: courseData.title,
+      description: courseData.description,
+      courseThumbnail: courseData.courseThumbnails,
+      chapters: courseData.chapters,
+      updateIndex: courseData.updateIndex,
+    };
     console.log(courseDataObj);
-    
+
+
     addDegree(courseDataObj);
   };
 
@@ -107,7 +112,7 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
                 type="text"
                 name=""
                 id=""
-                value={courseData?.title}
+                // value={courseData?.title}
                 className="name-input"
                 onChange={(e) => handledirectInput("title", e.target.value)}
               />
@@ -119,7 +124,7 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
                 type="text"
                 name=""
                 id=""
-                value={courseData?.description}
+                // value={courseData?.description}
                 className="description-input"
                 onChange={(e) =>
                   handledirectInput("description", e.target.value)
@@ -142,38 +147,15 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
           </div> */}
             <div className="course-name-cnt">
               <p>Upload degree thumbnail</p>
-              {/* <input
+              <input
               type="file"
-              accept="image/png, image/svg+xml"
-              onChange={(e) => {
-                const file = e.target.files[0];
-                if (file) {
-                  setCourseData({ ...courseData, courseThumbnails: file })
-                }
+              accept="image/*, image/svg+xml"
+                onChange={(e) => {
+                handledirectInput("courseThumbnails", e.target.files[0]);
+                
               }}
               className="styled-input"
-            /> */}
-            <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  if (file) {
-                    const reader = new FileReader();
-
-                    // Read the file as a Data URL (Base64 string)
-                    reader.onloadend = () => {
-                      setCourseData({
-                        ...courseData,
-                        courseThumbnails: reader.result, // Base64 string of the image
-                      });
-                    };
-
-                    reader.readAsDataURL(file); // Converts the file to Base64
-                  }
-                }}
-                className="styled-input"
-              />
+            />
             </div>
           </form>
           <form className="form-right">
@@ -198,12 +180,12 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
                   >
                     <h1 className="lesson-number">{index + 1}</h1>
                     <div className="lesson-title-cnt">
-                      <h3 className="lesson-title">{chapter?.title}</h3>
+                      <h3 className="lesson-title">{chapter.name}</h3>
                     </div>
                     <ul className="lesson-subtitle-cnt">
-                      {chapter?.lessons?.map((lesson) => (
+                      {chapter.Lessons?.map((lesson) => (
                         <li>
-                          <p className="lesson-subtitle">{lesson?.title}</p>
+                          <p className="lesson-subtitle">{lesson.title}</p>
                         </li>
                       ))}
                     </ul>
@@ -223,13 +205,7 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
           </form>
         </div>
         {popupOpen.open && (
-          // <NewChapter
-          //   addCourse={(course) => addLessontoCourse(course)}
-          //   editData={popupOpen?.data}
-          //   cancel={() => setPopupOpen({ open: false, data: null })}
-          //   removeThisCourse={(index) => handleDeleteCourse(index)}
-          // />
-          <LessonPopUp
+          <ChapterPopUp
             addChapter={addChapterToCourse}
             editData={popupOpen?.data}
             cancel={() => setPopupOpen({ open: false, data: null })}
@@ -242,3 +218,4 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
 };
 
 export default NewCourse;
+

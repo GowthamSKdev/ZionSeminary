@@ -46,7 +46,7 @@ const DegreeList = () => {
       </div> */}
       <div className="course-list-header">
         <h2 className="h2-user-title">All Degrees</h2>
-        <div className="admin-add-course-btn" onClick={() => navigate("degrees/new")}>
+        <div className="admin-add-course-btn" onClick={() => navigate("/admin/degrees/new")}>
           <h3 className="top-btn-text">Add Degree</h3>
         </div>
       </div>

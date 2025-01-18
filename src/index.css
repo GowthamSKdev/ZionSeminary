@@ -7,12 +7,11 @@
   --primary-bg: #91c9e4;
   --primary-bg-light: #c4f6fdb8;
   --primary-color-heading: #00aaff;
-  
+
   --shadow-color: rgba(0, 0, 0, 0.2);
   --shadow-light: rgba(0, 0, 0, 0.1);
-  
+
   /* background-color: #004d3b; */
-  
   /* --primary-bg: #004d3b; */
   /* --primary-bg:hsl(142.33,66.15%,87.25%); */
   /* --primary-bg:hsl(147,90.91%,95.69%); */
@@ -22,25 +21,26 @@
   /* --primary-color:hsl(143.38,64.71%,46.67%);  */
 }
 
-
-
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  font-family: "poppins", sans-serif !important;
 }
 
 html,
 body {
-  min-height: 100vh;
+  min-height: 100dvh;
   height: 100%;
   width: 100%;
-  font-family:"poppins",sans-serif;
+  font-family: "poppins", sans-serif;
   scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 main {
-  min-height: 100vh;
+  min-height: 100dvh;
   height: 100%;
   width: 100%;
 }

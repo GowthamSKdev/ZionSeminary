@@ -19,14 +19,14 @@ const initialState = {
   title: "",
   // duration: "",
   link: "",
-  lessonFiles:[],
+  subLessonFiles: null,
   updateIndex: null,
   type: null,
-  testId: null,
+  test: null,
 };
 
 const LessonPopUp = ({
-  addChapter,
+  addLesson,
   cancel,
   editData,
   removeThisLesson,
@@ -35,7 +35,7 @@ const LessonPopUp = ({
 }) => {
   const [currentLesson, setCurrentLesson] = useState({
     title: "",
-    lessons: [],
+    subLessons: [],
     updateIndex: null,
   });
   
@@ -52,43 +52,43 @@ const LessonPopUp = ({
   //   setUploadingFile(false);
   // };
 
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0]; // Get the selected file
-    if (!file) return; // If no file is selected, exit
+  // const handleFileUpload = (e) => {
+  //   const file = e.target.files[0]; // Get the selected file
+  //   if (!file) return; // If no file is selected, exit
   
-    const supportedTypes = [
-      "video",
-      "audio",
-      "application/pdf",
-      "application/vnd.ms-powerpoint",
-      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-    ];
+  //   const supportedTypes = [
+  //     "video",
+  //     "audio",
+  //     "application/pdf",
+  //     "application/vnd.ms-powerpoint",
+  //     "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  //   ];
   
-    const fileType = file.type.split("/")[0]; // Get the major type (e.g., "video")
-    const isValidType =
-      supportedTypes.includes(file.type) || supportedTypes.includes(fileType);
+  //   const fileType = file.type.split("/")[0]; // Get the major type (e.g., "video")
+  //   const isValidType =
+  //     supportedTypes.includes(file.type) || supportedTypes.includes(fileType);
   
-    if (!isValidType) {
-      toast.error("Unsupported file type. Please upload a valid file.");
-      return;
-    }
+  //   if (!isValidType) {
+  //     toast.error("Unsupported file type. Please upload a valid file.");
+  //     return;
+  //   }
   
-    const reader = new FileReader(); // Initialize FileReader
+  //   // const reader = new FileReader(); // Initialize FileReader
   
-    reader.onloadend = () => {
-      setCurrentSublesson({
-        ...currentSublesson,
-        lessonFiles: reader.result, // Base64 string
-        type: file.type,
-      });
-    };
+  //   // reader.onloadend = () => {
+  //     setCurrentSublesson({
+  //       ...currentSublesson,
+  //       file: file, // Base64 string
+  //       // type: file.type,
+  //     });
+  //   // };
   
-    reader.onerror = () => {
-      toast.error("Failed to read file. Please try again.");
-    };
+  //   // reader.onerror = () => {
+  //     // toast.error("Failed to read file. Please try again.");
+  //   // };
   
-    reader.readAsDataURL(file); // Convert file to Base64
-  };
+  //   // reader.readAsDataURL(file); // Convert file to Base64
+  // };
   
 
   const handleSubLessonsInput = (type, value) => {
@@ -98,27 +98,28 @@ const LessonPopUp = ({
   const addSublessons = async () => {
     if (
       // !currentSublesson.duration ||
-      !currentSublesson.type ||
+      // !currentSublesson.type ||
       !currentSublesson.title
     ) {
       toast.error("fill all details and add a test or file");
       return;
     }
 
-    const newLessons = [...currentLesson.lessons];
+    const newLessons = [...currentLesson.subLessons];
 
     if (currentUpdateIndex !== null && currentUpdateIndex !== undefined) {
       newLessons[currentUpdateIndex] = currentSublesson;
     } else {
       newLessons.push(currentSublesson);
     }
-    setCurrentLesson({ ...currentLesson, lessons: newLessons });
+    setCurrentLesson({ ...currentLesson, subLessons: newLessons });
     setCurrentSublesson(initialState);
     setCurrentUpdateIndex(null);
   };
 
   const validateAndUpdateLesson = () => {
-    addChapter(currentLesson);
+    // addChapter(currentLesson);
+    addLesson(currentLesson);
    }
 
   const setEditSublesson = (chapter, index) => {
@@ -161,21 +162,21 @@ const LessonPopUp = ({
   }, [editData]);
 
   return (
-    <div className="lesson-popup-page">
+    <div className="lesson-popup-page ">
       {openLessonTest && (
         <LessonTest
           closeTest={() => setOpenLessonTest(false)}
           addTest={(testId) =>
             setCurrentSublesson({
               ...currentSublesson,
-              testId: testId,
+              test: testId,
               type: "test",
             })
           }
-          testId={currentSublesson.testId}
+          testId={currentSublesson.test}
         />
       )}
-      <div className="lesson-popup">
+      <div className="lesson-popup lesson-z-index">
         <div className="form-right-header">
           <div className="back-btn" onClick={() => cancel()}>
             <img src={BackIcon} alt="back" className="back-icon-img" />
@@ -199,7 +200,7 @@ const LessonPopUp = ({
         </div>
         <div className="lesson-data-inputs-cnt">
           <div className="lesson-name-cnt">
-            <p>Chapter Title</p>
+            <p>Lesson Title</p>
             <input
               type="text"
               name=""
@@ -213,7 +214,7 @@ const LessonPopUp = ({
           </div>
           <div className="lesson-content-input-cnt">
             <div className="sublesson-name-cnt">
-              <p>Lesson Title</p>
+              <p>Sub Title</p>
               <input
                 type="text"
                 name=""
@@ -246,18 +247,18 @@ const LessonPopUp = ({
                 <div
                   className="sublesson-title-input center-media"
                   style={{
-                    opacity: currentSublesson?.testId && "0.5",
-                    pointerEvents: currentSublesson?.testId && "none",
+                    opacity: currentSublesson?.test && "0.5",
+                    pointerEvents: currentSublesson?.test && "none",
                   }}
                 >
                   {currentSublesson?.file?.length > 5 && !uploadingFile && (
                     <p>{currentSublesson?.type}</p>
                   )}
-                    <img
-                      src={!uploadingFile ? Upload : LoadingGif}
-                      alt="imag"
-                      className={`${!uploadingFile ? "test-icon" : "gif-icon"}`}
-                    />
+                  <img
+                    src={!uploadingFile ? Upload : LoadingGif}
+                    alt="imag"
+                    className={`${!uploadingFile ? "test-icon" : LoadingGif}`}
+                  />
                   {/* <input
                     type="file"
                     name="video-upload"
@@ -273,7 +274,12 @@ const LessonPopUp = ({
                     accept="video/*,audio/*,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation"
                     style={{ position: "absolute" }}
                     className="file-title-input"
-                    onChange={handleFileUpload}
+                    onChange={(e) =>
+                      setCurrentSublesson({
+                        ...currentSublesson,
+                        subLessonFiles: e.target.files[0],
+                      })
+                    }
                   />
                 </div>
                 <div
@@ -298,7 +304,7 @@ const LessonPopUp = ({
           </div>
         </div>
         <div className="content-list">
-          {currentLesson?.lessons?.map((chapter, index) => (
+          {currentLesson?.subLessons?.map((subLesson, index) => (
             <div
               className="lesson-content-input-cnt sublesson"
               key={index}
@@ -313,12 +319,12 @@ const LessonPopUp = ({
                   type="text"
                   name=""
                   id=""
-                  value={chapter?.title}
+                  value={subLesson?.title}
                   className="sublesson-title-input sublesson-card-input"
                 />
               </div>
               <div className="sublesson-content-cover">
-                <div className="input-cnt sublesson-title-txt">
+                {/* <div className="input-cnt sublesson-title-txt">
                   <p>Duration</p>
                   <input
                     type="text"
@@ -327,7 +333,7 @@ const LessonPopUp = ({
                     value={chapter?.duration}
                     className="sublesson-duration-input sublesson-title-input sublesson-card-input"
                   />
-                </div>
+                </div> */}
                 <div className="input-cnt add-sublesson-btn">
                   <div
                     className="sublesson-title-input center-media sublesson-card-input"

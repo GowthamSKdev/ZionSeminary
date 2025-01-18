@@ -128,7 +128,7 @@ input[type="file"] {
 
 .new-course {
   position: relative;
-  height: fit-content;
+  /* height: fit-content; */
   /* overflow: hidden; */
 }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { addNewTest, getTestById, updateTest } from '../../firebase/testApi';
+// import { addNewTest, getTestById, updateTest } from '../../firebase/testApi';
 
 const ChapterTest = ({ testId, closeTest, addTest }) => {
     const initialMCQState = {
@@ -99,9 +99,10 @@ const ChapterTest = ({ testId, closeTest, addTest }) => {
             }
         } else {
             try {
-                const data = await addNewTest(currentTest);
-                addTest(data);
-                console.log("test added with id:", data);
+                // const data = await addNewTest(currentTest);
+                // addTest(data);
+                addTest(currentTest)
+                // console.log("test added with id:", data);
                 closeTest();
             } catch (error) {
                 console.log(error);
