@@ -6,11 +6,11 @@ import EditImg from "../../../assets/Images/edit.png";
 import Nolesson from "../../../assets/Images/no-lesson-illustration.svg";
 import BackIcon from "../../../assets/Images/left-arrow.png";
 import { useNavigate } from "react-router-dom";
-import NewLesson from "../new-course/NewLesson";
+// import NewLesson from "../new-course/NewLesson";
 import { deleteDegree, editDegree } from "../../../firebase/degreeApi";
 import { toast } from "react-toastify";
-
-const Edit = ({ courseDetails }) => {
+const apiBaseUrl = process.env.REACT_APP_BASE_API;
+const EditCourse = ({ courseDetails }) => {
   const [popupOpen, setPopupOpen] = useState({ open: false, data: null });
   const [editCourse, setEditCourse] = useState(false);
   const [currentOverview, setCurrentOverview] = useState({
@@ -314,4 +314,4 @@ const Edit = ({ courseDetails }) => {
   );
 };
 
-export default Edit;
+export default EditCourse;

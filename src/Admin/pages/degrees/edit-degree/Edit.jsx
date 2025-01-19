@@ -7,13 +7,14 @@ import Nolesson from "../../../assets/Images/no-lesson-illustration.svg";
 import BackIcon from "../../../assets/Images/left-arrow.png";
 import { useNavigate } from "react-router-dom";
 // import NewLesson from "../new-degree/NewLesson";
-import NewLesson from "../../lesson/NewLesson";
+// import NewLesson from "../../lesson/NewLesson";
 import { deleteDegree, editDegree } from "../../../firebase/degreeApi";
 import { toast } from "react-toastify";
-
+import axios from "axios";
+import EditCourse from "../../courses/edit-course/Edit";
+import NewCourse from "../../courses/new-course/NewCourse";
+const apiBaseUrl = process.env.REACT_APP_BASE_API;
 const Edit = ({ courseDetails }) => {
-  // console.log(courseDetails);
-  
   const [popupOpen, setPopupOpen] = useState({ open: false, data: null });
   const [editCourse, setEditCourse] = useState(false);
   const [currentOverview, setCurrentOverview] = useState({
@@ -27,9 +28,9 @@ const Edit = ({ courseDetails }) => {
     title: "",
     description: "",
     price: null,
-    thumbnail: null,
-    overviewPoints: [],
-    lessons: [],
+    degreeThumbnail: null,
+    // overviewPoints: [],
+    courses: [],
   });
 
   useEffect(() => {
@@ -73,7 +74,7 @@ const Edit = ({ courseDetails }) => {
   };
 
   const addLessontoCourse = (lesson) => {
-    console.log(lesson)
+    console.log(lesson);
     const newCourse = [...courseData.courses];
     if (lesson.updateIndex === null) {
       newCourse.push({
@@ -90,30 +91,60 @@ const Edit = ({ courseDetails }) => {
   };
 
   const uploadCourse = async () => {
-    if (
-      courseData.name &&
-      // courseData.description &&
-      courseData.courses.length > 0
-      // courseData.price
-    ) {
-      try {
-        console.log(courseDetails)
-        const res = await toast.promise(
-          editDegree(courseDetails.id, courseData),
-          {
-            pending: "Updating course...",
-            success: "Course updated successfully",
-            error: "An error occurred while updating the course"
-          }
-        );
-        if (res) navigate("/admin");
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      toast.error(
-        "This course is not valid add at least on lesson and fill other details"
+    try {
+      const formData = new FormData();
+      // console.log(degreeData.title);
+      formData.append("title", courseData.title);
+      // console.log(degreeData.description);
+      formData.append("description", courseData.description);
+      // console.log(degreeData.price);
+      formData.append("price", courseData.price);
+
+      formData.append("degreeThumbnail", courseData.degreeThumbnail);
+
+      courseData.courses.forEach((course) => {
+        formData.append("courseThumbnails", course.courseThumbnail);
+        // Append course thumbnail if available
+        //  if (course.courseThumbnail) {
+        //    formData.append("courseThumbnails", course.courseThumbnail);
+        //  }
+        course.chapters.forEach((chapter) => {
+          chapter.lessons.forEach((lesson) => {
+            // formData.append("lessonFiles", lesson.file);
+            lesson.subLessons.forEach((subLesson) => {
+              formData.append("subLessonFiles", subLesson.subLessonFiles);
+            });
+          });
+        });
+      });
+
+      console.log(courseData);
+
+      formData.append("courses", JSON.stringify(courseData?.courses));
+
+      // Send the final payload
+      console.log("FormData : " + formData);
+
+      const response = await axios.put(
+        `${apiBaseUrl}/api/degrees/${courseDetails._id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          // withCredentials: true,
+        }
       );
+
+      console.log("Degree added successfully:", response.data);
+      toast.success("Degree added successfully!");
+      navigate("/admin/degrees");
+    } catch (error) {
+      console.error(
+        "Error uploading degree:",
+        error.response?.data || error.message
+      );
+      toast.error("An error occurred while adding the degree.");
     }
   };
 
@@ -123,11 +154,14 @@ const Edit = ({ courseDetails }) => {
     );
     if (confirm) {
       try {
-        const res = await toast.promise(deleteDegree(courseDetails.id), {
-          pending: "deleting degree...",
-          success: "Degree deleted successfully",
-          error: "An error occurred while deleting Degree"
-        })
+        const res = await toast.promise(
+          axios.delete(`${apiBaseUrl}/api/degrees/${courseDetails._id}`),
+          {
+            pending: "deleting degree...",
+            success: "Degree deleted successfully",
+            error: "An error occurred while deleting Degree",
+          }
+        );
         if (res) navigate("/admin");
       } catch (error) {
         console.log(error);
@@ -141,16 +175,15 @@ const Edit = ({ courseDetails }) => {
     setCourseData({ ...courseData, overviewPoints: newOverviews });
   };
 
-
   const handleDeleteCourse = (courseIndex) => {
-    const newCourseData = [...courseData.courses]
+    const newCourseData = [...courseData.courses];
     newCourseData.splice(courseIndex, 1);
     setCourseData({ ...courseData, courses: newCourseData });
-  }
+  };
 
-  const openEditLesson = (lesson, index) => {
-    lesson.updateIndex = index;
-    setPopupOpen({ open: true, data: lesson });
+  const openEditLesson = (course, index) => {
+    course.updateIndex = index;
+    setPopupOpen({ open: true, data: course });
   };
 
   const setEditValues = (overview, index) => {
@@ -168,7 +201,7 @@ const Edit = ({ courseDetails }) => {
       }}
     >
       <div className="top-header-cnt">
-        <div className="back-btn" onClick={() => navigate("/")}>
+        <div className="back-btn" onClick={() => navigate("/admin/degrees")}>
           <img src={BackIcon} alt="back" className="back-icon-img" />
         </div>
         {editCourse ? (
@@ -217,15 +250,27 @@ const Edit = ({ courseDetails }) => {
       <div className="input-split-cover">
         <form className="left-form">
           <div className="course-name-cnt">
-            <p>Enter course Name</p>
+            <p>Enter course title</p>
             <input
               type="text"
               name=""
               id=""
               className="name-input"
-              value={courseData?.name}
+              value={courseData?.title}
               readOnly={editCourse ? false : true}
-              onChange={(e) => handledirectInput("name", e.target.value)}
+              onChange={(e) => handledirectInput("title", e.target.value)}
+            />
+          </div>
+          <div className="course-name-cnt">
+            <p>Enter degree Description</p>
+            <input
+              type="text"
+              name=""
+              id=""
+              className="name-input"
+              value={courseData?.description}
+              readOnly={editCourse ? false : true}
+              onChange={(e) => handledirectInput("description", e.target.value)}
             />
           </div>
           <div className="flex-input">
@@ -243,13 +288,17 @@ const Edit = ({ courseDetails }) => {
               />
             </div>
             <div className="course-name-cnt">
-              <p>Upload course thumnale</p>
+              <p>Upload Degree Thumbnail</p>
               <input
                 type="file"
                 name=""
                 id=""
                 className="styled-input"
-                placeholder=""
+                readOnly={editCourse ? false : true}
+                accept="image/*, image/svg+xml"
+                onChange={(e) =>
+                  handledirectInput("degreeThumbnail", e.target.files[0])
+                }
               />
             </div>
           </div>
@@ -270,23 +319,23 @@ const Edit = ({ courseDetails }) => {
           </div>
           <div className="lesson-list-cnt">
             {courseData?.courses?.length > 0 ? (
-              courseData?.courses?.map((lesson, index) => (
+              courseData?.courses?.map((course, index) => (
                 <div
                   className="lesson"
                   style={{ pointerEvents: editCourse ? "all" : "none" }}
-                  onClick={() => openEditLesson(lesson, index)}
+                  onClick={() => openEditLesson(course, index)}
                 >
                   <h1 className="lesson-number">{index + 1}</h1>
                   <div className="lesson-title-cnt">
-                    <h3 className="lesson-title">{lesson?.name}</h3>
+                    <h3 className="lesson-title">{course?.title}</h3>
                   </div>
                   <ul className="lesson-subtitle-cnt">
-                    {lesson?.lessons?.map((feature) => (
+                    {course?.chapters?.map((chapter) => (
                       <li>
-                        <p className="lesson-subtitle">{feature?.name}</p>
-                        <p className="lesson-duration-txt">
-                          duration : {feature?.duration}
-                        </p>
+                        <p className="lesson-subtitle">{chapter?.title}</p>
+                        {/* <p className="lesson-duration-txt">
+                          duration : {chapter?.duration}
+                        </p> */}
                       </li>
                     ))}
                   </ul>
@@ -305,12 +354,18 @@ const Edit = ({ courseDetails }) => {
         </form>
       </div>
       {popupOpen.open && (
-        <NewLesson
-          addCourse={(course) => addLessontoCourse(course)}
+        // <NewLesson
+        //   addCourse={(course) => addLessontoCourse(course)}
+        //   editData={popupOpen?.data}
+        //   cancel={() => setPopupOpen({ open: false, data: null })}
+        //   removeThisCourse={(index) => handleDeleteCourse(index)}
+        //   degreeId={courseData.id}
+        // />
+        <NewCourse
+          addDegree={addLessontoCourse}
           editData={popupOpen?.data}
           cancel={() => setPopupOpen({ open: false, data: null })}
           removeThisCourse={(index) => handleDeleteCourse(index)}
-          degreeId={courseData.id}
         />
       )}
     </div>

@@ -14,7 +14,6 @@ const apiBaseUrl = process.env.REACT_APP_BASE_API;
 const DegreeList = () => {
   const navigate = useNavigate();
   const [courses, SetCourses] = useState(null);
-
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -23,7 +22,8 @@ const DegreeList = () => {
           // console.log(QueryDocumentSnapshots)
           // SetCourses(QueryDocumentSnapshots);
           const responseDegrees = await axios.get(`${apiBaseUrl}/api/degrees`);
-          const {degrees} = responseDegrees.data;
+          const { degrees } = responseDegrees.data;
+
           console.log(degrees);
              SetCourses(degrees);
         }
@@ -34,6 +34,7 @@ const DegreeList = () => {
 
     fetchCourses()
   }, [])
+  
 
 
   return (
@@ -53,7 +54,7 @@ const DegreeList = () => {
       <div className="course-list">
         {courses && courses?.map((course, index) => (
           <div className="" key={index}>
-          <DegreeCard data={course} />
+            <DegreeCard data={course } />
           </div>
         ))}
       </div>

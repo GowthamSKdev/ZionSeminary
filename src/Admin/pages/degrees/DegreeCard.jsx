@@ -36,7 +36,7 @@ const DegreeCard = ({ data }) => {
             <div className="">
               <button
                 className="btn btn-success"
-                onClick={() => navigate("degrees/edit", { state: data })}
+                onClick={() => navigate("/admin/degrees/edit", { state: data })}
               >
                 <Edit3 />
                 Edit Degree

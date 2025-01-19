@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import Nolesson from "../../../assets/Images/no-lesson-illustration.svg";
 import { useNavigate } from "react-router-dom";
 // import NewLesson from "./NewLesson";
-import NewLesson from "../../lesson/NewLesson";
-import { addDegree } from "../../../firebase/degreeApi";
+// import NewLesson from "../../lesson/NewLesson";
+// import { addDegree } from "../../../firebase/degreeApi";
 import { toast } from "react-toastify";
 // import NewChapter from "./NewChapter";
-import LessonPopUp from "../../../components/degrees/LessonPopUp";
-import NewChapter from "./NewChapter";
+// import LessonPopUp from "../../../components/degrees/LessonPopUp";
+// import NewChapter from "./NewChapter";
 import ChapterPopUp from "../../../components/degrees/ChapterPopUp";
 
-const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
+const NewCourse = ({ addDegree,degreeId, cancel, editData, removeThisLesson }) => {
   const [popupOpen, setPopupOpen] = useState({ open: false, data: null });
 
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
   }, [popupOpen]);
 
   useEffect(() => {
-    if (editData) setCurrentLesson(editData);
+    if (editData) setCourseData(editData);
   }, [editData]);
 
   const handledirectInput = ( type, value) => {
@@ -38,16 +38,17 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
 
 
 
-  const handleDeleteCourse = (courseIndex) => {
+  const handleDeleteCourse = (chapterIndex) => {
     const newCourseData = [...courseData.chapters];
-    newCourseData.splice(courseIndex, 1);
-    setCourseData({ ...courseData, chapters: newChapterData });
+    newCourseData.splice(chapterIndex, 1); // Remove chapter at the given index
+    setCourseData({ ...courseData, chapters: newCourseData });
   };
+
 
   const addChapterToCourse = (chapter) => {
     console.log(chapter);
     const newCourse = [...courseData.chapters];
-    if (chapter.updateIndex === null) {
+    if (chapter.updateIndex === null && chapter.updateIndex === undefined) {
       newCourse.push({
         ...chapter,
         updateIndex: newCourse?.length > 0 ? newCourse?.length : 0,
@@ -60,6 +61,7 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
     setPopupOpen({ open: false });
     // addDegree(courseData)
   };
+
 
   const uploadCourse = async () => {
     if (!courseData.title || !courseData.courseThumbnails) {
@@ -112,7 +114,7 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
                 type="text"
                 name=""
                 id=""
-                // value={courseData?.title}
+                value={courseData?.title}
                 className="name-input"
                 onChange={(e) => handledirectInput("title", e.target.value)}
               />
@@ -124,7 +126,7 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
                 type="text"
                 name=""
                 id=""
-                // value={courseData?.description}
+                value={courseData?.description}
                 className="description-input"
                 onChange={(e) =>
                   handledirectInput("description", e.target.value)
@@ -180,11 +182,11 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
                   >
                     <h1 className="lesson-number">{index + 1}</h1>
                     <div className="lesson-title-cnt">
-                      <h3 className="lesson-title">{chapter.name}</h3>
+                      <h3 className="lesson-title">{chapter.title}</h3>
                     </div>
                     <ul className="lesson-subtitle-cnt">
-                      {chapter.Lessons?.map((lesson) => (
-                        <li>
+                      {chapter.lessons?.map((lesson) => (
+                        <li key={lesson.title}>
                           <p className="lesson-subtitle">{lesson.title}</p>
                         </li>
                       ))}
@@ -210,6 +212,8 @@ const NewCourse = ({ addDegree, cancel, editData, removeThisLesson }) => {
             editData={popupOpen?.data}
             cancel={() => setPopupOpen({ open: false, data: null })}
             removeThisCourse={(index) => handleDeleteCourse(index)}
+            degreeId={degreeId}
+            
           />
         )}
       </div>
