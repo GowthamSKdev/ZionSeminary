@@ -18,6 +18,8 @@ const AdminTable = () => {
     try {
       const res = await axios.get(`${apiBaseUrl}/api/users`);
       const { users } = res.data;
+      console.log(users);
+      
 
       // Fetch degrees for all users
       const usersWithDegrees = await Promise.all(
@@ -85,7 +87,7 @@ const AdminTable = () => {
               <th scope="col">No</th>
               <th scope="col">Image</th>
               <th scope="col">Name</th>
-              <th scope="col">Email</th>
+              <th scope="col">Phone No</th>
               <th scope="col">Access</th>
               <th scope="col">Degree</th>
               <th scope="col">Action</th>
@@ -106,7 +108,7 @@ const AdminTable = () => {
                       />
                     </td>
                     <td>{user.username}</td>
-                    <td>{user.email}</td>
+                    <td>{user.mobileNo}</td>
                     <td className="">
                       <div className="form-check form-switch">
                         <input

@@ -33,14 +33,13 @@ const LeftBar = () => {
         <Link to="../admin/events" className="menu-item">
           <span>Events</span>
         </Link>
-        <Link
+        {/* <Link
           to="../admin/users"
           className={`menu-item ${
             location === "/admin/users" && "menu-item-active"
           }`}>
-          {/* <FontAwesomeIcon icon={"faSignOutAlt"} className="icon" /> */}
           <span>Users</span>
-        </Link>
+        </Link> */}
         <Link
           to="../admin/tests"
           className={`menu-item ${

@@ -48,7 +48,7 @@ const NewCourse = ({ addDegree,degreeId, cancel, editData, removeThisLesson }) =
   const addChapterToCourse = (chapter) => {
     console.log(chapter);
     const newCourse = [...courseData.chapters];
-    if (chapter.updateIndex === null && chapter.updateIndex === undefined) {
+    if (chapter.updateIndex === null) {
       newCourse.push({
         ...chapter,
         updateIndex: newCourse?.length > 0 ? newCourse?.length : 0,
