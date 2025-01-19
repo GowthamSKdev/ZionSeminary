@@ -765,6 +765,7 @@ input[type="file"]::file-selector-button:active {
   background: rgb(250, 250, 250);
   z-index: 20;
   border-radius: 1rem;
+  overflow-y: scroll !important;
   /* padding: 1rem; */
 }
 
@@ -1034,7 +1035,7 @@ input[type="file"]::file-selector-button:active {
   justify-content: center;
   align-items: center;
   padding: .2rem;
-  /* overflow: scroll; */
+  overflow: scroll !important;
 }
 
 .lesson-popup {
@@ -1238,6 +1239,7 @@ input[type="file"]::file-selector-button:active {
 
   .add-test-cnt {
     padding: 2rem;
+    overflow-y: scroll !important;
   }
 
   .lesson-new-cnt {

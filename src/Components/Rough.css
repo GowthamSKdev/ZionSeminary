@@ -10,15 +10,26 @@
 }
 
 .zion-card{
-    display: block;
+    /* display: block; */
+    
 }
 .zion-course-card{
-    display: flex;
+    /* display: flex;
     flex-direction: column;
     padding: 1em;
     background-color: hsl(0, 0%, 100%);
-    border-radius: 1em;
+    border-radius: 1em; */
     /* width: 250px; */
+
+    background: #f9f9f9; /* Example background for items */
+  border: 1px solid #ddd; /* Optional border for clarity */
+  border-radius: 8px; /* Rounded corners */
+  padding: 1rem; /* Adds internal spacing */
+  display: flex;
+  flex-direction: column; /* Ensures consistent height with content alignment */
+  justify-content: space-between; /* Space out content */
+  height: 100%; /* Makes all items stretch to the same height */
+    
 }
 
 .zion-course-card img{

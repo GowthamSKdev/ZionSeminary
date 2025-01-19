@@ -18,7 +18,6 @@ const AdminTable = () => {
     try {
       const res = await axios.get(`${apiBaseUrl}/api/users`);
       const { users } = res.data;
-      console.log(users);
       
 
       // Fetch degrees for all users
@@ -77,7 +76,7 @@ const AdminTable = () => {
   }, []);
 
   return (
-    <div className="container mt-10 position-relative">
+    <div className="container-fluid mt-10 position-relative admin-table">
       {isLoading ? (
         <div>Loading...</div>
       ) : (

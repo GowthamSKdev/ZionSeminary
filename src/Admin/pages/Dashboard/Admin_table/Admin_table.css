@@ -38,7 +38,12 @@ h1 {
   color: white;
 }
 
-/* .Admin-table-body{
-  height: 100px;
-  overflow-y: scroll;
-} */
+.admin-table{
+  height: 30em;
+  overflow: scroll;
+  /* overflow-y: scroll; */
+}
+
+.Admin-header{
+  padding: 1em;
+}

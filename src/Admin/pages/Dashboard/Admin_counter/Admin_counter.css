@@ -1,6 +1,6 @@
 .admin_counter_list{
     display: grid;
-    grid-template-columns: repeat(3,1fr);
+    grid-template-columns: repeat(2,1fr);
     padding: 1em;
     gap: 1em;
 }
@@ -8,11 +8,12 @@
     display: flex;
     align-items: center;
     background: linear-gradient(135deg, #f6f9fc 0%, #ffffff 100%);
-    padding: 25px;
+    padding: 1em;
     border-radius: 16px;
     box-shadow: 0 10px 20px rgba(0,0,0,0.05);
     transition: transform 0.3s ease;
     border: 1px solid rgba(0,0,0,0.05);
+
 }
 
 .admin-counter-card:hover {
@@ -38,7 +39,7 @@
 }
 
 .admin-counter-title {
-    font-size: 15px;
+    font-size: 12px;
     color: #8492a6;
     margin-bottom: 8px;
     text-transform: uppercase;

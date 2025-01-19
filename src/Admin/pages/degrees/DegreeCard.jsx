@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import DemoImage from '../../assets/Images/imagenotxt2.png';
 import { Edit3 } from "lucide-react";
 
-
 const DegreeCard = ({ data }) => {
   const navigate = useNavigate();
 
@@ -25,9 +24,9 @@ const DegreeCard = ({ data }) => {
     //     <p>Edit Degree</p>
     //   </div>
     // </div>
+    
     <>
-     
-      <div className="zion-card">
+       {/* <div className="zion-card"> */}
         <div className="zion-course-card">
           <img src={data.thumbnail ? data.thumbnail : DemoImage} alt={data.title} />
           <div className="zion-course-content">
@@ -44,7 +43,7 @@ const DegreeCard = ({ data }) => {
             </div>
           </div>
         </div>
-      </div>
+      {/* </div>  */}
     </>
   );
 };

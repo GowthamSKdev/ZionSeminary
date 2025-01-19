@@ -16,3 +16,6 @@
     grid-row: span 4;
     overflow-y: scroll;
 }
+.admin-header{
+    padding: 1em;
+}

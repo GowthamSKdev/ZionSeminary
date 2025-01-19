@@ -4,27 +4,28 @@ import { Users } from 'lucide-react'
 
 
 
-const Admin_counter = () => {
+const Admin_counter = ({ users,degrees }) => {
+    console.log(users);
+    
   return (
       <div className="admin_counter_list">
-          <Admin_counter_card/>
-          <Admin_counter_card/>
-          <Admin_counter_card/>
+          <Admin_counter_card title={'Total User'} counts={users.length || 0 } />
+          <Admin_counter_card title={'Total degrees'} counts={degrees.length || 0 } />
    </div>
   )
 }
 
 export default Admin_counter
 
-const Admin_counter_card = () => {
+const Admin_counter_card = ({title,counts}) => {
     return (
         <div className="admin-counter-card">
             <div className="admin-counter-icon">
                 <Users/>
             </div>
             <div className="admin-counter-info">
-                <div className="admin-counter-title">Total Users</div>
-                <div className="admin-counter-count">10+</div>
+                <div className="admin-counter-title">{title}</div>
+                <div className="admin-counter-count">{counts}</div>
             </div>
         </div>
     )

@@ -34,10 +34,6 @@ const NewCourse = ({ addDegree,degreeId, cancel, editData, removeThisLesson }) =
     setCourseData({ ...courseData, [type]: value });
   };
 
-  
-
-
-
   const handleDeleteCourse = (chapterIndex) => {
     const newCourseData = [...courseData.chapters];
     newCourseData.splice(chapterIndex, 1); // Remove chapter at the given index
