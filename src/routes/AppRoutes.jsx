@@ -28,6 +28,7 @@ import UserDetails from "../Admin/pages/Dashboard/Admin_table/UserDetails/UserDe
 import AssessmentTest from "../Components/CourseContent/AssessmentTest/AssessmentTest";
 import ForgotPassword from "../Authentication/ForgotPassword";
 import ResetPassword from "../Authentication/ResetPassword";
+import WrittenTest from "../Components/CourseContent/WritteOrFileUpload.jsx/WrittenTest";
 
 const AppRoutes = () => {
   return (
@@ -58,6 +59,10 @@ const AppRoutes = () => {
           <Route
             path="courseContent/:courseId/assessmentTest"
             element={<AssessmentTest />}
+          />
+          <Route
+            path="courseContent/:courseId/writtenTest"
+            element={<WrittenTest />}
           />
         </Route>
         <Route path="/admin" element={<AdminDashboard />} />

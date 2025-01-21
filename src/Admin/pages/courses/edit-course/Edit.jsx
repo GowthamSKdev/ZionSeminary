@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
-// import Nolesson from "../../Assets/Images/no-lesson-illustration.svg";
 import Trash from "../../../assets/Images/trash.png";
 import EditImg from "../../../assets/Images/edit.png";
-// import TestData from "../../Assets/Data/courseContent.json";
 import Nolesson from "../../../assets/Images/no-lesson-illustration.svg";
 import BackIcon from "../../../assets/Images/left-arrow.png";
 import { useNavigate } from "react-router-dom";
-// import NewLesson from "../new-course/NewLesson";
-import { deleteDegree, editDegree } from "../../../firebase/degreeApi";
+// import { deleteDegree, editDegree } from "../../../firebase/degreeApi";
 import { toast } from "react-toastify";
 const apiBaseUrl = process.env.REACT_APP_BASE_API;
 const EditCourse = ({ courseDetails }) => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { convertToUTC } from "../../hooks/newCourseFunctions";
 import ToggleBtn from "../../components/Test/ToggleBtn";
-import { addNewTest, getTestById, updateTest } from "../../firebase/testApi";
+// import { addNewTest, getTestById, updateTest } from "../../firebase/testApi";
 
 const AddTest = ({ testId, closeTest, addTest }) => {
   const initialMCQState = {
@@ -10,20 +10,21 @@ const AddTest = ({ testId, closeTest, addTest }) => {
     options: [],
     questionNumber: null,
     updateIndex: null,
-    type: 'MCQ',
+    type: "MCQ",
   };
   const initialParagraphState = {
     question: "",
     questionNumber: null,
     updateIndex: null,
-    type: 'Paragraph',
+    type: "paragraph",
   };
 
   const [currentTest, setCurrentTest] = useState({
     title: "testing Exam",
     timeLimit: 11,
     questions: [],
-    target:'course'
+    target: "course",
+    type:null
   });
 
   const [currentQuestion, setCurrentQuestion] = useState(initialMCQState);
@@ -34,7 +35,7 @@ const AddTest = ({ testId, closeTest, addTest }) => {
   useEffect(() => {
     const getTest = async () => {
       if (testId?.length > 1) {
-        const data  = await getTestById(testId);
+        const data = await getTestById(testId);
         setCurrentTest(data);
         const time = convertToUTC(data?.test?.timeLimit);
         setDuration(time);
@@ -42,6 +43,18 @@ const AddTest = ({ testId, closeTest, addTest }) => {
     };
     getTest();
   }, [testId]);
+
+  // Handle the toggle to switch between MCQ and Paragraph types
+  const handleToggle = (value) => {
+    // Update the question type based on the toggle
+    setCurrentQuestion(value);
+
+    // Update the current test's type as well
+    setCurrentTest({
+      ...currentTest,
+      type: value.type, // Set currentTest type to 'MCQ' or 'Paragraph'
+    });
+  };
 
   // useEffect(() => {
   //   console.log(currentTestType)
@@ -67,25 +80,63 @@ const AddTest = ({ testId, closeTest, addTest }) => {
     setCurrentQuestion({ ...currentQuestion, options: newChoices });
   };
 
+  // const handleNext = () => {
+  //   const updatedtest = [...currentTest.questions];
+  //   if (currentQuestion.updateIndex === null) {
+  //     updatedtest?.push(currentQuestion);
+  //     setCurrentTest({ ...currentTest, questions: updatedtest });
+  //     setCurrentQuestion(initialMCQState);
+  //   } else if (
+  //     currentQuestion.updateIndex + 1 ===
+  //     currentTest?.questions?.length
+  //   ) {
+  //     updatedtest[currentQuestion.updateIndex] = currentQuestion;
+  //     setCurrentTest({ ...currentTest, questions: updatedtest });
+  //     setCurrentQuestion(initialMCQState);
+  //   } else {
+  //     updatedtest[currentQuestion.updateIndex] = currentQuestion;
+  //     setCurrentTest({ ...currentTest, questions: updatedtest });
+  //     setCurrentQuestion(
+  //       currentTest?.questions?.[currentQuestion.updateIndex + 1]
+  //     );
+  //   }
+  // };
+
   const handleNext = () => {
     const updatedtest = [...currentTest.questions];
-    if (currentQuestion.updateIndex === null) {
-      updatedtest?.push(currentQuestion);
-      setCurrentTest({ ...currentTest, questions: updatedtest });
-      setCurrentQuestion(initialMCQState);
-    } else if (
-      currentQuestion.updateIndex + 1 ===
-      currentTest?.questions?.length
-    ) {
-      updatedtest[currentQuestion.updateIndex] = currentQuestion;
-      setCurrentTest({ ...currentTest, questions: updatedtest });
-      setCurrentQuestion(initialMCQState);
-    } else {
-      updatedtest[currentQuestion.updateIndex] = currentQuestion;
-      setCurrentTest({ ...currentTest, questions: updatedtest });
-      setCurrentQuestion(
-        currentTest?.questions?.[currentQuestion.updateIndex + 1]
-      );
+
+    // Check if the current question is of type 'Paragraph'
+    if (currentQuestion.type === "paragraph") {
+      // Add or update the paragraph question in the questions array
+      if (currentQuestion.updateIndex === null) {
+        updatedtest.push(currentQuestion);
+        setCurrentTest({ ...currentTest, questions: updatedtest });
+        setCurrentQuestion(initialParagraphState); // Reset to initial state
+      } else {
+        updatedtest[currentQuestion.updateIndex] = currentQuestion;
+        setCurrentTest({ ...currentTest, questions: updatedtest });
+        setCurrentQuestion(initialParagraphState); // Reset to initial state
+      }
+    } else if (currentQuestion.type === "MCQ") {
+      // Handle MCQ type question
+      if (currentQuestion.updateIndex === null) {
+        updatedtest.push(currentQuestion);
+        setCurrentTest({ ...currentTest, questions: updatedtest });
+        setCurrentQuestion(initialMCQState); // Reset to initial state
+      } else if (
+        currentQuestion.updateIndex + 1 ===
+        currentTest?.questions?.length
+      ) {
+        updatedtest[currentQuestion.updateIndex] = currentQuestion;
+        setCurrentTest({ ...currentTest, questions: updatedtest });
+        setCurrentQuestion(initialMCQState); // Reset to initial state
+      } else {
+        updatedtest[currentQuestion.updateIndex] = currentQuestion;
+        setCurrentTest({ ...currentTest, questions: updatedtest });
+        setCurrentQuestion(
+          currentTest?.questions?.[currentQuestion.updateIndex + 1]
+        );
+      }
     }
   };
 
@@ -99,9 +150,9 @@ const AddTest = ({ testId, closeTest, addTest }) => {
   };
 
   const handleSelectQuestion = (index, test) => {
-    setCurrentQuestion({ ...test, updateIndex: index })
+    setCurrentQuestion({ ...test, updateIndex: index });
     // setCurrentTestType(test?.type)
-  }
+  };
 
   const questionValidation = () => {
     if (
@@ -110,23 +161,27 @@ const AddTest = ({ testId, closeTest, addTest }) => {
       currentQuestion?.options?.length === 4
     )
       return true;
-    if (currentQuestion.type === 'Paragraph' && currentQuestion?.question?.length > 5) return true
+    if (
+      currentQuestion.type === "Paragraph" &&
+      currentQuestion?.question?.length > 5
+    )
+      return true;
     return false;
   };
 
   const handleAddTest = async () => {
     if (testId?.length > 5) {
       try {
-        const data  = await updateTest(currentTest);
-        addTest(data);
+        // const data  = await updateTest(currentTest);
+        // addTest(data);
         closeTest();
       } catch (error) {
         console.log(error);
       }
     } else {
       try {
-        const data  = await addNewTest(currentTest);
-        addTest(data);
+        // const data  = await addNewTest(currentTest);
+        addTest(currentTest);
         closeTest();
       } catch (error) {
         console.log(error);
@@ -177,7 +232,8 @@ const AddTest = ({ testId, closeTest, addTest }) => {
               RightValue={initialParagraphState}
               currentValue={currentQuestion}
               // currentValue={currentTestType}
-              handleToggle={(value) => setCurrentQuestion(value)}
+              // handleToggle={(value) => setCurrentQuestion(value)}
+              handleToggle={handleToggle}
             />
             <p>Paragraph</p>
           </div>
@@ -249,10 +305,14 @@ const AddTest = ({ testId, closeTest, addTest }) => {
         </div>
       </div>
       <div className="question-inputs-cnt">
-        <div className={`question-input-cnt ${currentQuestion?.type  !== 'MCQ' && 'pargaraph-question'}`}>
+        <div
+          className={`question-input-cnt ${
+            currentQuestion?.type !== "MCQ" && "pargaraph-question"
+          }`}
+        >
           <p>Question</p>
           <textarea
-            className="question-input"
+            className="question-input h-50"
             value={currentQuestion?.question}
             onChange={(e) =>
               setCurrentQuestion({
@@ -261,9 +321,17 @@ const AddTest = ({ testId, closeTest, addTest }) => {
               })
             }
           />
+          <button
+            className={`btn btn-primary mt-4 ${
+              currentQuestion?.type !== "paragraph" ? "d-none" : "d-block"
+            }`}
+            onClick={() => handleNext()}
+          >
+            Confirm
+          </button>
         </div>
-        {
-          currentQuestion?.type === 'MCQ' && (<div className="choice-cnt">
+        {currentQuestion?.type === "MCQ" && (
+          <div className="choice-cnt">
             <div className="choice-header">
               <p>Choices</p>
               <div className="select-answer-cnt">
@@ -353,8 +421,8 @@ const AddTest = ({ testId, closeTest, addTest }) => {
                 onChange={(e) => handleChoiceInput(3, e.target.value)}
               />
             </div>
-          </div>)
-        }
+          </div>
+        )}
       </div>
       <div className="action-btns-cnt">
         <div
@@ -382,3 +450,4 @@ const AddTest = ({ testId, closeTest, addTest }) => {
 };
 
 export default AddTest;
+

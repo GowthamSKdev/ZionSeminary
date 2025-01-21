@@ -141,7 +141,8 @@ const CourseContent = () => {
               onEnded={() => {
                 handleMediaEnd(data, lessonIndex, exerciseIndex, chapterIndex);
               }}
-              style={{ maxWidth: "100%", width: "100%", borderRadius: "1em" }}>
+              style={{ maxWidth: "100%", width: "100%", borderRadius: "1em" }}
+            >
               {/* <source src={link} type="video/mp4" /> */}
               {/* <source src={link} type="video/mkv" /> */}
               <source src={link ? `${link}` : "/test.mp4"} type="video/mp4" />
@@ -174,7 +175,8 @@ const CourseContent = () => {
                   lessonIndex,
                   exerciseIndex
                 );
-              }}>
+              }}
+            >
               <source src={link} type="audio/mp3" />
             </audio>
           </div>
@@ -190,7 +192,8 @@ const CourseContent = () => {
               height={500}
               // contentEditable
               width={"100%"}
-              style={{ height: "400px", borderRadius: "1em" }}></object>
+              style={{ height: "400px", borderRadius: "1em" }}
+            ></object>
           </div>
           <div className="MarkAsCompleted">
             <button
@@ -202,7 +205,8 @@ const CourseContent = () => {
                   lessonIndex,
                   exerciseIndex
                 )
-              }>
+              }
+            >
               {" "}
               Mark as Completed
             </button>
@@ -237,7 +241,8 @@ const CourseContent = () => {
                     lessonIndex,
                     exerciseIndex
                   )
-                }>
+                }
+              >
                 {" "}
                 Mark as Completed
               </button>
@@ -390,7 +395,7 @@ const CourseContent = () => {
     return `${parseInt(minutes, 10)}m ${parseInt(seconds, 10)}s`;
   }
   return (
-    <div className="courseContentContainer">
+    <div className="courseContentContainer min-vh-100">
       <div className="row firstRow g-0">
         <div className="courseContentHeader">
           <button className="BackBtn" onClick={() => navigate(-1)}>
@@ -446,7 +451,7 @@ const CourseContent = () => {
             </div>
           </div>
         </div>
-        <div className="col-md-4 CCaccordianBox">
+        <div className="col-md-4 CCaccordianBox h-100">
           {/* <Accordion
             activeKey={activeAccordion}
             onSelect={(key) => setActiveAccordion(key)}>
@@ -568,7 +573,8 @@ const CourseContent = () => {
 
           <Accordion
             activeKey={activeAccordion}
-            onSelect={(key) => setActiveAccordion(key)}>
+            onSelect={(key) => setActiveAccordion(key)}
+          >
             {courseData?.chapters &&
               courseData.chapters.map((chapter, index) => {
                 const ChapterCompleted = chapter.lessons?.every((lesson) =>
@@ -582,7 +588,8 @@ const CourseContent = () => {
                 return (
                   <Accordion.Item
                     key={chapter.chapterId}
-                    eventKey={chapter.chapterId}>
+                    eventKey={chapter.chapterId}
+                  >
                     <Accordion.Header>
                       <div className="CClesson-meta">
                         <div className="CClesson-title">
@@ -614,7 +621,8 @@ const CourseContent = () => {
                           return (
                             <Accordion.Item
                               key={lesson.lessonId}
-                              eventKey={`${chapter.chapterId}-${lesson.lessonId}`}>
+                              eventKey={`${chapter.chapterId}-${lesson.lessonId}`}
+                            >
                               <Accordion.Header>
                                 <div className="CClesson-meta">
                                   <div className="CClesson-title">
@@ -639,7 +647,7 @@ const CourseContent = () => {
                               <Accordion.Body>
                                 {lesson.subLessons &&
                                 lesson.subLessons.length > 0 ? (
-                                  <ul className="list-group">
+                                  <ul className="list-group d-flex ">
                                     {lesson.subLessons.map((subLesson) => {
                                       return (
                                         <>
@@ -659,7 +667,8 @@ const CourseContent = () => {
                                                 lesson.lessonId,
                                                 subLesson.subLessonId
                                               )
-                                            }>
+                                            }
+                                          >
                                             <span className="video-number">
                                               <span>{subLesson.title}</span>
 
@@ -699,33 +708,46 @@ const CourseContent = () => {
                                               </span>
                                             )}
                                           </li>
-                                          <li>
-                                            {subLesson.test && (
-                                      <div className="testButtonBox">
-                                        <div className="testButtonInr">
-                                          <div className="testButtonTxt">
-                                            Take a Test to Confirm Your
-                                            Understanding
-                                          </div>
-
-                                          <button
-                                            className="testButton"
-                                            onClick={() =>
-                                              navigate(
-                                                `/home/courseContent/${courseId}/assessmentTest`,
-                                                { state: { test: subLesson.test } }
-                                              )
-                                            }>
-                                            Take Test
-                                          </button>
-                                        </div>
-                                      </div>
-                                    )}
-                                          </li>
+                                          {subLesson.test &&
+                                          subLesson.test.length > 0 ? (
+                                            <div className="testButtonBox">
+                                              <div className="testButtonBox">
+                                                <div className="testButtonInr">
+                                                  <div className="testButtonTxt">
+                                                    UnderStand Start
+                                                  </div>
+                                                  <button
+                                                    className="testButton text-nowrap"
+                                                    onClick={() =>
+                                                      subLesson.test.type ===
+                                                      "MCQ"
+                                                        ? navigate(
+                                                            `/home/courseContent/${courseId}/assessmentTest`,
+                                                            {
+                                                              state: {
+                                                                test: subLesson.test,
+                                                              },
+                                                            }
+                                                          )
+                                                        : navigate(
+                                                            `/home/courseContent/${courseId}/writtenTest`,
+                                                            {
+                                                              state: {
+                                                                test: subLesson.test,
+                                                              },
+                                                            }
+                                                          )
+                                                    }
+                                                  >
+                                                    Test
+                                                  </button>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          ) : null}
                                         </>
                                       );
                                     })}
-                                   
                                   </ul>
                                 ) : (
                                   <div>No Sub-Lessons Available</div>
@@ -734,7 +756,7 @@ const CourseContent = () => {
                             </Accordion.Item>
                           );
                         })}
-                        {/* {chapter.test && (
+                        {chapter.test && chapter.test > 0 ? (
                           <div className="testButtonBox">
                             <div className="testButtonInr">
                               <div className="testButtonTxt">
@@ -744,15 +766,30 @@ const CourseContent = () => {
                               <button
                                 className="testButton"
                                 onClick={() =>
-                                  navigate(
-                                    `/home/tests/${lesson.testId}/user/${userId}`
-                                  )
-                                }>
+                                  chapter.test.type === "MCQ"
+                                    ? navigate(
+                                        `/home/courseContent/${courseId}/assessmentTest`,
+                                        {
+                                          state: {
+                                            test: subLesson.test,
+                                          },
+                                        }
+                                      )
+                                    : navigate(
+                                        `/home/courseContent/${courseId}/writtenTest`,
+                                        {
+                                          state: {
+                                            test: subLesson.test,
+                                          },
+                                        }
+                                      )
+                                }
+                              >
                                 Take Test
                               </button>
                             </div>
                           </div>
-                        )} */}
+                        ) : null}
                       </Accordion>
                     </Accordion.Body>
                   </Accordion.Item>

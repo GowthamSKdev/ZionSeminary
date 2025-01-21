@@ -14,30 +14,37 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 // import { Elacompleted, elaTestScore } from "../../api/baseapi";
 
+// payload = {
+//   degreeId,
+//   userid,
+//   subLessonId,
+//   test,
+//   answer
+// }
+
 const apiBaseUrl = process.env.REACT_APP_BASE_API;
-const userInfo = JSON.parse(localStorage.getItem('userdata'))
+const userInfo = JSON.parse(localStorage.getItem("userdata"));
 
 const AssessmentTest = () => {
   const navigate = useNavigate();
-  const location = useLocation()
-  const { test } = location.state
+  const location = useLocation();
+  const { test } = location.state;
   console.log(test);
-  
-  
-  const [ currentQuestionIndex, setCurrentQuestionIndex ] = useState(0);
-  const [ selectedOptions, setSelectedOptions ] = useState({});
-  const [ score, setScore ] = useState({});
-  const [ timeLeft, setTimeLeft ] = useState(3600); // 23 minutes and 46 seconds
-  const [ selectedUserDropdown, setSelectedUserDropdown ] = useState(1);
-  const [ currentSectionIndex, setCurrentSectionIndex ] = useState(0);
-  const [ bookmarkedQuestions, setBookmarkedQuestions ] = useState({});
+
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedOptions, setSelectedOptions] = useState({});
+  const [score, setScore] = useState({});
+  const [timeLeft, setTimeLeft] = useState(3600); // 23 minutes and 46 seconds
+  const [selectedUserDropdown, setSelectedUserDropdown] = useState(1);
+  const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
+  const [bookmarkedQuestions, setBookmarkedQuestions] = useState({});
   // var questionData = JSON.parse(localStorage.getItem("questionData"));
   // var questionData = test[0];
   var questionData = test?.[0] || {};
 
   console.log(questionData);
-  
-  const [ finalScore, setFinalScore ] = useState(0);
+
+  const [finalScore, setFinalScore] = useState(0);
 
   useEffect(() => {
     setTimeLeft(localStorage.getItem("TimeLeft"));
@@ -47,12 +54,12 @@ const AssessmentTest = () => {
     return () => clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    if (timeLeft <= 0) {
-      localStorage.setItem("elacomplete", "true");
-      testcomplete();
-    }
-  });
+  // useEffect(() => {
+  //   if (timeLeft <= 0) {
+  //     localStorage.setItem("elacomplete", "true");
+  //     testcomplete();
+  //   }
+  // });
 
   const handleBookmark = () => {
     // setBookmarkedQuestions((prev) =>
@@ -62,7 +69,7 @@ const AssessmentTest = () => {
     // );
     setBookmarkedQuestions({
       ...bookmarkedQuestions,
-      [ `${currentSectionIndex}-${currentQuestionIndex}` ]:
+      [`${currentSectionIndex}-${currentQuestionIndex}`]:
         bookmarkedQuestions[
           `${currentSectionIndex}-${currentQuestionIndex}`
         ] === "true"
@@ -72,7 +79,7 @@ const AssessmentTest = () => {
   };
 
   const handleNavigation = (direction) => {
-    const currentSection = questionData.sections[ currentSectionIndex ];
+    const currentSection = questionData.sections[currentSectionIndex];
     const currentSectionQuestions = currentSection.questions.slice(0, 20);
 
     if (
@@ -88,12 +95,13 @@ const AssessmentTest = () => {
   const handleOptionChange = (event) => {
     setSelectedOptions({
       ...selectedOptions,
-      [ `${currentSectionIndex}-${currentQuestionIndex}` ]: event.target.value,
+      [`${currentSectionIndex}-${currentQuestionIndex}`]: event.target.value,
     });
+
     setScore({
       ...score,
-      [ `${currentSectionIndex}-${currentQuestionIndex}` ]:
-        currentQuestion.answer === event.target.value ? 1 : 0,
+      [`${currentSectionIndex}-${currentQuestionIndex}`]:
+        currentQuestion.correctAnswer === event.target.value ? 1 : 0,
     });
   };
 
@@ -178,16 +186,15 @@ const AssessmentTest = () => {
   // const sections = questionData?.sections;
   // const currentSection = sections[currentSectionIndex];
   // const currentSectionQuestions = questionData?.questions?.slice(0, 20) || [];
-  const currentSectionQuestions =  questionData?.questions|| [];
+  const currentSectionQuestions = questionData?.questions || [];
   // const currentSectionQuestions = questionData.questions || [];
 
   const currentQuestion = currentSectionQuestions[currentQuestionIndex] || null;
   // const currentQuestion = test?.questions[currentQuestionIndex] || null;
 
-
   // console.log("currentSection", currentSection);
   console.log(currentSectionQuestions);
-  
+
   console.log("currentQuestion", currentQuestion);
 
   let [totalQuestions, settotalQuestions] = useState(0);
@@ -207,31 +214,31 @@ const AssessmentTest = () => {
     selectedOptions.hasOwnProperty(`${currentSectionIndex}-${index}`)
   );
 
-  function logout() {
-    confirmAlert({
-      title: "You are about to Logout",
-      message:
-        "This will lead to loss of test progress, Do you wish to continue?",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => {
-            localStorage.removeItem("isloggedin");
-            localStorage.removeItem("linkedin");
-            localStorage.removeItem("elacomplete");
-            localStorage.removeItem("userid");
-            localStorage.removeItem("email");
-            localStorage.removeItem("name");
-            navigate("../");
-          },
-        },
-        {
-          label: "No",
-          onClick: () => console.log("Click No"),
-        },
-      ],
-    });
-  }
+  // function logout() {
+  //   confirmAlert({
+  //     title: "You are about to Logout",
+  //     message:
+  //       "This will lead to loss of test progress, Do you wish to continue?",
+  //     buttons: [
+  //       {
+  //         label: "Yes",
+  //         onClick: () => {
+  //           localStorage.removeItem("isloggedin");
+  //           localStorage.removeItem("linkedin");
+  //           localStorage.removeItem("elacomplete");
+  //           localStorage.removeItem("userid");
+  //           localStorage.removeItem("email");
+  //           localStorage.removeItem("name");
+  //           navigate("../");
+  //         },
+  //       },
+  //       {
+  //         label: "No",
+  //         onClick: () => console.log("Click No"),
+  //       },
+  //     ],
+  //   });
+  // }
 
   function finishtest() {
     if (notAnsweredCount > 0) {
@@ -272,20 +279,42 @@ const AssessmentTest = () => {
   }
 
   async function testcomplete() {
-    let sum = 0;
-    for (let i = 0; i < Object.values(score).length; i++) {
-      sum += Object.values(score)[i];
-    }
-    try {
-      const payload = { 
-        userId : userInfo._id,
-        degreeId : userInfo.applyingFor,
-        courseId,
-        subLessonId
+    // let sum = 0;
+    // for (let i = 0; i < Object.values(score).length; i++) {
+    //   sum += Object.values(score)[i];
+    // }
+
+
+    let testAnswers = currentSectionQuestions.map((question, index) => ({
+      question: question.question,
+      userAnswer: selectedOptions[`${currentSectionIndex}-${index}`] || null,
+      correctAnswer: question.correctAnswer,
+      type: "MCQ",
+      marks:
+        selectedOptions[`${currentSectionIndex}-${index}`] ===
+        question.correctAnswer
+          ? 1
+          : 0,
+    }));
+  
+    const sAns = [
+      {
+
+        subLessonId: questionData._id, // Assuming `questionData._id` holds the subLessonId
+        testAnswers:testAnswers,
       }
-      const res = await axios.put(`${apiBaseUrl}/api/users/answer/submit/`,payload)
+    ];
+    try {    
+      const formData = new FormData()
+      formData.append('userId', userInfo._id)
+      formData.append('degreeId', userInfo.applyingFor)
+      formData.append("subLessons", JSON.stringify(sAns));
+
+      const res = await axios.post(
+        `${apiBaseUrl}/api/answer/submit`,
+        formData
+      );
       console.log(res.data);
-      
 
       navigate(-1);
       // const Id = localStorage.getItem("userid");
@@ -300,6 +329,7 @@ const AssessmentTest = () => {
       console.log(error);
     }
   }
+
 
   return (
     <div className="assessment-head">
@@ -330,7 +360,8 @@ const AssessmentTest = () => {
             onClick={(e) => {
               e.preventDefault();
               finishtest();
-            }}>
+            }}
+          >
             Finish
           </button>
         </div>
@@ -379,8 +410,6 @@ const AssessmentTest = () => {
                       </label>
                     </div>
                   ))}
-
-                  
                 </form>
 
                 {/* <div className="navigation-button">
@@ -426,7 +455,7 @@ const AssessmentTest = () => {
             </div>
             <div className="w-25 h-100 right-side">
               <div className="w-100 right-side-component">
-                <div className="timer">{formatTime(timeLeft)}</div>
+                {/* <div className="timer">{formatTime(timeLeft)}</div> */}
                 <div
                   className="questions-container"
                   style={{
@@ -434,7 +463,8 @@ const AssessmentTest = () => {
                     flexDirection: "column",
                     gap: "5px",
                     width: "100%",
-                  }}>
+                  }}
+                >
                   <div className="questions">
                     <p>Questions</p>
                   </div>
@@ -450,7 +480,8 @@ const AssessmentTest = () => {
                   </select> */}
                   <div
                     id="Test-marks-container"
-                    style={{ width: "100%", paddingLeft: "2rem" }}>
+                    style={{ width: "100%", paddingLeft: "2rem" }}
+                  >
                     <div className="question-numbers">
                       {currentSectionQuestions.map((question, quesIndex) => (
                         <button
@@ -466,7 +497,8 @@ const AssessmentTest = () => {
                               : ""
                           }
                           `}
-                          onClick={() => setCurrentQuestionIndex(quesIndex)}>
+                          onClick={() => setCurrentQuestionIndex(quesIndex)}
+                        >
                           {/* {`${(quesIndex + 1).toString().padStart(2, '0')}`} <FontAwesomeIcon icon={faCheckCircle} style={{color:`${!selectedOptions[`${currentSectionIndex}-${quesIndex}`] && bookmarkedQuestions[`${currentSectionIndex}-${quesIndex}`]=="true"? 'orange' : ''}`}}  size='1rem'className='icon-check pl-4' /> */}
                           {`${(quesIndex + 1).toString().padStart(2, "0")}`}
                           <FontAwesomeIcon

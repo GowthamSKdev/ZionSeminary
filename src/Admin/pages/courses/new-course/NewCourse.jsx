@@ -44,7 +44,7 @@ const NewCourse = ({ addDegree,degreeId, cancel, editData, removeThisLesson }) =
   const addChapterToCourse = (chapter) => {
     console.log(chapter);
     const newCourse = [...courseData.chapters];
-    if (chapter.updateIndex === null) {
+    if (chapter.updateIndex === null ) {
       newCourse.push({
         ...chapter,
         updateIndex: newCourse?.length > 0 ? newCourse?.length : 0,
@@ -58,9 +58,15 @@ const NewCourse = ({ addDegree,degreeId, cancel, editData, removeThisLesson }) =
     // addDegree(courseData)
   };
 
+  
+
+  //  const handleEditChapter = (lesson, index) => {
+  //    setEditLessonData({ ...lesson, updateIndex: index });
+  //    setOpenLessonPopup(true);
+  //  };
 
   const uploadCourse = async () => {
-    if (!courseData.title || !courseData.courseThumbnails) {
+    if (!courseData.title || !courseData.description) {
       toast.error("Please provide title and description.");
       return;
     }

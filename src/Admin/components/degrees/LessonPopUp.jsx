@@ -7,6 +7,7 @@ import LoadingGif from "../../assets/gif/loading.gif";
 import Upload from "../../assets/Images/upload.png";
 import LessonTest from "./LessonTest";
 import { toast } from "react-toastify";
+import AddTest from "../../pages/tests/AddTest";
 
 const initialState = {
   title: "",
@@ -108,16 +109,26 @@ const LessonPopUp = ({
   return (
     <div className="lesson-popup-page ">
       {openLessonTest && (
-        <LessonTest
+        // <LessonTest
+        //   closeTest={() => setOpenLessonTest(false)}
+        //   addTest={(testId) =>
+        //     setCurrentSublesson({
+        //       ...currentSublesson,
+        //       test: testId,
+        //       type: "test",
+        //     })
+        //   }
+        //   testId={currentSublesson.test}
+        // />
+        <AddTest
           closeTest={() => setOpenLessonTest(false)}
-          addTest={(testId) =>
-            setCurrentSublesson({
-              ...currentSublesson,
-              test: testId,
-              type: "test",
-            })
-          }
-          testId={currentSublesson.test}
+            addTest={(testId) =>
+              setCurrentSublesson({
+                ...currentSublesson,
+                test: testId
+              })
+            }
+            testId={currentSublesson.test}
         />
       )}
       <div className="lesson-popup lesson-z-index">
@@ -181,7 +192,11 @@ const LessonPopUp = ({
                   <img
                     src={!currentSublesson.subLessonFiles ? Upload : LoadingGif}
                     alt="imag"
-                    className={`${!currentSublesson.subLessonFiles ? "test-icon" : "upload-icon"}`}
+                    className={`${
+                      !currentSublesson.subLessonFiles
+                        ? "test-icon"
+                        : "upload-icon"
+                    }`}
                   />
                   <input
                     type="file"

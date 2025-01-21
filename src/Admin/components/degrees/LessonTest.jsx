@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 // import { addNewTest, getTestById, updateTest } from '../../firebase/testApi';
-
 const LessonTest = ({ testId, closeTest, addTest }) => {
     const initialMCQState = {
         question: "",
@@ -91,8 +90,8 @@ const LessonTest = ({ testId, closeTest, addTest }) => {
     const handleAddTest = async () => {
         if (testId?.length > 5) {
             try {
-                const { data } = await updateTest(testId, currentTest);
-                addTest(data?.test?._id);
+                // const { data } = await updateTest(testId, currentTest);
+                // addTest(data?.test?._id);
                 closeTest();
             } catch (error) {
                 console.log(error);
@@ -143,6 +142,7 @@ const LessonTest = ({ testId, closeTest, addTest }) => {
                         />
                     </div>
                 </div>
+                
                 <div className="duration-input-cnt ">
                     <p>Set Duration</p>
                     <div className="timer-cover">

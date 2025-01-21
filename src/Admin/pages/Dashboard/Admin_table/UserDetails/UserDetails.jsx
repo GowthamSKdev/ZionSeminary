@@ -1,19 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import "./UserDetails.css";
 import { useLocation } from "react-router-dom";
 import LeftBar from "../../../../components/global/sidebar/LeftBar";
 import defaultUserImg from "../../../../assets/Images/defaultPorfileSVG.svg";
+import Assignment from "../Assignment/Assignment";
 const UserDetails = () => {
   const location = useLocation();
   const { user } = location.state;
   console.log(user);
 
+  const [isOpenAssignment, setIsOpenAssignment] = useState(false)
+const formattedDob = new Date(user.dob)
+  .toISOString()
+  .split("T")[0];
   return (
     <>
       <div className="courses-page h-100 min-vh-100">
         <LeftBar />
-        <div className="w-100 container p-3 h-100 min-dvh-100">
+        <div className="w-100 container p-3 h-100 min-dvh-100 position-relative">
           <h3>User Details</h3>
+          <div className="w-100 h-100 d-flex">
+            {isOpenAssignment && (
+              <Assignment setIsOpenAssignment={setIsOpenAssignment} />
+            )}
+          </div>
           <div className=" d-flex h-100 min-dvh-100 flex-column-reverse flex-lg-row justify-content-between gap-3">
             <div className="left w-100 h-100 gap-3 d-flex flex-column justify-content-between align-items-start">
               <div className="input-form">
@@ -53,7 +63,7 @@ const UserDetails = () => {
                 <input
                   type="date"
                   className="form-control"
-                  placeholder={user.dob}
+                  placeholder={formattedDob}
                 />
               </div>
               <div className="input-form">
@@ -81,7 +91,12 @@ const UserDetails = () => {
                 />
               </div>
               <div className="input-form">
-                Degree Name : <span>{user.degreeName}</span>
+                Degree Name :
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder={user.degreeName}
+                />
               </div>
               <div className="input-form">
                 Present Address :{" "}
@@ -133,7 +148,12 @@ const UserDetails = () => {
                       <td>1</td>
                       <td>Semester</td>
                       <td>
-                        <div className="btn btn-light btn-sm">View</div>
+                        <button
+                          className="btn btn-light btn-sm"
+                          onClick={() => setIsOpenAssignment(true)}
+                        >
+                          View
+                        </button>
                       </td>
                       <td>10</td>
                       <td>

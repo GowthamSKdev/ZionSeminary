@@ -14,7 +14,8 @@ const ChapterTest = ({ testId, closeTest, addTest }) => {
         title: "Chapter Test",  // Update title to reflect chapter context
         timeLimit: 11,
         questions: [],
-        target: 'chapter'  // Changed to 'chapter' to reflect the new context
+        target: 'chapter',  // Changed to 'chapter' to reflect the new context
+        type:'MCQ'
     });
 
     const [currentQuestion, setCurrentQuestion] = useState(initialMCQState);
