@@ -719,7 +719,7 @@ const CourseContent = () => {
                                                   <button
                                                     className="testButton text-nowrap"
                                                     onClick={() =>
-                                                      subLesson.test.type ===
+                                                      subLesson.test[0].type ===
                                                       "MCQ"
                                                         ? navigate(
                                                             `/home/courseContent/${courseId}/assessmentTest`,
@@ -729,7 +729,10 @@ const CourseContent = () => {
                                                               },
                                                             }
                                                           )
-                                                        : navigate(
+                                                        : subLesson.test
+                                                            .type ===
+                                                          "paragraph"
+                                                        ? navigate(
                                                             `/home/courseContent/${courseId}/writtenTest`,
                                                             {
                                                               state: {
@@ -737,6 +740,7 @@ const CourseContent = () => {
                                                               },
                                                             }
                                                           )
+                                                        : null
                                                     }
                                                   >
                                                     Test
@@ -766,23 +770,23 @@ const CourseContent = () => {
                               <button
                                 className="testButton"
                                 onClick={() =>
-                                  chapter.test.type === "MCQ"
+                                  chapter.test[0].type === "MCQ"
                                     ? navigate(
                                         `/home/courseContent/${courseId}/assessmentTest`,
                                         {
                                           state: {
-                                            test: subLesson.test,
+                                            test: chapter.test,
                                           },
                                         }
                                       )
-                                    : navigate(
+                                    : chapter.test[0].type === "paragraph" ? navigate(
                                         `/home/courseContent/${courseId}/writtenTest`,
                                         {
                                           state: {
-                                            test: subLesson.test,
+                                            test: chapter.test,
                                           },
                                         }
-                                      )
+                                      ): null
                                 }
                               >
                                 Take Test

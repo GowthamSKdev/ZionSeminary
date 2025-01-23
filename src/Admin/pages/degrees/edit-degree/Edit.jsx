@@ -508,8 +508,17 @@ const Edit = ({ courseDetails }) => {
       course.chapters.forEach((chapter) => {
         chapter.lessons.forEach((lesson) => {
           // formData.append("lessonFiles", lesson.file);
-          lesson.subLessons.forEach((subLesson) => {
-            formData.append("subLessonFiles", subLesson.subLessonFiles);
+          lesson.subLessons.forEach((subLesson,subLessonIndex) => {
+            // formData.append("sublessonFiles", subLesson.subLessonFiles);
+            // formData.append('sublessonIndexes',subLesson.subLessonIndexes[1])
+            if (subLesson.subLessonFiles) {
+              formData.append("sublessonFiles", subLesson.subLessonFiles);
+            }
+    
+            // Append sub-lesson index if it exists
+            if (subLesson.subLessonIndexes && subLesson.subLessonIndexes[1]) {
+              formData.append("sublessonIndexes", subLesson.subLessonIndexes[1]);
+            }
           });
         });
       });

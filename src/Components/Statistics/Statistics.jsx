@@ -135,7 +135,6 @@ const Statistics = () => {
         <h3>Completion</h3>
         <p>Degree Name:{degree.title}</p>
         <p>Completed Percentage : {watchPercent} %</p>
-        {/* Pass the watchPercent to Chart once it's available */}
         {watchPercent !== null ? (
           <Chart data={{ progress: watchPercent }} />
         ) : (

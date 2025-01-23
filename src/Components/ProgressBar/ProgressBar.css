@@ -13,7 +13,7 @@
   left: 0;
   width: 0;
   height: 100%;
-  background-color: #8949ff;
+  background-color: hsl(191, 100%, 41%);
   transition: width 0.3s ease-in-out;
 }
 

@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 import { addCourseToDegree, editCourse } from "../../firebase/degreeApi";
 
 const initialState = {
-  name: "",
+  title: "",
   description: "",
   lessons: [],
   updateIndex: null,
@@ -23,7 +23,7 @@ const initialState = {
 };
 
 const NewChapter = ({
-  addCourse,
+  addChapter,
   cancel,
   editData,
   removeThisCourse,
@@ -37,29 +37,29 @@ const NewChapter = ({
     data: null,
   });
 
-  const addLessonToCourse = (lesson) => {
-    let updatedLesson = currentCourse?.lessons
-      ? [...currentCourse.lessons]
-      : [];
-    console.log(lesson, "here", updatedLesson);
+  // const addLessonToCourse = (lesson) => {
+  //   let updatedLesson = currentCourse?.lessons
+  //     ? [...currentCourse.lessons]
+  //     : [];
+  //   console.log(lesson, "here", updatedLesson);
 
-    if (lesson?.updateIndex !== undefined && lesson.updateIndex !== null) {
-      if (
-        lesson.updateIndex >= 0 &&
-        lesson.updateIndex < updatedLesson.length
-      ) {
-        console.log(lesson.updateIndex);
-        updatedLesson[lesson.updateIndex] = { ...lesson };
-      } else {
-        console.error("Invalid update index");
-      }
-    } else {
-      console.log("updated");
-      updatedLesson.push({ ...lesson });
-    }
-    setCurrentCourse({ ...currentCourse, lessons: updatedLesson });
-    // cancel();
-  };
+  //   if (lesson?.updateIndex !== undefined && lesson.updateIndex !== null) {
+  //     if (
+  //       lesson.updateIndex >= 0 &&
+  //       lesson.updateIndex < updatedLesson.length
+  //     ) {
+  //       console.log(lesson.updateIndex);
+  //       updatedLesson[lesson.updateIndex] = { ...lesson };
+  //     } else {
+  //       console.error("Invalid update index");
+  //     }
+  //   } else {
+  //     console.log("updated");
+  //     updatedLesson.push({ ...lesson });
+  //   }
+  //   setCurrentCourse({ ...currentCourse, lessons: updatedLesson });
+  //   // cancel();
+  // };
 
   const getFiletypeImg = (filetype) => {
     if (filetype === "video") return Video;
@@ -67,35 +67,73 @@ const NewChapter = ({
     return Doc;
   };
 
-  const validateAndUpdateCourse = async () => {
-    if (currentCourse.description.length > 5 && currentCourse.name) {
-      if (degreeId && !currentCourse?.course_id) {
-        let res = await toast.promise(
-          addCourseToDegree(degreeId, currentCourse),
-          {
-            pending: "adding course...",
-            success: "course added successfully",
-            error: "An error occurred while adding new course",
-          }
-        );
-        setCurrentCourse(res);
-        if (res) addCourse(currentCourse);
-      } else if (currentCourse?.course_id) {
-        let res = await toast.promise(
-          editCourse(degreeId, currentCourse?.course_id, currentCourse),
-          {
-            pending: "updating course...",
-            success: "course updated successfully",
-            error: "An error occurred while updating course",
-          }
-        );
-        if (res) addCourse(currentCourse);
+  // const validateAndUpdateCourse = async () => {
+  //   if (currentCourse.description.length > 5 && currentCourse.title) {
+  //     if (degreeId && !currentCourse?.course_id) {
+  //       let res = await toast.promise(
+  //         addCourseToDegree(degreeId, currentCourse),
+  //         {
+  //           pending: "adding course...",
+  //           success: "course added successfully",
+  //           error: "An error occurred while adding new course",
+  //         }
+  //       );
+  //       setCurrentCourse(res);
+  //       if (res) addCourse(currentCourse);
+  //     } else if (currentCourse?.course_id) {
+  //       let res = await toast.promise(
+  //         editCourse(degreeId, currentCourse?.course_id, currentCourse),
+  //         {
+  //           pending: "updating course...",
+  //           success: "course updated successfully",
+  //           error: "An error occurred while updating course",
+  //         }
+  //       );
+  //       if (res) addCourse(currentCourse);
+  //     }
+  //     // cancel()
+  //   } else {
+  //     toast.error("Please add at least one Lesson and course details");
+  //   }
+  // };
+
+    const validateAndUpdateCourse = () => {
+      if (!currentCourse.title.trim()) {
+        toast.error("Chapter title is required");
+        return;
       }
-      // cancel()
-    } else {
-      toast.error("Please add at least one Lesson and course details");
-    }
-  };
+      addChapter(currentCourse);
+    };
+
+  const addLessonToCourse = (newLesson) => {
+      if (!newLesson?.title?.trim()) {
+        toast.error("Lesson title cannot be empty");
+        return;
+      }
+  
+      // If updateIndex exists, it's an edit action, otherwise it's adding a new lesson
+      setCurrentCourse((prev) => {
+        const updatedLessons = [...prev.lessons];
+        if (
+          newLesson.updateIndex !== undefined &&
+          newLesson.updateIndex !== null
+        ) {
+          // Update existing lesson
+          updatedLessons[newLesson.updateIndex] = {
+            title: newLesson.title,
+            subLessons: newLesson.subLessons,
+            test: newLesson.test, // Assuming this is a part of the lesson
+          };
+        } else {
+          // Add new lesson
+          updatedLessons.push(newLesson);
+        }
+        return { ...prev, lessons: updatedLessons };
+      });
+  
+      setOPenLessonPopUP(false); // Close popup after adding or editing
+    };
+
 
   useEffect(() => {
     if (editData) setCurrentCourse(editData);
@@ -118,6 +156,12 @@ const NewChapter = ({
     }
   };
 
+  // const handleEditLesson = (lesson, index) => {
+  //   setEditLessonData({ ...lesson, updateIndex: index });
+  //   setOpen(true);
+  // };
+
+
   console.log(currentCourse);
 
   return (
@@ -126,20 +170,21 @@ const NewChapter = ({
         {openLessonPopUP.open && (
           <LessonPopUp
             addLesson={(lesson) => addLessonToCourse(lesson)}
+            // addLesson={addLessonToCourse}
             editData={openLessonPopUP.data}
             removeThisLesson={(lessonIndex) =>
               handleRemoveLessonFromCourse(lessonIndex)
             }
             cancel={() => setOPenLessonPopUP({ open: false, data: null })}
-            degreeId={degreeId}
-            courseId={currentCourse?.course_id}
+            // degreeId={degreeId}
+            // courseId={currentCourse?.course_id}
           />
         )}
         {openTest.open && (
           <AddTest
             testId={currentCourse?.testId}
-            addTest={(data) => {
-              setCurrentCourse({ ...currentCourse, testId: data });
+            addTest={(testId) => {
+              setCurrentCourse({ ...currentCourse, test: testId });
             }}
             closeTest={() => setOpenTest({ open: false })}
           />
@@ -161,7 +206,7 @@ const NewChapter = ({
               className="add-new-lesson-btn"
               onClick={() => validateAndUpdateCourse()}
             >
-              {currentCourse.course_id ? "Update Course" : "Add to Degree"}
+              {editData ? "Update Course" : "Add to Degree"}
             </div>
           </div>
         </div>
@@ -173,12 +218,12 @@ const NewChapter = ({
             <p>Course Title</p>
             <input
               type="text"
-              value={currentCourse?.name}
+              value={currentCourse?.title}
               className="lesson-title-input"
               onChange={(e) =>
                 setCurrentCourse({
                   ...currentCourse,
-                  name: e.target.value,
+                  title: e.target.value,
                 })
               }
             />
@@ -239,7 +284,7 @@ const NewChapter = ({
                       style={{ rotate: isfold === index ? "90deg" : "0deg" }}
                       className="edit-img"
                     />
-                    <p>{lesson.name}</p>
+                    <p>{lesson.title}</p>
                   </div>
                   <div className="lesson-edit-delete-cnt">
                     <img
@@ -265,7 +310,7 @@ const NewChapter = ({
                   className="lesson-features-list"
                   style={{ maxHeight: isfold === index ? "5rem" : 0 }}
                 >
-                  {lesson.chapters?.map((chapter, subIndex) => (
+                  {lesson.subLessons?.map((chapter, subIndex) => (
                     <div className="features-cnt">
                       <div className="lesson-edit-delete-cnt">
                         <img
@@ -273,9 +318,9 @@ const NewChapter = ({
                           alt="fileType"
                           className="icon-image-small"
                         />
-                        <p>{chapter.name}</p>
+                        <p>{chapter.title}</p>
                       </div>
-                      <p>{chapter.duration}</p>
+                      {/* <p>{chapter.duration}</p> */}
                     </div>
                   ))}
                 </div>

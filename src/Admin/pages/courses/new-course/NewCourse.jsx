@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 // import LessonPopUp from "../../../components/degrees/LessonPopUp";
 // import NewChapter from "./NewChapter";
 import ChapterPopUp from "../../../components/degrees/ChapterPopUp";
+import NewChapter from "../../chapter/NewChapter";
 
 const NewCourse = ({ addDegree,degreeId, cancel, editData, removeThisLesson }) => {
   const [popupOpen, setPopupOpen] = useState({ open: false, data: null });
@@ -17,7 +18,7 @@ const NewCourse = ({ addDegree,degreeId, cancel, editData, removeThisLesson }) =
   const [courseData, setCourseData] = useState({
     title: "",
     description: "",
-    courseThumbnails: null,
+    courseThumbnails: null ,
     chapters: [],
     updateIndex: null,
   });
@@ -41,21 +42,53 @@ const NewCourse = ({ addDegree,degreeId, cancel, editData, removeThisLesson }) =
   };
 
 
+  // const addChapterToCourse = (chapter) => {
+  //   console.log(chapter);
+  //   const newCourse = [...courseData.chapters];
+  //   if (chapter.updateIndex === null ) {
+  //     newCourse.push({
+  //       ...chapter,
+  //       updateIndex: newCourse?.length > 0 ? newCourse?.length : 0,
+  //     });
+  //     setCourseData({ ...courseData, chapters: newCourse });
+      
+  //   } else {
+  //     newCourse[chapter.updateIndex] = chapter;
+  //     setCourseData({ ...courseData, chapters: newCourse });
+  //   }
+  //   setPopupOpen({ open: false });
+  //   // addDegree(courseData)
+  // };
+
+
+
+
   const addChapterToCourse = (chapter) => {
-    console.log(chapter);
-    const newCourse = [...courseData.chapters];
-    if (chapter.updateIndex === null ) {
-      newCourse.push({
-        ...chapter,
-        updateIndex: newCourse?.length > 0 ? newCourse?.length : 0,
-      });
-      setCourseData({ ...courseData, chapters: newCourse });
-    } else {
-      newCourse[chapter.updateIndex] = chapter;
-      setCourseData({ ...courseData, chapters: newCourse });
+    if (!chapter?.title?.trim()) {
+      toast.error("Chapter title cannot be empty");
+      return;
     }
-    setPopupOpen({ open: false });
-    // addDegree(courseData)
+
+    setCourseData((prevCourseData) => {
+      const updatedChapters = [...prevCourseData.chapters];
+
+      if (chapter.updateIndex !== null && chapter.updateIndex !== undefined) {
+        // Update existing chapter
+        updatedChapters[chapter.updateIndex] = {
+          title:chapter.title,
+          chapter:chapter.chapters,
+          test:chapter.test,
+          description:chapter.description,
+        }
+      } else {
+        // Add new chapter
+        updatedChapters.push(chapter);
+      }
+
+      return { ...prevCourseData, chapters: updatedChapters };
+    });
+
+    setPopupOpen({ open: false, data: null }); // Close the popup
   };
 
   
@@ -73,7 +106,7 @@ const NewCourse = ({ addDegree,degreeId, cancel, editData, removeThisLesson }) =
     const courseDataObj = {
       title: courseData.title,
       description: courseData.description,
-      courseThumbnail: courseData.courseThumbnails,
+      courseThumbnail: courseData.courseThumbnails || editData?.courseThumbnails,
       chapters: courseData.chapters,
       updateIndex: courseData.updateIndex,
     };
@@ -215,8 +248,14 @@ const NewCourse = ({ addDegree,degreeId, cancel, editData, removeThisLesson }) =
             cancel={() => setPopupOpen({ open: false, data: null })}
             removeThisCourse={(index) => handleDeleteCourse(index)}
             degreeId={degreeId}
-            
           />
+          // <NewChapter
+          //    addChapter={addChapterToCourse}
+          //   editData={popupOpen?.data}
+          // cancel={() => setPopupOpen({ open: false, data: null })}
+          // removeThisCourse={(index) => handleDeleteCourse(index)}
+          //   degreeId={degreeId}
+          //  />
         )}
       </div>
     </div>

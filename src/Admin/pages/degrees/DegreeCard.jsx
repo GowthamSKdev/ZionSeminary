@@ -32,7 +32,7 @@ const DegreeCard = ({ data }) => {
           <div className="zion-course-content">
             <h3 className="zion-course-title">{data.title}</h3>
             <p className="zion-course-description">{data.description}</p>
-            {/* <div className="">
+            <div className="">
               <button
                 className="btn btn-success"
                 onClick={() => navigate("/admin/degrees/edit", { state: data })}
@@ -40,7 +40,7 @@ const DegreeCard = ({ data }) => {
                 <Edit3 />
                 Edit Degree
               </button>
-            </div> */}
+            </div>
           </div>
         </div>
       {/* </div>  */}

@@ -4,14 +4,13 @@ import { useState, useEffect } from "react";
 // import profileBanner from "../Assets/Images/profileBanner.jpg";
 import phoneSVG from "../Assets/SVG/phoneSVG.svg";
 import mailSVG from "../Assets/SVG/mailSVG.svg";
-// import axios from "axios";
+import axios from "axios";
 // import LoadingPage from "../LoadingPage/LoadingPage";
 // import ErrorDataFetchOverlay from "../Error/ErrorDataFetchOverlay";
 // import { fetchUserData } from "../../../api/baseapi";
 import defaultPorfileSVG from "../Assets/SVG/defaultPorfileSVG.svg";
 import defaultBannerSVG from "../Assets/SVG/defaultBannerSVG.svg";
-import { useNavigate } from 'react-router-dom';
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
 // import { User } from "lucide-react";
 
 const Profile = () => {
@@ -26,18 +25,19 @@ const Profile = () => {
     profileBanner: defaultBannerSVG,
     address: "Default address",
     educationalQualification: "Default educational Qualification",
-    maritalStatus:"Default marital Status",
-    dob:"default dob",
-    ministryExperience:"default ministry Experience",
-    theologicalQualification:"default theological Qualification",
-    salvationExperience:"default salvation Experience"
+    maritalStatus: "Default marital Status",
+    dob: "default dob",
+    ministryExperience: "default ministry Experience",
+    theologicalQualification: "default theological Qualification",
+    salvationExperience: "default salvation Experience",
   });
   const [selectedProfileImage, setSelectedProfileImage] = useState(null);
   const [selectedProfileBanner, setSelectedProfileBanner] = useState(null);
-  useEffect(()=>{
-    if(localStorage.getItem("userdata")!=null){
-      const user  = JSON.parse(localStorage.getItem("userdata"))
-      console.log(user)
+  const user = JSON.parse(localStorage.getItem("userdata"));
+  useEffect(() => {
+    if (localStorage.getItem("userdata") != null) {
+      const user = JSON.parse(localStorage.getItem("userdata"));
+      console.log(user);
       setProfileData({
         name: `${user.firstName} ${user.lastName}`,
         email: user.email,
@@ -60,16 +60,14 @@ const Profile = () => {
         signatureFile: user.signatureFile,
         educationCertFile: user.educationCertFile,
       });
+    } else {
+      navigate("/login");
     }
-    else{
-      navigate("/login")
-    }
-  },[])
-  // const [isLoading, setIsLoading] = useState(true);
-  // const [fetchError, setFetchError] = useState(false);
+  }, []);
+  const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
 
   // useEffect(() => {
-  //   const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
   //   const id = localStorage.getItem("userid");
   //   const userInfo = JSON.parse(localStorage.getItem("userDataUpdated"));
   //   if (userInfo) {
@@ -236,10 +234,10 @@ const Profile = () => {
     }
 
     try {
-      const apiBaseUrl = process.env.REACT_APP_BASE_URL;
+      const apiBaseUrl = process.env.REACT_APP_BASE_API;
 
       const response = await axios.put(
-        `${apiBaseUrl}/user/profile/${user._id}`,
+        `${apiBaseUrl}/api/users/${user._id}`,
         formData,
         {
           headers: {
@@ -269,7 +267,6 @@ const Profile = () => {
         ...prevData,
         passportPhotoFile: e.target.result,
       }));
-      
     }
   };
 
@@ -283,7 +280,6 @@ const Profile = () => {
       }));
     }
   };
-
   const inputClassName = (value) => {
     if (value === "" || value === null || value === undefined) {
       return "error-border";
@@ -365,7 +361,8 @@ const Profile = () => {
         <div className="profileSection">
           <div className="hh5">General Information</div>
           <div
-            className={`${inputClassName(profileData?.name)} profileDetails`}>
+            className={`${inputClassName(profileData?.name)} profileDetails`}
+          >
             <label>Name</label>
             <input
               type="text"
@@ -376,7 +373,8 @@ const Profile = () => {
             />
           </div>
           <div
-            className={`${inputClassName(profileData.gender)} profileDetails`}>
+            className={`${inputClassName(profileData.gender)} profileDetails`}
+          >
             {" "}
             <label>Gender</label>
             <input
@@ -388,7 +386,8 @@ const Profile = () => {
             />
           </div>
           <div
-            className={`${inputClassName(profileData.address)} profileDetails`}>
+            className={`${inputClassName(profileData.address)} profileDetails`}
+          >
             <label>Address</label>
             <textarea
               type="text"
@@ -403,7 +402,8 @@ const Profile = () => {
           <div
             className={`${inputClassName(
               profileData.email
-            )} profileDetails profileSPLBox`}>
+            )} profileDetails profileSPLBox`}
+          >
             <img src={phoneSVG} alt="phoneNumberSVG" />
             <label>Email</label>
             <input
@@ -417,7 +417,8 @@ const Profile = () => {
           <div
             className={`${inputClassName(
               profileData.phoneNumber
-            )} profileDetails profileSPLBox`}>
+            )} profileDetails profileSPLBox`}
+          >
             <img src={mailSVG} alt="mailSVG" />
             <label>Phone Number</label>
             <input
@@ -434,7 +435,8 @@ const Profile = () => {
           <div
             className={`${inputClassName(
               profileData.educationalQualification
-            )} profileDetails`}>
+            )} profileDetails`}
+          >
             <label>Education Qualification</label>
             <input
               type="text"
@@ -447,7 +449,8 @@ const Profile = () => {
           <div
             className={`${inputClassName(
               profileData.maritalStatus
-            )} profileDetails`}>
+            )} profileDetails`}
+          >
             <label>Marital Status</label>
             <input
               type="text"
@@ -470,7 +473,8 @@ const Profile = () => {
           <div
             className={`${inputClassName(
               profileData.ministryExperience
-            )} profileDetails`}>
+            )} profileDetails`}
+          >
             <label>Ministry Experience</label>
             <textarea
               name="bio"
@@ -482,7 +486,8 @@ const Profile = () => {
           <div
             className={`${inputClassName(
               profileData.theologicalQualification
-            )} profileDetails`}>
+            )} profileDetails`}
+          >
             <label>Theological Qualification</label>
             <textarea
               name="bio"
@@ -494,7 +499,8 @@ const Profile = () => {
           <div
             className={`${inputClassName(
               profileData.salvationExperience
-            )} profileDetails`}>
+            )} profileDetails`}
+          >
             <label>Salvation Experience</label>
             <textarea
               name="bio"
@@ -506,7 +512,8 @@ const Profile = () => {
           <div
             className={`${inputClassName(
               profileData.signatureFile
-            )} profileDetails`}>
+            )} profileDetails`}
+          >
             <label>signatureFile</label>
             <div className="profileBGBox">
               <img
@@ -518,14 +525,14 @@ const Profile = () => {
                 alt="Banner"
               />
               {isEditing && (
-                <label className="custom-file-upload imageBanner">
+                <label className="custom-file-upload text-white imageBanner">
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={handleProfileBannerChange}
+                    onChange={(e)=>setProfileData({...profileData, signatureFile:e.target.files[0]})}
                     className="imageBannerUpload"
                   />
-                  Choose File for Profile Banner
+                  Choose File for Signature
                 </label>
               )}
             </div>
@@ -533,7 +540,8 @@ const Profile = () => {
           <div
             className={`${inputClassName(
               profileData.educationCertFile
-            )} profileDetails`}>
+            )} profileDetails`}
+          >
             <label>Education CertFile</label>
             <div className="profileBGBox">
               <img
@@ -545,14 +553,14 @@ const Profile = () => {
                 alt="Banner"
               />
               {isEditing && (
-                <label className="custom-file-upload imageBanner">
+                <label className="custom-file-upload text-white imageBanner">
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={handleProfileBannerChange}
+                    onChange={(e)=>setProfileData({...profileData, educationCertFile:e.target.files[0]})}
                     className="imageBannerUpload"
                   />
-                  Choose File for Profile Banner
+                  Choose File for Education file
                 </label>
               )}
             </div>
