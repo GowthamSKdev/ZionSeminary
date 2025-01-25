@@ -729,7 +729,7 @@ const CourseContent = () => {
                                                               },
                                                             }
                                                           )
-                                                        : subLesson.test
+                                                        : subLesson.test[0]
                                                             .type ===
                                                           "paragraph"
                                                         ? navigate(
@@ -760,7 +760,7 @@ const CourseContent = () => {
                             </Accordion.Item>
                           );
                         })}
-                        {chapter.test && chapter.test > 0 ? (
+                        {chapter.test && chapter.test.length > 0 ? (
                           <div className="testButtonBox">
                             <div className="testButtonInr">
                               <div className="testButtonTxt">

@@ -46,14 +46,13 @@ const AddTest = ({ testId, closeTest, addTest }) => {
 
   // Handle the toggle to switch between MCQ and Paragraph types
   const handleToggle = (value) => {
-    // Update the question type based on the toggle
     setCurrentQuestion(value);
 
-    // Update the current test's type as well
-    setCurrentTest({
-      ...currentTest,
-      type: value.type, // Set currentTest type to 'MCQ' or 'Paragraph'
-    });
+    // Update the test type directly when switching the toggle
+    setCurrentTest((prevTest) => ({
+      ...prevTest,
+      type: value.type, // Update the type directly to 'MCQ' or 'Paragraph'
+    }));
   };
 
   // useEffect(() => {
@@ -119,24 +118,24 @@ const AddTest = ({ testId, closeTest, addTest }) => {
       }
     } else if (currentQuestion.type === "MCQ") {
       // Handle MCQ type question
-      if (currentQuestion.updateIndex === null) {
-        updatedtest.push(currentQuestion);
-        setCurrentTest({ ...currentTest, questions: updatedtest });
-        setCurrentQuestion(initialMCQState); // Reset to initial state
-      } else if (
-        currentQuestion.updateIndex + 1 ===
-        currentTest?.questions?.length
-      ) {
-        updatedtest[currentQuestion.updateIndex] = currentQuestion;
-        setCurrentTest({ ...currentTest, questions: updatedtest });
-        setCurrentQuestion(initialMCQState); // Reset to initial state
-      } else {
-        updatedtest[currentQuestion.updateIndex] = currentQuestion;
-        setCurrentTest({ ...currentTest, questions: updatedtest });
-        setCurrentQuestion(
-          currentTest?.questions?.[currentQuestion.updateIndex + 1]
-        );
-      }
+       if (currentQuestion.updateIndex === null) {
+         updatedtest?.push(currentQuestion);
+         setCurrentTest({ ...currentTest, questions: updatedtest });
+         setCurrentQuestion(initialMCQState);
+       } else if (
+         currentQuestion.updateIndex + 1 ===
+         currentTest?.questions?.length
+       ) {
+         updatedtest[currentQuestion.updateIndex] = currentQuestion;
+         setCurrentTest({ ...currentTest, questions: updatedtest });
+         setCurrentQuestion(initialMCQState);
+       } else {
+         updatedtest[currentQuestion.updateIndex] = currentQuestion;
+         setCurrentTest({ ...currentTest, questions: updatedtest });
+         setCurrentQuestion(
+           currentTest?.questions?.[currentQuestion.updateIndex + 1]
+         );
+       }
     }
   };
 
