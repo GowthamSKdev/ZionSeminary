@@ -117,9 +117,9 @@ function Home() {
         setUserDetails(user);
         console.log(userDetails);
 
-        toast.success("User data fetched successfully");
+        // toast.success("User data fetched successfully");
       } catch (error) {
-        toast.error("Error fetching user data");
+        // toast.error("Error fetching user data");
         console.error("Error fetching user data:", error);
       }
     };
@@ -302,7 +302,7 @@ function Home() {
         </div>
       </div> */}
 
-      <div className="container mt-4">
+      <div className="container-fluid">
         {/* Welcome Section */}
         <div className="card shadow-sm bg-primary text-white rounded-3">
           <div className="card-body d-flex flex-column flex-md-row align-items-md-center justify-content-between">

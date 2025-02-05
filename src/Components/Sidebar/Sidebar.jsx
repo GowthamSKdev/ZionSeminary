@@ -165,20 +165,20 @@ const Sidebar = () => {
               path={"./"}
               icon={faHome}
               splMargin={true}
-              text={"Dashboard"}
+              text={"My Page"}
               expanded={expanded}
             />
             <SidebarItem
               path={"./Profile"}
               icon={faUser}
-              text={"Profile"}
+              text={"My Details"}
               expanded={expanded}
             />
             <SidebarItem
-              icon={faHeart}
+              icon={faBook}
               splMargin={true}
               path={"./enrolled"}
-              text={"Enrolled"}
+              text={"Lessons"}
               expanded={expanded}
             />
             {/* <SidebarItem

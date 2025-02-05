@@ -18,7 +18,7 @@ const MainEvents = () => {
   return (
     <>
       <div className="Events">
-        <h3>Events</h3>
+        <h3>Notice</h3>
         <div className="event-container">
           {events.length === 0 ? (
             <p>No events available</p>
