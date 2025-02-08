@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import Profile from "../Components/Profile/Profile";
 import Dashboard from "../Components/Dashboard";
+import Marks from "../Components/Marks/Marks";
 // import Courses from "../Components/courses/Courses";
 import Enrolled from "../Components/Enrolled/Enrolled";
 import Home from "../Components/Home/Home";
@@ -45,6 +46,7 @@ const AppRoutes = () => {
         <Route path="home" element={<Dashboard />}>
           <Route index element={<Home />}></Route>
           <Route path="profile" element={<Profile />}></Route>
+          <Route path="marks" element={<Marks />}></Route>
           {/* <Route path="courses" element={<Courses />} ></Route> */}
           <Route path="degrees" element={<Degrees />} />
           <Route path="degrees/:degreeid" element={<CoursePage />} />
@@ -55,7 +57,8 @@ const AppRoutes = () => {
           <Route path="enrolled" element={<Enrolled />}></Route>
           <Route
             path="courseContent/:courseId"
-            element={<CourseContent />}></Route>
+            element={<CourseContent />}
+          ></Route>
           <Route
             path="courseContent/:courseId/assessmentTest"
             element={<AssessmentTest />}

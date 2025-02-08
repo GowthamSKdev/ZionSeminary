@@ -14,6 +14,7 @@ import {
   faSignOutAlt,
   faBars,
   faChevronLeft,
+  faClipboardList,
 } from "@fortawesome/free-solid-svg-icons";
 
 function SidebarItem({
@@ -187,6 +188,12 @@ const Sidebar = () => {
               text={"Degrees"}
               expanded={expanded}
             /> */}
+            <SidebarItem
+              path={"./marks"}
+              icon={faClipboardList}
+              text={"Marks"}
+              expanded={expanded}
+            />
           </div>
           <div className="menu-bottom">
             <SidebarItem
