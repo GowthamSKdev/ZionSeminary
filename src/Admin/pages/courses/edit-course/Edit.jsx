@@ -6,6 +6,7 @@ import BackIcon from "../../../assets/Images/left-arrow.png";
 import { useNavigate } from "react-router-dom";
 // import { deleteDegree, editDegree } from "../../../firebase/degreeApi";
 import { toast } from "react-toastify";
+import ChapterPopUp from "../../../components/degrees/ChapterPopUp";
 const apiBaseUrl = process.env.REACT_APP_BASE_API;
 const EditCourse = ({ courseDetails }) => {
   const [popupOpen, setPopupOpen] = useState({ open: false, data: null });
@@ -299,11 +300,11 @@ const EditCourse = ({ courseDetails }) => {
         </form>
       </div>
       {popupOpen.open && (
-        <NewLesson
-          addCourse={(course) => addLessontoCourse(course)}
+        <ChapterPopUp
+          addChapter={(course) => addLessontoCourse(course)}
           editData={popupOpen?.data}
           cancel={() => setPopupOpen({ open: false, data: null })}
-          removeThisCourse={(index) => handleDeleteCourse(index)}
+          removeThisChapter={(index) => handleDeleteCourse(index)}
           degreeId={courseData.id}
         />
       )}

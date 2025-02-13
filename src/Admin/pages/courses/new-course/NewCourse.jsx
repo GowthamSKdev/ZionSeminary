@@ -30,6 +30,7 @@ const NewCourse = ({ addDegree,degreeId, cancel, editData, removeThisLesson }) =
   useEffect(() => {
     if (editData) setCourseData(editData);
   }, [editData]);
+  console.log(courseData.chapters);
 
   const handledirectInput = ( type, value) => {
     setCourseData({ ...courseData, [type]: value });
@@ -69,26 +70,24 @@ const NewCourse = ({ addDegree,degreeId, cancel, editData, removeThisLesson }) =
       return;
     }
 
-    setCourseData((prevCourseData) => {
-      const updatedChapters = [...prevCourseData.chapters];
 
-      if (chapter.updateIndex !== null && chapter.updateIndex !== undefined) {
-        // Update existing chapter
-        updatedChapters[chapter.updateIndex] = {
-          title:chapter.title,
-          chapter:chapter.chapters,
-          test:chapter.test,
-          description:chapter.description,
-        }
+    setCourseData((prev) => {
+      const chapterIndex = prev.chapters.findIndex((ch) => ch.chapterId === chapter.chapterId);
+      let updatedChapters;
+
+      if (chapterIndex !== -1) {
+        updatedChapters = prev.chapters.map((ch, index) =>
+          index === chapterIndex ? chapter : ch
+        );
       } else {
-        // Add new chapter
-        updatedChapters.push(chapter);
+        updatedChapters = [...prev.chapters, chapter];
       }
 
-      return { ...prevCourseData, chapters: updatedChapters };
+      return { ...prev, chapters: updatedChapters };
     });
 
-    setPopupOpen({ open: false, data: null }); // Close the popup
+
+    setPopupOpen({ open: false, data: null });
   };
 
   
