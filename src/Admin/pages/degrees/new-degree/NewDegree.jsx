@@ -17,7 +17,7 @@ const NewDegree = () => {
     title: "",
     description: "",
     price: null,
-    degreeThumbnail: null,
+    thumbnail: null,
     courses: [],
     updateIndex: null,
   });
@@ -54,46 +54,54 @@ const NewDegree = () => {
 
   const uploadDegree = async () => {
     try {
-      const formData = new FormData();
-      // console.log(degreeData.title);
-      formData.append("title", degreeData.title);
-      // console.log(degreeData.description);
-      formData.append("description", degreeData.description);
-      // console.log(degreeData.price);
-      formData.append("price", degreeData.price);
+      // const formData = new FormData();
+      // // console.log(degreeData.title);
+      // formData.append("title", degreeData.title);
+      // // console.log(degreeData.description);
+      // formData.append("description", degreeData.description);
+      // // console.log(degreeData.price);
+      // formData.append("price", degreeData.price);
 
-      formData.append("degreeThumbnail", degreeData.degreeThumbnail);
+      // formData.append("degreeThumbnail", degreeData.degreeThumbnail);
 
-      degreeData.courses.forEach((course) => {
-        formData.append("courseThumbnails", course.courseThumbnail);
-        // Append course thumbnail if available
-        //  if (course.courseThumbnail) {
-        //    formData.append("courseThumbnails", course.courseThumbnail);
-        //  }
-        course.chapters.forEach((chapter) => {
-          chapter.lessons.forEach((lesson) => {
-            // formData.append("lessonFiles", lesson.file);
-            lesson.subLessons.forEach((subLesson) => {
-              formData.append("subLessonFiles", subLesson.subLessonFiles);
-            });
-          });
-        });
-      });
+      // degreeData.courses.forEach((course) => {
+      //   formData.append("courseThumbnails", course.courseThumbnail);
+      //   // Append course thumbnail if available
+      //   //  if (course.courseThumbnail) {
+      //   //    formData.append("courseThumbnails", course.courseThumbnail);
+      //   //  }
+      //   course.chapters.forEach((chapter) => {
+      //     chapter.lessons.forEach((lesson) => {
+      //       // formData.append("lessonFiles", lesson.file);
+      //       lesson.subLessons.forEach((subLesson) => {
+      //         formData.append("subLessonFiles", subLesson.subLessonFiles);
+      //       });
+      //     });
+      //   });
+      // });
 
-      console.log(degreeData);
+      // console.log(degreeData);
       
 
-      formData.append("courses", JSON.stringify(degreeData?.courses));
+      // formData.append("courses", JSON.stringify(degreeData?.courses));
 
-      // Send the final payload
-      console.log("FormData : " + formData);
+      // // Send the final payload
+      // console.log("FormData : " + formData);
 
-        const response = await axios.post(`${apiBaseUrl}/api/degrees`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        // withCredentials: true,
-      });
+
+
+      const payload = {
+        title: degreeData.title,
+        description: degreeData.description,
+        price: degreeData.price,
+        thumbnail: degreeData.thumbnail,
+        courses: degreeData.courses,
+      };
+
+        const response = await axios.post(
+          `${apiBaseUrl}/api/degrees`,
+          payload
+        );
 
       console.log("Degree added successfully:", response.data);
       toast.success("Degree added successfully!");
@@ -106,6 +114,60 @@ const NewDegree = () => {
       toast.error("An error occurred while adding the degree.");
     }
   };
+  // const uploadDegree = async () => {
+  //   try {
+  //     const formData = new FormData();
+  //     // console.log(degreeData.title);
+  //     formData.append("title", degreeData.title);
+  //     // console.log(degreeData.description);
+  //     formData.append("description", degreeData.description);
+  //     // console.log(degreeData.price);
+  //     formData.append("price", degreeData.price);
+
+  //     formData.append("degreeThumbnail", degreeData.degreeThumbnail);
+
+  //     degreeData.courses.forEach((course) => {
+  //       formData.append("courseThumbnails", course.courseThumbnail);
+  //       // Append course thumbnail if available
+  //       //  if (course.courseThumbnail) {
+  //       //    formData.append("courseThumbnails", course.courseThumbnail);
+  //       //  }
+  //       course.chapters.forEach((chapter) => {
+  //         chapter.lessons.forEach((lesson) => {
+  //           // formData.append("lessonFiles", lesson.file);
+  //           lesson.subLessons.forEach((subLesson) => {
+  //             formData.append("subLessonFiles", subLesson.subLessonFiles);
+  //           });
+  //         });
+  //       });
+  //     });
+
+  //     console.log(degreeData);
+      
+
+  //     formData.append("courses", JSON.stringify(degreeData?.courses));
+
+  //     // Send the final payload
+  //     console.log("FormData : " + formData);
+
+  //       const response = await axios.post(`${apiBaseUrl}/api/degrees`, formData, {
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //       // withCredentials: true,
+  //     });
+
+  //     console.log("Degree added successfully:", response.data);
+  //     toast.success("Degree added successfully!");
+  //     navigate("/admin");
+  //   } catch (error) {
+  //     console.error(
+  //       "Error uploading degree:",
+  //       error.response?.data || error.message
+  //     );
+  //     toast.error("An error occurred while adding the degree.");
+  //   }
+  // };
 
 
   // const uploadDegree = async () => {
@@ -182,6 +244,52 @@ const NewDegree = () => {
 
   
 
+  const handleUploadDegreeThumbnail = async (e) => {
+        try {
+          const file = e.target.files[0];
+          if (!file) {
+            toast.error("No file selected.");
+            return;
+          }
+  
+          // setUploadingFile(true); // Show loading gif while uploading
+  
+          const formData = new FormData();
+          formData.append("file", file);
+  
+          const res = await axios.post(
+            `${apiBaseUrl}/api/upload/type`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+  
+          // setCurrentSublesson({
+          //   ...currentSublesson,
+          //   file: res.data.fileUrl,
+          // });
+  
+          // setUploadingFile(false); // Hide loading gif once upload is complete
+  
+          if (res.status === 200) {
+            toast.success("File uploaded successfully.");
+            setDegreeData({
+              ...degreeData,
+              thumbnail: res.data.fileUrl, // Assuming filePath is the response key
+              // fileType: res.data.fileType,
+            });
+          }
+        } catch (error) {
+          // setUploadingFile(false); // Hide loading gif on error
+          toast.error("Error uploading file.");
+          console.error("File upload error:", error);
+        }
+      };
+
+
 
   console.log(degreeData);
 
@@ -248,16 +356,17 @@ const NewDegree = () => {
             <input
               type="file"
               accept="image/png, image/svg+xml"
-              onChange={(e) => {
-                // const file = e.target.files[0];
-                // if (file) {
-                  setDegreeData({
-                    ...degreeData,
-                    // degreeThumbnail: file,
-                    degreeThumbnail:e.target.files[0]
-                  });
-                // }
-              }}
+              // onChange={(e) => {
+              //   // const file = e.target.files[0];
+              //   // if (file) {
+              //     setDegreeData({
+              //       ...degreeData,
+              //       // degreeThumbnail: file,
+              //       degreeThumbnail:e.target.files[0]
+              //     });
+              //   // }
+              // }}
+              onChange={handleUploadDegreeThumbnail}
               className="styled-input"
             />
           </div>

@@ -442,7 +442,7 @@ const Edit = ({ courseDetails }) => {
   const addCoursetoDegree = (course) => {
     const newCourses = [...courseData.courses];
     if (course.updateIndex === null) {
-      courseData.push({
+      newCourses.push({
         ...course,
         updateIndex: newCourses?.length > 0 ? newCourses?.length : 0,
       });
@@ -489,56 +489,62 @@ const Edit = ({ courseDetails }) => {
     //     });
     //   });
     // });
-    const formData = new FormData();
-    // console.log(degreeData.title);
-    formData.append("title", courseData.title);
-    // console.log(degreeData.description);
-    formData.append("description", courseData.description);
-    // console.log(degreeData.price);
-    formData.append("price", courseData.price);
+    // const formData = new FormData();
+    // // console.log(degreeData.title);
+    // formData.append("title", courseData.title);
+    // // console.log(degreeData.description);
+    // formData.append("description", courseData.description);
+    // // console.log(degreeData.price);
+    // formData.append("price", courseData.price);
 
-    formData.append("degreeThumbnail", courseData.degreeThumbnail);
+    // formData.append("degreeThumbnail", courseData.degreeThumbnail);
 
-    courseData.courses.forEach((course) => {
-      formData.append("courseThumbnails", course.courseThumbnail);
-      // Append course thumbnail if available
-      //  if (course.courseThumbnail) {
-      //    formData.append("courseThumbnails", course.courseThumbnail);
-      //  }
-      course.chapters.forEach((chapter) => {
-        chapter.lessons.forEach((lesson) => {
-          // formData.append("lessonFiles", lesson.file);
-          lesson.subLessons.forEach((subLesson,subLessonIndex) => {
-            // formData.append("sublessonFiles", subLesson.subLessonFiles);
-            // formData.append('sublessonIndexes',subLesson.subLessonIndexes[1])
-            if (subLesson.subLessonFiles) {
-              formData.append("sublessonFiles", subLesson.subLessonFiles);
-            }
+    // courseData.courses.forEach((course) => {
+    //   formData.append("courseThumbnails", course.courseThumbnail);
+    //   // Append course thumbnail if available
+    //   //  if (course.courseThumbnail) {
+    //   //    formData.append("courseThumbnails", course.courseThumbnail);
+    //   //  }
+    //   course.chapters.forEach((chapter) => {
+    //     chapter.lessons.forEach((lesson) => {
+    //       // formData.append("lessonFiles", lesson.file);
+    //       lesson.subLessons.forEach((subLesson,subLessonIndex) => {
+    //         // formData.append("sublessonFiles", subLesson.subLessonFiles);
+    //         // formData.append('sublessonIndexes',subLesson.subLessonIndexes[1])
+    //         if (subLesson.subLessonFiles) {
+    //           formData.append("sublessonFiles", subLesson.subLessonFiles);
+    //         }
     
-            // Append sub-lesson index if it exists
-            if (subLesson.subLessonIndexes && subLesson.subLessonIndexes[1]) {
-              formData.append("sublessonIndexes", subLesson.subLessonIndexes[1]);
-            }
-          });
-        });
-      });
-    });
+    //         // Append sub-lesson index if it exists
+    //         if (subLesson.subLessonIndexes && subLesson.subLessonIndexes[1]) {
+    //           formData.append("sublessonIndexes", subLesson.subLessonIndexes[1]);
+    //         }
+    //       });
+    //     });
+    //   });
+    // });
 
 
-    formData.append("courses", JSON.stringify(courseData.courses));
+    // formData.append("courses", JSON.stringify(courseData.courses));
 
-    console.log(formData);
+    // console.log(formData);
     
+
+
 
     try {
+      
+      const payload = {
+        title: courseData.title,
+        description: courseData.description,
+        price: courseData.price,
+        thumbnail: courseData.thumbnail,
+        courses: courseData.courses,
+      };
+
       const response = await axios.put(
         `${apiBaseUrl}/api/degrees/${courseDetails._id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        payload
       );
       toast.success("Course updated successfully!");
       navigate("/admin/degrees");
@@ -600,6 +606,51 @@ const Edit = ({ courseDetails }) => {
   //   setEditLessonData({ ...lesson, updateIndex: index });
   //   setOpenLessonPopup(true); // Open the lesson popup for editing
   // };
+
+    const handleUploadDegreeThumbnail = async (e) => {
+      try {
+        const file = e.target.files[0];
+        if (!file) {
+          toast.error("No file selected.");
+          return;
+        }
+
+        // setUploadingFile(true); // Show loading gif while uploading
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const res = await axios.post(
+          "https://zion-test.onrender.com/api/upload/type",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        // setCurrentSublesson({
+        //   ...currentSublesson,
+        //   file: res.data.fileUrl,
+        // });
+
+        // setUploadingFile(false); // Hide loading gif once upload is complete
+
+        if (res.status === 200) {
+          toast.success("File uploaded successfully.");
+          setCourseData({
+            ...courseData,
+            thumbnail: res.data.fileUrl, // Assuming filePath is the response key
+            // fileType: res.data.fileType,
+          });
+        }
+      } catch (error) {
+        // setUploadingFile(false); // Hide loading gif on error
+        toast.error("Error uploading file.");
+        console.error("File upload error:", error);
+      }
+    };
 
   return (
     <div
@@ -736,12 +787,13 @@ const Edit = ({ courseDetails }) => {
                 className="styled-input"
                 readOnly={!editCourse}
                 accept="image/*"
-                onChange={(e) =>
-                  setCourseData({
-                    ...courseData,
-                    degreeThumbnail: e.target.files[0],
-                  })
-                }
+                // onChange={(e) =>
+                //   setCourseData({
+                //     ...courseData,
+                //     degreeThumbnail: e.target.files[0],
+                //   })
+                // }
+                onChange={handleUploadDegreeThumbnail}
               />
             </div>
           </div>

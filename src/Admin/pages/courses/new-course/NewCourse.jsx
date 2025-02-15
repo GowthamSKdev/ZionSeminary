@@ -10,6 +10,9 @@ import { toast } from "react-toastify";
 // import NewChapter from "./NewChapter";
 import ChapterPopUp from "../../../components/degrees/ChapterPopUp";
 import NewChapter from "../../chapter/NewChapter";
+import axios from "axios";
+
+const apiBaseUrl = process.env.REACT_APP_BASE_API;
 
 const NewCourse = ({ addDegree,degreeId, cancel, editData, removeThisLesson }) => {
   const [popupOpen, setPopupOpen] = useState({ open: false, data: null });
@@ -18,7 +21,7 @@ const NewCourse = ({ addDegree,degreeId, cancel, editData, removeThisLesson }) =
   const [courseData, setCourseData] = useState({
     title: "",
     description: "",
-    courseThumbnails: null ,
+    thumbnail: null,
     chapters: [],
     updateIndex: null,
   });
@@ -42,6 +45,51 @@ const NewCourse = ({ addDegree,degreeId, cancel, editData, removeThisLesson }) =
     setCourseData({ ...courseData, chapters: newCourseData });
   };
 
+
+    const handleUploadCourseThumbnail = async (e) => {
+      try {
+        const file = e.target.files[0];
+        if (!file) {
+          toast.error("No file selected.");
+          return;
+        }
+
+        // setUploadingFile(true); // Show loading gif while uploading
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const res = await axios.post(
+          `${apiBaseUrl}/api/upload/type`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        // setCurrentSublesson({
+        //   ...currentSublesson,
+        //   file: res.data.fileUrl,
+        // });
+
+        // setUploadingFile(false); // Hide loading gif once upload is complete
+
+        if (res.status === 200) {
+          toast.success("File uploaded successfully.");
+          setCourseData({
+            ...courseData,
+            thumbnail: res.data.fileUrl, // Assuming filePath is the response key
+            // fileType: res.data.fileType,
+          });
+        }
+      } catch (error) {
+        // setUploadingFile(false); // Hide loading gif on error
+        toast.error("Error uploading file.");
+        console.error("File upload error:", error);
+      }
+    };
 
   // const addChapterToCourse = (chapter) => {
   //   console.log(chapter);
@@ -105,7 +153,7 @@ const NewCourse = ({ addDegree,degreeId, cancel, editData, removeThisLesson }) =
     const courseDataObj = {
       title: courseData.title,
       description: courseData.description,
-      courseThumbnail: courseData.courseThumbnails || editData?.courseThumbnails,
+      thumbnail: courseData.thumbnail || editData?.thumbnail,
       chapters: courseData.chapters,
       updateIndex: courseData.updateIndex,
     };
@@ -186,10 +234,10 @@ const NewCourse = ({ addDegree,degreeId, cancel, editData, removeThisLesson }) =
               <input
               type="file"
               accept="image/*, image/svg+xml"
-                onChange={(e) => {
-                handledirectInput("courseThumbnails", e.target.files[0]);
-                
-              }}
+                // onChange={(e) => {
+                // handledirectInput("courseThumbnails", e.target.files[0]);
+                // }}
+                onChange={handleUploadCourseThumbnail}
               className="styled-input"
             />
             </div>

@@ -22,16 +22,18 @@ const ChapterTest = ({ testId, closeTest, addTest }) => {
     const [dropDown, setDropDown] = useState(false);
     const [duration, setDuration] = useState({ hours: 0, minutes: 0 });
 
+    
     useEffect(() => {
-        const getTest = async () => {
-            if (testId?.length > 1) {
-                const data = await getTestById(testId);
-                setCurrentTest(data);
-                const time = convertToUTC(data?.test?.timeLimit);
-                setDuration(time);
-            }
-        };
-        getTest();
+        // const getTest = async () => {
+        //     if (testId?.length > 1) {
+        //         const data = await getTestById(testId);
+        //         setCurrentTest(data);
+        //         const time = convertToUTC(data?.test?.timeLimit);
+        //         setDuration(time);
+        //     }
+        // };
+        // getTest();
+        setCurrentTest(testId)
     }, [testId]);
 
     const handleChoiceSelect = (index, value) => {

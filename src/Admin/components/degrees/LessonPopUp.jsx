@@ -8,6 +8,7 @@ import Upload from "../../assets/Images/upload.png";
 import LessonTest from "./LessonTest";
 import { toast } from "react-toastify";
 import AddTest from "../../pages/tests/AddTest";
+import axios from "axios";
 
 const initialState = {
   title: "",
@@ -16,8 +17,9 @@ const initialState = {
   updateIndex: null,
   type: null,
   test: null,
+  file:''
 };
-
+const apiBaseUrl = process.env.REACT_APP_BASE_API;
 const LessonPopUp = ({
   addLesson,
   cancel,
@@ -105,6 +107,51 @@ const LessonPopUp = ({
     setCurrentSublesson(initialState);
     setCurrentUpdateIndex(null);
   };
+
+    const handleUploadSublessionFile = async (e) => {
+      try {
+        const file = e.target.files[0];
+        if (!file) {
+          toast.error("No file selected.");
+          return;
+        }
+
+        // setUploadingFile(true); // Show loading gif while uploading
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const res = await axios.post(
+          `${apiBaseUrl}/api/upload/type`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        // setCurrentSublesson({
+        //   ...currentSublesson,
+        //   file: res.data.fileUrl,
+        // });
+
+        // setUploadingFile(false); // Hide loading gif once upload is complete
+
+        if (res.status === 200) {
+          toast.success("File uploaded successfully.");
+          setCurrentSublesson({
+            ...currentSublesson,
+            file: res.data.fileUrl, // Assuming filePath is the response key
+            fileType: res.data.fileType,
+          });
+        }
+      } catch (error) {
+        // setUploadingFile(false); // Hide loading gif on error
+        toast.error("Error uploading file.");
+        console.error("File upload error:", error);
+      }
+    };
 
   return (
     <div className="lesson-popup-page ">
@@ -204,12 +251,13 @@ const LessonPopUp = ({
                     accept="video/*,audio/*,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation"
                     style={{ position: "absolute" }}
                     className="file-title-input"
-                    onChange={(e) =>
-                      setCurrentSublesson({
-                        ...currentSublesson,
-                        subLessonFiles: e.target.files[0],
-                      })
-                    }
+                    // onChange={(e) =>
+                    //   setCurrentSublesson({
+                    //     ...currentSublesson,
+                    //     subLessonFiles: e.target.files[0],
+                    //   })
+                    // }
+                    onChange={handleUploadSublessionFile}
                   />
                 </div>
                 <div
