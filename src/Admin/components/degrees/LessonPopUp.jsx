@@ -108,50 +108,66 @@ const LessonPopUp = ({
     setCurrentUpdateIndex(null);
   };
 
-    const handleUploadSublessionFile = async (e) => {
-      try {
-        const file = e.target.files[0];
-        if (!file) {
-          toast.error("No file selected.");
-          return;
-        }
+   const handleUploadSublessionFile = async (e) => {
+     try {
+       const file = e.target.files[0];
+       if (!file) {
+         toast.error("No file selected.");
+         return;
+       }
 
-        // setUploadingFile(true); // Show loading gif while uploading
+       // Show loading toast while uploading
+       const toastId = toast.loading("Uploading file...");
 
-        const formData = new FormData();
-        formData.append("file", file);
+       const formData = new FormData();
+       formData.append("file", file);
 
-        const res = await axios.post(
-          `${apiBaseUrl}/api/upload/type`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+       const res = await axios.post(`${apiBaseUrl}/api/upload/type`, formData, {
+         headers: {
+           "Content-Type": "multipart/form-data",
+         },
+         // Optionally handle progress for better UX
+         onUploadProgress: (progressEvent) => {
+           if (progressEvent.total > 0) {
+             const progress = Math.round(
+               (progressEvent.loaded / progressEvent.total) * 100
+             );
+             toast.update(toastId, {
+               render: `Uploading: ${progress}%`,
+               type: "info", // You can use "info" type to show progress.
+               isLoading: true,
+               autoClose: false,
+             });
+           }
+         },
+       });
 
-        // setCurrentSublesson({
-        //   ...currentSublesson,
-        //   file: res.data.fileUrl,
-        // });
+       // Check if the upload was successful
+       if (res.status === 200) {
+         toast.update(toastId, {
+           render: "File uploaded successfully.",
+           type: "success",
+           isLoading: false,
+           autoClose: 3000, // Automatically closes after 3 seconds
+         });
 
-        // setUploadingFile(false); // Hide loading gif once upload is complete
+         setCurrentSublesson({
+           ...currentSublesson,
+           file: res.data.fileUrl, // Assuming filePath is the response key
+           fileType: res.data.fileType,
+         });
+       }
+     } catch (error) {
+       toast.update(toastId, {
+         render: "Error uploading file.",
+         type: "error",
+         isLoading: false,
+         autoClose: 3000,
+       });
+       console.error("File upload error:", error);
+     }
+   };
 
-        if (res.status === 200) {
-          toast.success("File uploaded successfully.");
-          setCurrentSublesson({
-            ...currentSublesson,
-            file: res.data.fileUrl, // Assuming filePath is the response key
-            fileType: res.data.fileType,
-          });
-        }
-      } catch (error) {
-        // setUploadingFile(false); // Hide loading gif on error
-        toast.error("Error uploading file.");
-        console.error("File upload error:", error);
-      }
-    };
 
   return (
     <div className="lesson-popup-page ">

@@ -79,8 +79,10 @@ const AssessmentTest = () => {
   };
 
   const handleNavigation = (direction) => {
-    const currentSection = questionData.sections[currentSectionIndex];
-    const currentSectionQuestions = currentSection.questions.slice(0, 20);
+    // const currentSection = questionData.sections[currentSectionIndex];
+    // const currentSectionQuestions = currentSection.questions.slice(0, 20);
+
+    const currentSectionQuestions = questionData?.questions || [];
 
     if (
       direction === "next" &&
@@ -91,6 +93,26 @@ const AssessmentTest = () => {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
     }
   };
+
+//  const handleNavigation = (direction) => {
+//    const currentSection = questionData.sections[currentSectionIndex];
+
+//    // Ensure currentSection and currentSectionQuestions are not undefined or empty
+//    if (!currentSection || !currentSection.questions) return;
+
+//    const currentSectionQuestions = currentSection.questions.slice(0, 20);
+
+//    if (
+//      direction === "next" &&
+//      currentQuestionIndex < currentSectionQuestions.length - 1
+//    ) {
+//      setCurrentQuestionIndex(currentQuestionIndex + 1);
+//    } else if (direction === "previous" && currentQuestionIndex > 0) {
+//      setCurrentQuestionIndex(currentQuestionIndex - 1);
+//    }
+//  };
+
+
 
   const handleOptionChange = (event) => {
     setSelectedOptions({
@@ -412,7 +434,7 @@ const AssessmentTest = () => {
                   ))}
                 </form>
 
-                {/* <div className="navigation-button">
+                <div className="navigation-button">
                   <button
                     className="button-previous"
                     onClick={() => handleNavigation("previous")}
@@ -450,7 +472,7 @@ const AssessmentTest = () => {
                       ? "Bookmarked"
                       : "Bookmark"
                   }`}</button>
-                </div> */}
+                </div>
               </main>
             </div>
             <div className="w-25 h-100 right-side">

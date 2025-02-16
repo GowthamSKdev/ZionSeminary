@@ -39,7 +39,7 @@ body {
   min-height: 100dvh;
   height: 100%;
   width: 100%;
-  font-family: "poppins", sans-serif;
+  font-family: "poppins", sans-serif !important;
   scroll-behavior: smooth;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

@@ -20,12 +20,15 @@ const AddTest = ({ testId, closeTest, addTest }) => {
   };
 
   const [currentTest, setCurrentTest] = useState({
-    title: "testing Exam",
+    title: "",
     timeLimit: 11,
     questions: [],
-    target: "course",
+    target: "",
     type:null
   });
+
+  console.log('test id',testId);
+  
 
   const [currentQuestion, setCurrentQuestion] = useState(initialMCQState);
   const [dropDown, setDropDown] = useState(false);
@@ -33,19 +36,32 @@ const AddTest = ({ testId, closeTest, addTest }) => {
   // const [currentTestType, setCurrentTestType] = useState('MCQ')
 
   useEffect(() => {
-    const getTest = async () => {
-      if (testId?.length > 1) {
-        const data = await getTestById(testId);
-        setCurrentTest(data);
-        const time = convertToUTC(data?.test?.timeLimit);
-        setDuration(time);
-      }
-    };
-    getTest();
+    // const getTest = async () => {
+    //   if (testId?.length > 1) {
+    //     const data = await getTestById(testId);
+    //     setCurrentTest(data);
+    //     const time = convertToUTC(data?.test?.timeLimit);
+    //     setDuration(time);
+    //   }
+    // };
+    // getTest();
+    if (testId) {
+
+      setCurrentTest({
+        questions: testId[0].questions,
+        type:testId[0].type
+      })
+      // setCurrentTestType(testId[0].type)
+
+    }
   }, [testId]);
+
+
 
   // Handle the toggle to switch between MCQ and Paragraph types
   const handleToggle = (value) => {
+    console.log(value.type);
+    
     setCurrentQuestion(value);
 
     // Update the test type directly when switching the toggle
@@ -53,6 +69,8 @@ const AddTest = ({ testId, closeTest, addTest }) => {
       ...prevTest,
       type: value.type, // Update the type directly to 'MCQ' or 'Paragraph'
     }));
+
+
   };
 
   // useEffect(() => {
@@ -101,43 +119,59 @@ const AddTest = ({ testId, closeTest, addTest }) => {
   //   }
   // };
 
-  const handleNext = () => {
-    const updatedtest = [...currentTest.questions];
 
-    // Check if the current question is of type 'Paragraph'
-    if (currentQuestion.type === "paragraph") {
-      // Add or update the paragraph question in the questions array
-      if (currentQuestion.updateIndex === null) {
-        updatedtest.push(currentQuestion);
-        setCurrentTest({ ...currentTest, questions: updatedtest });
-        setCurrentQuestion(initialParagraphState); // Reset to initial state
-      } else {
-        updatedtest[currentQuestion.updateIndex] = currentQuestion;
-        setCurrentTest({ ...currentTest, questions: updatedtest });
-        setCurrentQuestion(initialParagraphState); // Reset to initial state
-      }
-    } else if (currentQuestion.type === "MCQ") {
-      // Handle MCQ type question
-       if (currentQuestion.updateIndex === null) {
-         updatedtest?.push(currentQuestion);
-         setCurrentTest({ ...currentTest, questions: updatedtest });
-         setCurrentQuestion(initialMCQState);
-       } else if (
-         currentQuestion.updateIndex + 1 ===
-         currentTest?.questions?.length
-       ) {
-         updatedtest[currentQuestion.updateIndex] = currentQuestion;
-         setCurrentTest({ ...currentTest, questions: updatedtest });
-         setCurrentQuestion(initialMCQState);
-       } else {
-         updatedtest[currentQuestion.updateIndex] = currentQuestion;
-         setCurrentTest({ ...currentTest, questions: updatedtest });
-         setCurrentQuestion(
-           currentTest?.questions?.[currentQuestion.updateIndex + 1]
-         );
-       }
+
+  // const handleNext = () => {
+  //   const updatedtest = [...currentTest?.questions];
+
+  //   // Check if the current question is of type 'Paragraph'
+  //   if (currentQuestion.type === "paragraph") {
+  //     // Add or update the paragraph question in the questions array
+  //     if (currentQuestion.updateIndex === null) {
+  //       updatedtest.push(currentQuestion);
+  //       setCurrentTest({ ...currentTest, questions: updatedtest });
+  //       setCurrentQuestion(initialParagraphState); // Reset to initial state
+  //     } else {
+  //       updatedtest[currentQuestion.updateIndex] = currentQuestion;
+  //       setCurrentTest({ ...currentTest, questions: updatedtest });
+  //       setCurrentQuestion(initialParagraphState); // Reset to initial state
+  //     }
+  //   } else if (currentQuestion.type === "MCQ") {
+  //     // Handle MCQ type question
+  //      if (currentQuestion.updateIndex === null) {
+  //        updatedtest?.push(currentQuestion);
+  //        setCurrentTest({ ...currentTest, questions: updatedtest });
+  //        setCurrentQuestion(initialMCQState);
+  //      } else if (
+  //        currentQuestion.updateIndex + 1 ===
+  //        currentTest?.questions?.length
+  //      ) {
+  //        updatedtest[currentQuestion.updateIndex] = currentQuestion;
+  //        setCurrentTest({ ...currentTest, questions: updatedtest });
+  //        setCurrentQuestion(initialMCQState);
+  //      } else {
+  //        updatedtest[currentQuestion.updateIndex] = currentQuestion;
+  //        setCurrentTest({ ...currentTest, questions: updatedtest });
+  //        setCurrentQuestion(
+  //          currentTest?.questions?.[currentQuestion.updateIndex + 1]
+  //        );
+  //      }
+  //   }
+  // };
+
+  const handleNext = () => {
+    const updatedQuestions = [...currentTest.questions];
+
+    if (currentQuestion.updateIndex === null) {
+      updatedQuestions.push(currentQuestion);
+    } else {
+      updatedQuestions[currentQuestion.updateIndex] = currentQuestion;
     }
+
+    setCurrentTest({ ...currentTest, questions: updatedQuestions });
+    setCurrentQuestion(initialMCQState); // Reset or move to next question
   };
+
 
   const checkquestionMatch = (index) => {
     if (
@@ -148,10 +182,32 @@ const AddTest = ({ testId, closeTest, addTest }) => {
     return "transparent";
   };
 
+  // const handleSelectQuestion = (index, test) => {
+  //   setCurrentQuestion({ ...test, updateIndex: index });
+  //   // setCurrentTestType(test?.type)
+  // };
+
+  // const handleSelectQuestion = (index, test) => {
+  //   setCurrentQuestion({ ...test, updateIndex: index });
+
+  //   // Ensure the question type (MCQ or paragraph) is properly selected
+  //   if (test.type === "paragraph") {
+  //     setCurrentQuestion(initialParagraphState);
+  //   } else if (test.type === "MCQ") {
+  //     setCurrentQuestion(initialMCQState);
+  //   }
+  // };
   const handleSelectQuestion = (index, test) => {
     setCurrentQuestion({ ...test, updateIndex: index });
-    // setCurrentTestType(test?.type)
+
+    // Ensure the question type (MCQ or paragraph) is properly selected
+    if (test.type === "paragraph") {
+      setCurrentQuestion(initialParagraphState);
+    } else if (test.type === "MCQ") {
+      setCurrentQuestion(initialMCQState);
+    }
   };
+
 
   const questionValidation = () => {
     if (
@@ -169,10 +225,11 @@ const AddTest = ({ testId, closeTest, addTest }) => {
   };
 
   const handleAddTest = async () => {
-    if (testId?.length > 5) {
+    if (testId?.length > 0) {
       try {
         // const data  = await updateTest(currentTest);
         // addTest(data);
+        addTest(currentTest)
         closeTest();
       } catch (error) {
         console.log(error);
@@ -306,7 +363,8 @@ const AddTest = ({ testId, closeTest, addTest }) => {
       <div className="question-inputs-cnt">
         <div
           className={`question-input-cnt ${
-            currentQuestion?.type !== "MCQ" && "pargaraph-question"
+            // currentQuestion?.type !== "MCQ" && "pargaraph-question"
+            currentTest?.type !== "MCQ" && "pargaraph-question"
           }`}
         >
           <p>Question</p>
@@ -329,7 +387,8 @@ const AddTest = ({ testId, closeTest, addTest }) => {
             Confirm
           </button>
         </div>
-        {currentQuestion?.type === "MCQ" && (
+        {currentTest?.type === "MCQ" && (
+        // {currentQuestion?.type === "MCQ" && (
           <div className="choice-cnt">
             <div className="choice-header">
               <p>Choices</p>

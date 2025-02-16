@@ -81,14 +81,11 @@ const NewDegree = () => {
       // });
 
       // console.log(degreeData);
-      
 
       // formData.append("courses", JSON.stringify(degreeData?.courses));
 
       // // Send the final payload
       // console.log("FormData : " + formData);
-
-
 
       const payload = {
         title: degreeData.title,
@@ -98,10 +95,7 @@ const NewDegree = () => {
         courses: degreeData.courses,
       };
 
-        const response = await axios.post(
-          `${apiBaseUrl}/api/degrees`,
-          payload
-        );
+      const response = await axios.post(`${apiBaseUrl}/api/degrees`, payload);
 
       console.log("Degree added successfully:", response.data);
       toast.success("Degree added successfully!");
@@ -143,7 +137,6 @@ const NewDegree = () => {
   //     });
 
   //     console.log(degreeData);
-      
 
   //     formData.append("courses", JSON.stringify(degreeData?.courses));
 
@@ -168,7 +161,6 @@ const NewDegree = () => {
   //     toast.error("An error occurred while adding the degree.");
   //   }
   // };
-
 
   // const uploadDegree = async () => {
   //   try {
@@ -242,54 +234,65 @@ const NewDegree = () => {
   //   }
   // };
 
-  
-
   const handleUploadDegreeThumbnail = async (e) => {
-        try {
-          const file = e.target.files[0];
-          if (!file) {
-            toast.error("No file selected.");
-            return;
-          }
-  
-          // setUploadingFile(true); // Show loading gif while uploading
-  
-          const formData = new FormData();
-          formData.append("file", file);
-  
-          const res = await axios.post(
-            `${apiBaseUrl}/api/upload/type`,
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
-  
-          // setCurrentSublesson({
-          //   ...currentSublesson,
-          //   file: res.data.fileUrl,
-          // });
-  
-          // setUploadingFile(false); // Hide loading gif once upload is complete
-  
-          if (res.status === 200) {
-            toast.success("File uploaded successfully.");
-            setDegreeData({
-              ...degreeData,
-              thumbnail: res.data.fileUrl, // Assuming filePath is the response key
-              // fileType: res.data.fileType,
+    try {
+      const file = e.target.files[0];
+      if (!file) {
+        toast.error("No file selected.");
+        return;
+      }
+
+      // Show loading toast while uploading
+      const toastId = toast.loading("Uploading file...");
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await axios.post(`${apiBaseUrl}/api/upload/type`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        // Optionally handle progress for better UX
+        onUploadProgress: (progressEvent) => {
+          if (progressEvent.total > 0) {
+            const progress = Math.round(
+              (progressEvent.loaded / progressEvent.total) * 100
+            );
+            toast.update(toastId, {
+              render: `Uploading: ${progress}%`,
+              type: "info", // You can use "info" type to show progress.
+              isLoading: true,
+              autoClose: false,
             });
           }
-        } catch (error) {
-          // setUploadingFile(false); // Hide loading gif on error
-          toast.error("Error uploading file.");
-          console.error("File upload error:", error);
-        }
-      };
+        },
+      });
 
+      // Check if the upload was successful
+      if (res.status === 200) {
+        toast.update(toastId, {
+          render: "File uploaded successfully.",
+          type: "success",
+          isLoading: false,
+          autoClose: 3000, // Automatically closes after 3 seconds
+        });
 
+        setDegreeData({
+          ...degreeData,
+          thumbnail: res.data.fileUrl, // Assuming filePath is the response key
+          // fileType: res.data.fileType,
+        });
+      }
+    } catch (error) {
+      toast.update(toastId, {
+        render: "Error uploading file.",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
+      console.error("File upload error:", error);
+    }
+  };
 
   console.log(degreeData);
 
@@ -423,7 +426,6 @@ const NewDegree = () => {
         </form>
       </div>
       {popupOpen.open && (
-      
         <NewCourse
           addDegree={addCoursetoDegree}
           editData={popupOpen?.data}

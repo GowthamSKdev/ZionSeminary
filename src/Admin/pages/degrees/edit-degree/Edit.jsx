@@ -607,50 +607,70 @@ const Edit = ({ courseDetails }) => {
   //   setOpenLessonPopup(true); // Open the lesson popup for editing
   // };
 
-    const handleUploadDegreeThumbnail = async (e) => {
-      try {
-        const file = e.target.files[0];
-        if (!file) {
-          toast.error("No file selected.");
-          return;
-        }
 
-        // setUploadingFile(true); // Show loading gif while uploading
+   const handleUploadDegreeThumbnail = async (e) => {
+     try {
+       const file = e.target.files[0];
+       if (!file) {
+         toast.error("No file selected.");
+         return;
+       }
 
-        const formData = new FormData();
-        formData.append("file", file);
+       // Show loading toast while uploading
+       const toastId = toast.loading("Uploading file...");
 
-        const res = await axios.post(
-          "https://zion-test.onrender.com/api/upload/type",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+       const formData = new FormData();
+       formData.append("file", file);
 
-        // setCurrentSublesson({
-        //   ...currentSublesson,
-        //   file: res.data.fileUrl,
-        // });
+       const res = await axios.post(`${apiBaseUrl}/api/upload/type`, formData, {
+         headers: {
+           "Content-Type": "multipart/form-data",
+         },
+         // Optionally handle progress for better UX
+         onUploadProgress: (progressEvent) => {
+           if (progressEvent.total > 0) {
+             const progress = Math.round(
+               (progressEvent.loaded / progressEvent.total) * 100
+             );
+             toast.update(toastId, {
+               render: `Uploading: ${progress}%`,
+               type: "info", // You can use "info" type to show progress.
+               isLoading: true,
+               autoClose: false,
+             });
+           }
+         },
+       });
 
-        // setUploadingFile(false); // Hide loading gif once upload is complete
+       // Check if the upload was successful
+       if (res.status === 200) {
+         toast.update(toastId, {
+           render: "File uploaded successfully.",
+           type: "success",
+           isLoading: false,
+           autoClose: 3000, // Automatically closes after 3 seconds
+         });
 
-        if (res.status === 200) {
-          toast.success("File uploaded successfully.");
-          setCourseData({
-            ...courseData,
-            thumbnail: res.data.fileUrl, // Assuming filePath is the response key
-            // fileType: res.data.fileType,
-          });
-        }
-      } catch (error) {
-        // setUploadingFile(false); // Hide loading gif on error
-        toast.error("Error uploading file.");
-        console.error("File upload error:", error);
-      }
-    };
+           setCourseData({
+             ...courseData,
+             thumbnail: res.data.fileUrl, // Assuming filePath is the response key
+             // fileType: res.data.fileType,
+           });
+       }
+     } catch (error) {
+       toast.update(toastId, {
+         render: "Error uploading file.",
+         type: "error",
+         isLoading: false,
+         autoClose: 3000,
+       });
+       console.error("File upload error:", error);
+     }
+   };
+
+
+
+  
 
   return (
     <div
