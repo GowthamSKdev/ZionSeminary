@@ -181,13 +181,14 @@ const NewCourse = ({ addDegree,degreeId, cancel, editData, removeThisLesson }) =
   };
 
   return (
-    <div className="lesson-popup-cnt" style={{ height: "100% !important" }}>
+    <div className="lesson-popup-cnt" >
+    {/* <div className="lesson-popup-cnt" style={{ height: "100% !important" }}> */}
       <div
         className="course-list-cnt new-course"
-        style={{
-          // height: popupOpen.open ? "100vh" : "auto",
-          overflow: popupOpen.open ? "hidden" : "scroll",
-        }}
+        // style={{
+        //   height: popupOpen.open ? "100vh" : "auto",
+        //   // overflow: popupOpen.open ? "hidden" : "scroll",
+        // }}
       >
         <div className="top-header-cnt">
           <div>

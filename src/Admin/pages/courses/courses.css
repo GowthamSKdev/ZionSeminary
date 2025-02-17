@@ -34,11 +34,11 @@ input[type="file"] {
 
 .course-list-cnt {
   width: 100%;
-  min-height: 100%;
+  height: 100dvh;
   background: white;
   justify-self: end;
   padding: 3rem 1rem 0 1rem;
-  overflow-y: scroll !important;
+  /* overflow-y: scroll !important; */
 }
 
 .course-list-header {
@@ -130,6 +130,7 @@ input[type="file"] {
 .new-course {
   position: relative;
   height: fit-content;
+  overflow: none !important;
   /* top: 0;
   left: 0; */
   /* overflow: hidden; */
@@ -418,6 +419,7 @@ input[type="file"]::file-selector-button:active {
   width: 100%;
   height: 100%;
   margin-top: 5rem;
+  overflow: hidden;
 }
 
 .form-right-header {
@@ -460,10 +462,12 @@ input[type="file"]::file-selector-button:active {
 
 .lesson-list-cnt {
   width: 100%;
-  height: fit-content;
+  /* height: fit-content; */
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  overflow-y: scroll;
 }
 
 .lesson {
@@ -523,7 +527,8 @@ input[type="file"]::file-selector-button:active {
 .lesson-popup-cnt {
   position: absolute;
   width: 100%;
-  min-height: 100dvh;
+  height: 100dvh;
+  overflow: hidden;
   height: 100%;
   display: flex;
   align-items: center;

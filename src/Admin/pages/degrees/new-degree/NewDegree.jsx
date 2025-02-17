@@ -299,9 +299,9 @@ const NewDegree = () => {
   return (
     <div
       className="course-list-cnt new-course"
-      style={{
-        overflow: popupOpen.open ? "hidden" : "scroll",
-      }}
+      // style={{
+      //   overflow: popupOpen.open ? "hidden" : "scroll",
+      // }}
     >
       <div className="top-header-cnt">
         <div>
