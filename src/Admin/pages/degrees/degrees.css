@@ -37,6 +37,7 @@ input[type="file"] {
   background: white;
   justify-self: end;
   padding: 3rem 1rem 0 1rem;
+  overflow: hidden;
   /* overflow-y: scroll; */
 }
 
@@ -134,7 +135,7 @@ input[type="file"] {
 .new-course {
   position: relative;
   /* height: fit-content; */
-  /* overflow: hidden; */
+  overflow-y: scroll;
 }
 
 .course-delete-btn {
@@ -182,6 +183,8 @@ input[type="file"] {
   flex-direction: column;
   justify-content: space-between;
   margin-top: 2.5rem;
+
+  overflow-y: scroll;
 }
 
 .left-form {
@@ -418,7 +421,7 @@ input[type="file"]::file-selector-button:active {
 
 .form-right {
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
   margin-top: 5rem;
 }
 
@@ -620,7 +623,8 @@ input[type="file"]::file-selector-button:active {
 
 .content-list {
   width: 100%;
-  height: 70%;
+  height: 60%;
+  /* min-height: 100%; */
   /* background: #d8d8d8; */
   overflow-y: scroll;
   display: flex;
@@ -1146,6 +1150,7 @@ input[type="file"]::file-selector-button:active {
 
   .input-split-cover {
     flex-direction: row;
+    overflow-y: scroll;
   }
 
   .left-form {
@@ -1180,7 +1185,7 @@ input[type="file"]::file-selector-button:active {
 
   .form-right {
     width: 50%;
-    height: 100%;
+    /* height: 100%; */
     padding-left: 1rem;
   }
 
@@ -1274,6 +1279,7 @@ input[type="file"]::file-selector-button:active {
   .course-list-cnt {
     width: calc(100% - 200px);
     padding: 3rem 4rem 0 4rem;
+    overflow-y: scroll;
   }
 
   .course-card {
@@ -1317,6 +1323,7 @@ input[type="file"]::file-selector-button:active {
 
   .new-course {
     min-height: 100vh;
+    overflow: hidden;
   }
 
   .question-input-cnt {

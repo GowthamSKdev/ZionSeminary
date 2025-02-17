@@ -675,9 +675,9 @@ const Edit = ({ courseDetails }) => {
   return (
     <div
       className="course-list-cnt new-course"
-      style={{
-        overflow: popupOpen.open ? "hidden" : "scroll",
-      }}
+      // style={{
+      //   overflow: popupOpen.open ? "hidden" : "scroll",
+      // }}
     >
       <div className="top-header-cnt">
         <div className="back-btn" onClick={() => navigate("/admin/degrees")}>
