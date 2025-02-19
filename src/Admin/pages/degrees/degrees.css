@@ -69,7 +69,8 @@ input[type="file"] {
 .course-list {
   width: 100%;
   /* height: auto; */
-  height: 80dvh;
+  /* height: 80dvh; */
+  height: 400px;
   /* display: flex; */
   /* flex-wrap: wrap; */
   /* align-items: center; */
