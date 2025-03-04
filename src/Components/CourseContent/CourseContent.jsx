@@ -357,29 +357,7 @@ const CourseContent = () => {
     }
   };
 
-  // Modify handleMediaEnd to track completion of sub-lessons
-  // const handleSublessonCompletion = async (subLessonKey) => {
-  //   setCompletedSublessons((prev) => {
-  //     const updatedSet = new Set(prev);
-  //     updatedSet.add(subLessonKey); // Mark this sub-lesson as completed
-  //     return updatedSet;
-  //   });
-  //   // Optionally, you can make an API call here to update progress
-  //   await progress_data(currentLessonIndex, currentChapterIndex);
-  // };
-
-  // const calculateProgress = (courseData, completedLessons) => {
-  //   if (!courseData?.chapters?.length) return 0;
-
-  //   const totalLessons = courseData.chapters.reduce(
-  //     (total, chapter) => total + (chapter.lessons?.length || 0),
-  //     0
-  //   );
-
-  //   const completedCount = completedLessons.size;
-  //   return totalLessons > 0 ? (completedCount / totalLessons) * 100 : 0;
-  // };
-  // const calculateProgress = progressPercentage;
+  
   const truncateText = (text, maxLength) => {
     if (text?.length > maxLength) {
       return text.slice(0, maxLength) + "...";
@@ -394,6 +372,15 @@ const CourseContent = () => {
     const [minutes, seconds] = duration.split(":");
     return `${parseInt(minutes, 10)}m ${parseInt(seconds, 10)}s`;
   }
+
+  
+    const [completedTests, setCompletedTests] = useState(new Set());
+  
+    const markTestAsCompleted = (chapterId) => {
+      setCompletedTests((prev) => new Set([...prev, chapterId]));
+    };
+
+
   return (
     <div className="courseContentContainer min-vh-100">
       <div className="row firstRow g-0">
@@ -452,124 +439,7 @@ const CourseContent = () => {
           </div>
         </div>
         <div className="col-md-4 CCaccordianBox h-100">
-          {/* <Accordion
-            activeKey={activeAccordion}
-            onSelect={(key) => setActiveAccordion(key)}>
-            {courseData?.chapters &&
-              courseData.chapters?.map((chapter, index) => {
-                const ChapterCompleted = chapter.lessons?.every((lesson) =>
-                  completedExercises.has(
-                    `${chapter.chapterId}-${lesson.lessonId}`
-                  )
-                );
-                return (
-                  <Accordion.Item
-                    key={chapter.chapterId}
-                    eventKey={chapter.chapterId}>
-                    <Accordion.Header>
-                      <div className="CClesson-meta">
-                        <div className="CClesson-title">
-                          <div>
-                            {index + 1}&nbsp;.&nbsp;{chapter.title}
-                          </div>
-                          {ChapterCompleted && (
-                            <img
-                              className="content-watched"
-                              src={tick}
-                              alt="watched"
-                            />
-                          )}
-                        </div>
-                        <span>Total Content : {chapter.lessons?.length}</span>
-                      </div>
-                    </Accordion.Header>
-
-                    <Accordion.Body>
-                      <div className="">
-                        <ul className="list-group">
-                          {chapter.lessons.map((lesson) => {
-                            return (
-                              <li
-                                key={lesson.lessonId}
-                                className={`list-group-item
-                                  ${
-                                    currentCourseData.title === lesson.title
-                                      ? "list-group-item-active"
-                                      : ""
-                                  }
-                                  ${
-                                    completedExercises.has(
-                                      `${chapter.chapterId}-${lesson.lessonId}`
-                                    )
-                                      ? "completedLesson"
-                                      : ""
-                                  }`}
-                                onClick={() =>
-                                  handleCurrentContent(
-                                    lesson,
-                                    chapter.chapterId,
-                                    lesson.lessonId
-                                  )
-                                }>
-                                <span className="video-number">
-                                  <div>{lesson.title}</div>
-                                  {(completedExercises.has(
-                                    `${chapter.chapterId}-${lesson.lessonId}`
-                                  ) ||
-                                    completedLessons.has(
-                                      `${chapter.chapterId}-${lesson.lessonId}`
-                                    )) && (
-                                    <img
-                                      className="content-watched"
-                                      src={tick}
-                                      alt="watched"
-                                    />
-                                  )}
-                                </span>
-                                {lesson.fileType === "video/mp4" ? (
-                                  <span className="lesson-duration">
-                                    Duration:{" "}
-                                    {lesson.duration
-                                      ? convertToReadableDuration(
-                                          Math.floor(lesson.duration / 1000)
-                                        )
-                                      : "N/A"}
-                                  </span>
-                                ) : (
-                                  <span className="lesson-duration">
-                                    Type: {truncateText(lesson?.fileType, 30)}
-                                  </span>
-                                )}
-                              </li>
-                            );
-                          })}
-                        </ul>
-
-                        {chapter.testId && (
-                          <div className="testButtonBox">
-                            <div className="testButtonInr">
-                              <div className="testButtonTxt">
-                                Take a Test to Confirm Your Understanding
-                              </div>
-
-                              <button
-                                className="testButton"
-                                onClick={() =>
-                                  navigate(
-                                    `/home/tests/${lesson.testId}/user/${userId}`
-                                  )
-                                }>
-                                Take Test
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </Accordion.Body>
-                  </Accordion.Item>
-                );
-              })}
-          </Accordion> */}
+          
 
           <Accordion
             activeKey={activeAccordion}
@@ -718,7 +588,7 @@ const CourseContent = () => {
                                                   </div>
                                                   <button
                                                     className="testButton text-nowrap"
-                                                    onClick={() =>
+                                                    onClick={() =>{
                                                       subLesson.test[0].type ===
                                                       "MCQ"
                                                         ? navigate(
@@ -740,7 +610,15 @@ const CourseContent = () => {
                                                               },
                                                             }
                                                           )
-                                                        : null
+                                                        : null,
+                                                        handleMediaEnd(
+                                                          subLesson,
+                                                          chapter.chapterId,
+                                                          lesson.lessonId,
+                                                          subLesson.subLessonId
+                                                        )
+                                                    }
+                                                      
                                                     }
                                                   >
                                                     Test
@@ -767,7 +645,7 @@ const CourseContent = () => {
                                 Take a Test to Confirm Your Understanding
                               </div>
 
-                              <button
+                              {/* <button
                                 className="testButton"
                                 onClick={() =>
                                   chapter.test[0].type === "MCQ"
@@ -784,13 +662,41 @@ const CourseContent = () => {
                                         {
                                           state: {
                                             test: chapter.test,
+                                            chapterId:chapter._id,
                                           },
                                         }
                                       ): null
+
+                                    
                                 }
                               >
                                 Take Test
-                              </button>
+                                {completedTests.has(chapter.chapterId) && (
+                                <img className="content-watched" src={tick} alt="Completed" />
+                              )}
+                              </button> */}
+
+<button
+  className="testButton"
+  onClick={() => {
+    if (chapter.test[0].type === "MCQ") {
+      navigate(`/home/courseContent/${courseId}/assessmentTest`, {
+        state: { test: chapter.test },
+      });
+    } else if (chapter.test[0].type === "paragraph") {
+      navigate(`/home/courseContent/${courseId}/writtenTest`, {
+        state: { test: chapter.test, chapterId: chapter._id },
+      });
+    }
+    // Mark test as completed
+    markTestAsCompleted(chapter.chapterId);
+  }}
+>
+  Take Test
+  {completedTests.has(chapter.chapterId) && (
+    <img className="content-watched" src={tick} alt="Completed" />
+  )}
+</button>
                             </div>
                           </div>
                         ) : null}

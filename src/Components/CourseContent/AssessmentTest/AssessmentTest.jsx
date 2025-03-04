@@ -12,15 +12,6 @@ import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 //react-router
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-// import { Elacompleted, elaTestScore } from "../../api/baseapi";
-
-// payload = {
-//   degreeId,
-//   userid,
-//   subLessonId,
-//   test,
-//   answer
-// }
 
 const apiBaseUrl = process.env.REACT_APP_BASE_API;
 const userInfo = JSON.parse(localStorage.getItem("userdata"));
@@ -38,6 +29,7 @@ const AssessmentTest = () => {
   const [selectedUserDropdown, setSelectedUserDropdown] = useState(1);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [bookmarkedQuestions, setBookmarkedQuestions] = useState({});
+  const [showPopup, setShowPopup] = useState(false);
   // var questionData = JSON.parse(localStorage.getItem("questionData"));
   // var questionData = test[0];
   var questionData = test?.[0] || {};
@@ -54,19 +46,10 @@ const AssessmentTest = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // useEffect(() => {
-  //   if (timeLeft <= 0) {
-  //     localStorage.setItem("elacomplete", "true");
-  //     testcomplete();
-  //   }
-  // });
+  
 
   const handleBookmark = () => {
-    // setBookmarkedQuestions((prev) =>
-    //   prev.includes(currentQuestionIndex)
-    //     ? prev.filter((index) => index !== currentQuestionIndex)
-    //     : [...prev, currentQuestionIndex]
-    // );
+    
     setBookmarkedQuestions({
       ...bookmarkedQuestions,
       [`${currentSectionIndex}-${currentQuestionIndex}`]:
@@ -78,54 +61,35 @@ const AssessmentTest = () => {
     });
   };
 
+  
+
   const handleNavigation = (direction) => {
-    // const currentSection = questionData.sections[currentSectionIndex];
-    // const currentSectionQuestions = currentSection.questions.slice(0, 20);
-
     const currentSectionQuestions = questionData?.questions || [];
-
-    if (
-      direction === "next" &&
-      currentQuestionIndex < currentSectionQuestions.length - 1
-    ) {
+  
+    if (direction === "next" && currentQuestionIndex < currentSectionQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else if (direction === "previous" && currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
     }
   };
-
-//  const handleNavigation = (direction) => {
-//    const currentSection = questionData.sections[currentSectionIndex];
-
-//    // Ensure currentSection and currentSectionQuestions are not undefined or empty
-//    if (!currentSection || !currentSection.questions) return;
-
-//    const currentSectionQuestions = currentSection.questions.slice(0, 20);
-
-//    if (
-//      direction === "next" &&
-//      currentQuestionIndex < currentSectionQuestions.length - 1
-//    ) {
-//      setCurrentQuestionIndex(currentQuestionIndex + 1);
-//    } else if (direction === "previous" && currentQuestionIndex > 0) {
-//      setCurrentQuestionIndex(currentQuestionIndex - 1);
-//    }
-//  };
-
+  
 
 
   const handleOptionChange = (event) => {
+    const selectedValue = event.target.value;
     setSelectedOptions({
       ...selectedOptions,
-      [`${currentSectionIndex}-${currentQuestionIndex}`]: event.target.value,
+      [`${currentSectionIndex}-${currentQuestionIndex}`]: selectedValue,
     });
-
+  
+    const currentQuestion = currentSectionQuestions[currentQuestionIndex];
     setScore({
       ...score,
       [`${currentSectionIndex}-${currentQuestionIndex}`]:
-        currentQuestion.correctAnswer === event.target.value ? 1 : 0,
+        currentQuestion?.correctAnswer === selectedValue ? 1 : 0,
     });
   };
+  
 
   const handleSelectChange = (event) => {
     const selectedSectionIndex = parseInt(event.target.value) - 1;
@@ -134,11 +98,7 @@ const AssessmentTest = () => {
     setCurrentQuestionIndex(0);
   };
 
-  // const handleFinishClick = () => {
-  //   setTimeout(() => {
-  //       navigate("/finish-assessment");
-  //   }, 2000);
-  // };
+  
 
   const handleNextSection = () => {
     if (currentSectionIndex < questionData.sections.length - 1) {
@@ -205,9 +165,7 @@ const AssessmentTest = () => {
     return time;
   };
 
-  // const sections = questionData?.sections;
-  // const currentSection = sections[currentSectionIndex];
-  // const currentSectionQuestions = questionData?.questions?.slice(0, 20) || [];
+  
   const currentSectionQuestions = questionData?.questions || [];
   // const currentSectionQuestions = questionData.questions || [];
 
@@ -220,14 +178,12 @@ const AssessmentTest = () => {
   console.log("currentQuestion", currentQuestion);
 
   let [totalQuestions, settotalQuestions] = useState(0);
-  // useEffect(() => {
-  //   var total = 0;
-  //   for (var index in sections) {
-  //     total += sections[index].questions.length;
-  //   }
-  //   settotalQuestions(total);
-  // }, [sections]);
-
+  useEffect(() => {
+    if (questionData && questionData.questions) {
+      settotalQuestions(questionData.questions.length);
+    }
+  }, [questionData]);
+ 
   const answeredCount = Object.keys(selectedOptions).length;
   const bookmarkedCount = Object.keys(bookmarkedQuestions).length;
   const notAnsweredCount = totalQuestions - answeredCount;
@@ -236,56 +192,18 @@ const AssessmentTest = () => {
     selectedOptions.hasOwnProperty(`${currentSectionIndex}-${index}`)
   );
 
-  // function logout() {
-  //   confirmAlert({
-  //     title: "You are about to Logout",
-  //     message:
-  //       "This will lead to loss of test progress, Do you wish to continue?",
-  //     buttons: [
-  //       {
-  //         label: "Yes",
-  //         onClick: () => {
-  //           localStorage.removeItem("isloggedin");
-  //           localStorage.removeItem("linkedin");
-  //           localStorage.removeItem("elacomplete");
-  //           localStorage.removeItem("userid");
-  //           localStorage.removeItem("email");
-  //           localStorage.removeItem("name");
-  //           navigate("../");
-  //         },
-  //       },
-  //       {
-  //         label: "No",
-  //         onClick: () => console.log("Click No"),
-  //       },
-  //     ],
-  //   });
-  // }
+  
 
   function finishtest() {
+
+    if (answeredCount < totalQuestions) {
+      setShowPopup(true);
+    }
+    else{
     if (notAnsweredCount > 0) {
       confirmAlert({
-        title: "You have " + notAnsweredCount + " unanswered questions",
+        title: `You have ${notAnsweredCount} unanswered questions`,
         message: "Do you wish to continue?",
-        buttons: [
-          {
-            label: "Yes",
-            onClick: () => {
-              // localStorage.setItem("elacomplete", "true");
-              testcomplete();
-            },
-          },
-          {
-            label: "No",
-            onClick: () => console.log("Click No"),
-          },
-        ],
-      });
-    } else {
-      confirmAlert({
-        title: "You have " + formatTimevalue(timeLeft) + " time left",
-        message:
-          "Make sure that your answer are correct. Do you wish to continue?",
         buttons: [
           {
             label: "Yes",
@@ -293,64 +211,88 @@ const AssessmentTest = () => {
           },
           {
             label: "No",
-            onClick: () => console.log("Click No"),
+          },
+        ],
+      });
+    } else {
+      confirmAlert({
+        title: `You have ${formatTimevalue(timeLeft)} time left`,
+        message: "Make sure that your answers are correct. Do you wish to continue?",
+        buttons: [
+          {
+            label: "Yes",
+            onClick: () => testcomplete(),
+          },
+          {
+            label: "No",
           },
         ],
       });
     }
   }
-
-  async function testcomplete() {
-    // let sum = 0;
-    // for (let i = 0; i < Object.values(score).length; i++) {
-    //   sum += Object.values(score)[i];
-    // }
-
-
-    let testAnswers = currentSectionQuestions.map((question, index) => ({
-      question: question.question,
-      userAnswer: selectedOptions[`${currentSectionIndex}-${index}`] || null,
-      correctAnswer: question.correctAnswer,
-      type: "MCQ",
-      marks:
-        selectedOptions[`${currentSectionIndex}-${index}`] ===
-        question.correctAnswer
-          ? 1
-          : 0,
-    }));
+}
   
-    const sAns = [
-      {
+  async function testcomplete() {
+    try {
+      const formData = new FormData();
+      formData.append("userId", userInfo?._id);
+      formData.append("degreeId", userInfo?.applyingFor);
+  
+      const processedAnswers = currentSectionQuestions.map((question, index) => {
+        const userAnswer = selectedOptions[`${currentSectionIndex}-${index}`] || null;
+        const isCorrect = userAnswer === question.correctAnswer;
+        
+        return {
+          question: question.question,
+          userAnswer,
+          correctAnswer: question.correctAnswer,
+          type:"MCQ",
+          marks: isCorrect ? 1 : 0,
+          maxMark:1,
 
-        subLessonId: questionData._id, // Assuming `questionData._id` holds the subLessonId
-        testAnswers:testAnswers,
+        };
+      });
+  
+      console.log("Processed Answers:", processedAnswers); // Debugging
+  
+      if (processedAnswers.length === 0) {
+        alert("No answers recorded. Please ensure answers are selected before submission.");
+        return;
       }
-    ];
-    try {    
-      const formData = new FormData()
-      formData.append('userId', userInfo._id)
-      formData.append('degreeId', userInfo.applyingFor)
-      formData.append("subLessons", JSON.stringify(sAns));
-
-      const res = await axios.post(
-        `${apiBaseUrl}/api/answer/submit`,
-        formData
-      );
-      console.log(res.data);
-
-      navigate(-1);
-      // const Id = localStorage.getItem("userid");
-      // console.log(Id);
-      // const res = await Elacompleted(Id, { testScore: sum, elaComplete: true });
-      // console.log(res);
-      // if (res) {
-      //   setFinalScore(sum);
-      //   localStorage.setItem("finalScore", sum);
+  
+      const subLessons = [
+        {
+          sublessonId: questionData._id,
+          attempts: [{ answers: processedAnswers }],
+        },
+      ];
+  
+      formData.append("subLessons", JSON.stringify(subLessons));
+  
+      // if (selectedFiles.length > 0) {
+      //   selectedFiles.forEach((file) => formData.append("answerFiles", file));
       // }
+  
+      const response = await axios.post(`${apiBaseUrl}/api/answer/submit1`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+  
+      console.log("Response:", response.data);
+  
+      if (response.status === 201) {
+        alert("Test submitted successfully!");
+        navigate("/home");
+      } else {
+        alert("Test submission failed! Please try again.");
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Error submitting test:", error);
+      alert("Failed to submit test. Please check the console for more details.");
     }
   }
+  
+
+
 
 
   return (
@@ -360,32 +302,28 @@ const AssessmentTest = () => {
           <div className="brand-logo">
             <img src={logoela} alt="C-Suite Academy" height="40px" />
           </div>
-          {/* <>
-            <Dropdown>
-              <Dropdown.Toggle id="dropdown-basic">
-                {localStorage.getItem("name")}
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu>
-                <Dropdown.Item
-                  onClick={(e) => {
-                    e.preventDefault();
-                    logout();
-                  }}>
-                  Log Out
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          </> */}
+          
           <button
             className="button-finish"
             onClick={(e) => {
               e.preventDefault();
               finishtest();
             }}
+            // disabled={notAnsweredCount > 0}
           >
             Finish
           </button>
+          {/* Popup Modal */}
+      {showPopup && (
+        <div className="popup">
+          <div className="popup-content">
+            <h2>⚠️ Attention!</h2>
+            <p>Please attend all the questions before finishing the test.</p>
+            <button onClick={() => setShowPopup(false)}>OK</button>
+          </div>
+        </div>
+      )}
+
         </div>
 
         <div className="container-fluid">
@@ -398,17 +336,7 @@ const AssessmentTest = () => {
                     <span>/</span>
                     {currentSectionQuestions?.length}
                   </p>
-                  {/* <select
-                    className="change-selection"
-                    value={selectedUserDropdown}
-                    onChange={handleSelectChange}
-                  >
-                    {sections?.map((section, index) => (
-                      <option key={index} value={index + 1}>{`Section - ${
-                        index + 1
-                      }`}</option>
-                    ))}
-                  </select> */}
+                  
                 </div>
 
                 <p className="question-style">{currentQuestion?.question}</p>
@@ -443,7 +371,7 @@ const AssessmentTest = () => {
                   </button>
                   {!(
                     isCurrentSectionCompleted &&
-                    currentSectionIndex < sections.length - 1
+                    currentSectionIndex <questionData.length - 1
                   ) && (
                     <button
                       className="button-next"
@@ -456,7 +384,7 @@ const AssessmentTest = () => {
                     </button>
                   )}
                   {isCurrentSectionCompleted &&
-                    currentSectionIndex < sections.length - 1 && (
+                    currentSectionIndex < questionData.length - 1 && (
                       <button
                         className="button-next"
                         onClick={handleNextSection}>
@@ -490,16 +418,7 @@ const AssessmentTest = () => {
                   <div className="questions">
                     <p>Questions</p>
                   </div>
-                  {/* <select
-                    className="change-selection-two"
-                    value={selectedUserDropdown}
-                    onChange={handleSelectChange}>
-                    {sections.map((section, index) => (
-                      <option key={index} value={index + 1}>{`Section ${
-                        index + 1
-                      }`}</option>
-                    ))}
-                  </select> */}
+                  
                   <div
                     id="Test-marks-container"
                     style={{ width: "100%", paddingLeft: "2rem" }}

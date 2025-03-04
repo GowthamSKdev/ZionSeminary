@@ -67,127 +67,6 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [fetchError, setFetchError] = useState(false);
 
-  // useEffect(() => {
-  //   const id = localStorage.getItem("userid");
-  //   const userInfo = JSON.parse(localStorage.getItem("userDataUpdated"));
-  //   if (userInfo) {
-  //     // console.log(response.data.user);
-  //     const data = userInfo;
-  //     // console.log(response.data.users[0]._id);
-  //     setProfileData(data);
-
-  //     // usid
-  //     const csuiteUserInfo = {
-  //       userID: data._id,
-  //       coursePurchased:
-  //         data.coursePurchased != []
-  //           ? data.coursePurchased.map((x) => x.courseId)
-  //           : [],
-  //     };
-  //     localStorage.setItem("userInfo", JSON.stringify(csuiteUserInfo));
-
-  //     if (
-  //       data.profilePic &&
-  //       !data.profilePic.startsWith("data:image/jpeg;base64,")
-  //     ) {
-  //       setProfileData((prevData) => ({
-  //         ...prevData,
-  //         profilePic: `data:image/jpeg;base64,${data.profilePic}`,
-  //       }));
-  //     } else if (data.profilePic) {
-  //       setProfileData((prevData) => ({
-  //         ...prevData,
-  //         profilePic: data.profilePic,
-  //       }));
-  //     }
-
-  //     if (
-  //       data.profileBanner &&
-  //       !data.profileBanner.startsWith("data:image/jpeg;base64,")
-  //     ) {
-  //       setProfileData((prevData) => ({
-  //         ...prevData,
-  //         profileBanner: `data:image/jpeg;base64,${data.profileBanner}`,
-  //       }));
-  //     } else if (data.profileBanner) {
-  //       setProfileData((prevData) => ({
-  //         ...prevData,
-  //         profileBanner: data.profileBanner,
-  //       }));
-  //     }
-
-  //     setIsLoading(false);
-  //   } else {
-  //     console.error("Error fetching profile data:");
-  //     setIsLoading(false);
-  //     setFetchError(true);
-  //   }
-
-  //   // axios
-  //   //   .get(`${apiBaseUrl}/user/user/${id}`)
-  //   //   .then((response) => {
-  //   //     // console.log(response.data.user);
-  //   //     const data = response.data.user;
-  //   //     // console.log(response.data.users[0]._id);
-  //   //     setProfileData(data);
-
-  //   //     // usid
-  //   //     const csuiteUserInfo = {
-  //   //       userID: data._id,
-  //   //       coursePurchased:
-  //   //         data.coursePurchased != []
-  //   //           ? data.coursePurchased.map((x) => x.courseId)
-  //   //           : [],
-  //   //     };
-  //   //     localStorage.setItem("userInfo", JSON.stringify(csuiteUserInfo));
-
-  //   //     if (
-  //   //       data.profilePic &&
-  //   //       !data.profilePic.startsWith("data:image/jpeg;base64,")
-  //   //     ) {
-  //   //       setProfileData((prevData) => ({
-  //   //         ...prevData,
-  //   //         profilePic: `data:image/jpeg;base64,${data.profilePic}`,
-  //   //       }));
-  //   //     } else if (data.profilePic) {
-  //   //       setProfileData((prevData) => ({
-  //   //         ...prevData,
-  //   //         profilePic: data.profilePic,
-  //   //       }));
-  //   //     }
-
-  //   //     if (
-  //   //       data.profileBanner &&
-  //   //       !data.profileBanner.startsWith("data:image/jpeg;base64,")
-  //   //     ) {
-  //   //       setProfileData((prevData) => ({
-  //   //         ...prevData,
-  //   //         profileBanner: `data:image/jpeg;base64,${data.profileBanner}`,
-  //   //       }));
-  //   //     } else if (data.profileBanner) {
-  //   //       setProfileData((prevData) => ({
-  //   //         ...prevData,
-  //   //         profileBanner: data.profileBanner,
-  //   //       }));
-  //   //     }
-
-  //   //     setIsLoading(false);
-  //   //   })
-  //   //   .catch(() => {
-  //   //     console.error("Error fetching profile data:");
-  //   //     setIsLoading(false);
-  //   //     setFetchError(true);
-  //   //   });
-  // }, []);
-
-  // async function fetchData(id) {
-  //   try {
-  //     const res = await fetchUserData(id);
-  //     console.log(res);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
 
   const handleEditClick = () => {
     setIsEditing(!isEditing);
@@ -287,18 +166,6 @@ const Profile = () => {
     return "";
   };
 
-  // if (fetchError) {
-  //   return <ErrorDataFetchOverlay />;
-  // }
-
-  // if (isLoading) {
-  //   return (
-  //     <div>
-  //       <LoadingPage />
-  //     </div>
-  //   );
-  // }
-
   return (
     <div className="profileContainer">
       <div className="profileBannerBox">
@@ -365,7 +232,7 @@ const Profile = () => {
           >
             <label>Name</label>
             <input
-              type="text"
+              type="Name"
               name="name"
               value={profileData.name}
               onChange={handleChange}

@@ -14,7 +14,9 @@ export default function WrittenTest() {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { test } = location.state;
+  const { test,chapterId } = location.state;
+  console.log(test,chapterId);
+  
 
   useEffect(() => {
     if (test && Array.isArray(test)) {
@@ -26,30 +28,65 @@ export default function WrittenTest() {
     setFile(e.target.files[0]);
   };
 
+  
+
+
+
+
+  
   const handleUploadTest = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+  
     const formData = new FormData();
-      formData.append("userId", userInfo._id);
-    formData.append("degreeId", userInfo.applyingFor);
-    formData.append("chapterId",questionData._id)
-    formData.append("answer", answer);
+    formData.append("userId", userInfo._id); // Ensure userId matches the required format
+    formData.append("degreeId", userInfo.applyingFor); // Ensure degreeId is included
+  
+    // Construct submission data to match the required payload
+    const submissionData = [{
+      
+      
+          chapterId: chapterId,
+          attempts: [
+            {
+              answers: [
+                {
+                  question: questionData?.questions[0]?.question || "No question available",
+                  userAnswer: answer || "Please refer to the uploaded file.",
+                  type: "paragraph",
+                  fileUrl: file ? "Uploading..." : null, // This will be updated after file upload
+                },
+              ],
+            },
+          ],
+        
+      
+    },
+  ];
+  
+    formData.append("chapters", JSON.stringify(submissionData));
+  
     if (file) {
       formData.append("answerFiles", file);
     }
-
+  
+    console.log("Submitting Data:", JSON.stringify(submissionData, null, 2)); // Debugging
+  
     try {
-      const res = await axios.post(
-        `${apiBaseUrl}/api/answer/submit`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log("Upload successful:", res.data);
+      const res = await axios.post(`${apiBaseUrl}/api/answer/submit1`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+  
+      console.log("Upload Response:", res.data);
+  
+      if (res.data.chapters) {
+        console.log("Updated Chapters:", res.data.chapters);
+      } else {
+        console.warn("No chapters returned in response.");
+      }
+  
       alert("Test submitted successfully!");
     } catch (error) {
       console.error("Failed to upload", error);
@@ -58,6 +95,10 @@ export default function WrittenTest() {
       setLoading(false);
     }
   };
+  
+  
+  
+  
 
   return (
     <div className="writtenTest p-4 h-100 min-vh-100">

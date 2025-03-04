@@ -307,7 +307,7 @@ function Home() {
         <div className="card shadow-sm bg-primary text-white rounded-3">
           <div className="card-body d-flex flex-column flex-md-row align-items-md-center justify-content-between">
             <div>
-              <h3 className="fw-bold">Welcome Back, User 👋</h3>
+              <h3 className="fw-bold">Welcome Back, {userInfo.username} 👋</h3>
               <p className="mb-0">We're glad to have you here!</p>
             </div>
             <div className="bg-body text-dark rounded-3 px-3 py-2 mt-3 mt-md-0">
