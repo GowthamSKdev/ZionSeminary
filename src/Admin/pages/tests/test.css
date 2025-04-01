@@ -66,3 +66,21 @@
     align-items: center;
     justify-content: center;
 }
+
+
+/* new */
+.back-button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background 0.3s;
+}
+
+.back-button:hover {
+    background: #0056b3;
+}

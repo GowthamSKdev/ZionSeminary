@@ -7,6 +7,8 @@ import Enrolled from "../Components/Enrolled/Enrolled";
 import Home from "../Components/Home/Home";
 import AddnewDegree from "../Admin/pages/degrees/new-degree/AddnewDegree";
 import AllDegrees from "../Admin/pages/degrees/AllDegrees";
+import UserMarks from "../Admin/pages/UserMarks/UserMarks";
+
 // import AddnewChapter from "../Admin/pages/degrees/new-degree/AddnewChapter";
 import AddnewChapter from "../Admin/pages/chapter/AddNewChapter";
 import Register from "../Authentication/Register1";
@@ -77,6 +79,8 @@ const AppRoutes = () => {
         <Route path="/admin/events" element={<EventPage />} />
         <Route path="/admin/users" element={<Allusers />} />
         <Route path="/admin/tests" element={<AllTests />} />
+        <Route path="/admin/usermarks" element={<UserMarks />} />
+
         <Route path="/admin/tests/details" element={<TestDetails />} />
       </Routes>
     </main>

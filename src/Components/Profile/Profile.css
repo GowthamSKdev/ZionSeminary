@@ -3,7 +3,7 @@
   font-style: inherit;
   cursor: default;
   min-height: 100vh;
-  padding: 40px 50px;
+  padding: 30px 20px;
   align-items: center;
   flex-direction: column;
   justify-content: center;
@@ -11,7 +11,7 @@
 }
 
 .profileBannerBox {
-  width: 100%;
+  width: 85%;
 }
 
 .profileBGBox {
@@ -119,6 +119,7 @@
   width: 40%;
   padding: 20px 25px;
   border-radius: 15px;
+  margin-left: 98px;
   background-color: white;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
@@ -144,7 +145,7 @@
   text-align: left;
 }
 
-.profileDetails input,
+.profileDetails input, select,
 .profileDetails textarea {
   width: 65%;
   border: none;
@@ -157,6 +158,10 @@
   /* background-color: transparent; */
   background-color: rgba(220, 220, 220, 0.41);
 }
+
+
+
+
 
 .error-border input,
 .error-border textarea {
@@ -256,7 +261,7 @@
 @media (max-width: 835px) {
   .profileContainer {
     height: auto;
-    padding: 18px 30px;
+    padding: 18px 20px;
   }
 
   .profileBGBox {

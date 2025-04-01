@@ -16,17 +16,18 @@ const LeftBar = () => {
       <div className="menu">
         <Link
           to="../admin"
-          className={`menu-item ${
-            location === "/admin" && "menu-item-active"
-          }`}>
+          className={`menu-item ${location === "/admin" && "menu-item-active"}`}
+        >
           {/* <FontAwesomeIcon icon="fa-solid fa-fan" className="icon"/> */}
           <span>Dashboard</span>
         </Link>
+
         <Link
           to="../admin/degrees"
           className={`menu-item ${
             location === "/admin/degrees" && "menu-item-active"
-          }`}>
+          }`}
+        >
           {/* <FontAwesomeIcon icon="fa-solid fa-fan" className="icon"/> */}
           <span>Degrees</span>
         </Link>
@@ -44,14 +45,27 @@ const LeftBar = () => {
           to="../admin/tests"
           className={`menu-item ${
             location === "/admin/tests" && "menu-item-active"
-          }`}>
+          }`}
+        >
           {/* <FontAwesomeIcon icon={"faSignOutAlt"} className="icon" /> */}
           <span>Tests</span>
         </Link>
+
+        <Link
+          to="../admin/usermarks"
+          className={`menu-item ${
+            location === "/admin/usermarks" && "menu-item-active"
+          }`}
+        >
+          <span>Usermarks</span>
+        </Link>
+
+        {/* new */}
         <Link to="/" className="menu-item">
           {/* <FontAwesomeIcon icon={"faSignOutAlt"} className="icon" /> */}
           <span>Logout</span>
         </Link>
+        {/* new */}
       </div>
     </div>
   );

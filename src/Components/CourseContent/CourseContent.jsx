@@ -219,6 +219,11 @@ const CourseContent = () => {
     ) {
       const officeEmbedUrl = `https://view.officeapps.live.com/op/view.aspx?src=${link}`;
 
+
+      
+
+      
+
       return (
         <>
           <div className="embed-responsive-item">
@@ -378,7 +383,84 @@ const CourseContent = () => {
   
     const markTestAsCompleted = (chapterId) => {
       setCompletedTests((prev) => new Set([...prev, chapterId]));
-    };
+  };
+  
+
+  // new
+  const handleNext = async () => {
+    if (!courseData?.chapters || courseData.chapters.length === 0) {
+      console.error("No chapters available.");
+      return;
+    }
+
+    // Find the current chapter
+    const currentChapter = courseData.chapters.find(
+      (chapter) => chapter.chapterId === currentChapterIndex
+    );
+
+    if (!currentChapter) {
+      console.error("Current chapter not found.");
+      return;
+    }
+
+    // Find the current lesson
+    const currentLesson = currentChapter.lessons.find(
+      (lesson) => lesson.lessonId === currentLessonIndex
+    );
+
+    if (!currentLesson) {
+      console.error("Current lesson not found.");
+      return;
+    }
+
+    // Find the current sub-lesson
+    const currentSubLesson = currentLesson.subLessons.find(
+      (subLesson) => subLesson.subLessonId === currentSubLessonIndex
+    );
+
+    if (!currentSubLesson) {
+      console.error("Current sub-lesson not found.");
+      return;
+    }
+
+    // Check if there are more sub-lessons in the current lesson
+    if (currentSubLessonIndex < currentLesson.subLessons.length - 1) {
+      // Move to the next sub-lesson in the current lesson
+      const nextSubLesson = currentLesson.subLessons[currentSubLessonIndex + 1];
+      handleCurrentContent(
+        nextSubLesson,
+        currentChapterIndex,
+        currentLessonIndex,
+        currentSubLessonIndex + 1
+      );
+      setCurrentSubLessonIndex(currentSubLessonIndex + 1);
+    } else if (currentLessonIndex < currentChapter.lessons.length - 1) {
+      // Move to the first sub-lesson of the next lesson in the current chapter
+      const nextLesson = currentChapter.lessons[currentLessonIndex + 1];
+      const nextSubLesson = nextLesson.subLessons[0];
+      handleCurrentContent(
+        nextSubLesson,
+        currentChapterIndex,
+        currentLessonIndex + 1,
+        0
+      );
+      setCurrentLessonIndex(currentLessonIndex + 1);
+      setCurrentSubLessonIndex(0);
+    } else if (currentChapterIndex < courseData.chapters.length - 1) {
+      // Move to the first sub-lesson of the first lesson in the next chapter
+      const nextChapter = courseData.chapters[currentChapterIndex + 1];
+      const nextLesson = nextChapter.lessons[0];
+      const nextSubLesson = nextLesson.subLessons[0];
+      handleCurrentContent(nextSubLesson, currentChapterIndex + 1, 0, 0);
+      setCurrentChapterIndex(currentChapterIndex + 1);
+      setCurrentLessonIndex(0);
+      setCurrentSubLessonIndex(0);
+    } else {
+      // No more content to navigate to
+      console.log("You have reached the end of the course.");
+    }
+  };
+  // new
 
 
   return (
@@ -393,7 +475,10 @@ const CourseContent = () => {
           </div>
           <button
             className="NextBtn"
-            // onClick={() => handleNext()}
+            onClick={() => handleNext()}
+            // onClick={() => navigate(+1)}
+    
+
           >
             Next
           </button>
@@ -645,37 +730,6 @@ const CourseContent = () => {
                                 Take a Test to Confirm Your Understanding
                               </div>
 
-                              {/* <button
-                                className="testButton"
-                                onClick={() =>
-                                  chapter.test[0].type === "MCQ"
-                                    ? navigate(
-                                        `/home/courseContent/${courseId}/assessmentTest`,
-                                        {
-                                          state: {
-                                            test: chapter.test,
-                                          },
-                                        }
-                                      )
-                                    : chapter.test[0].type === "paragraph" ? navigate(
-                                        `/home/courseContent/${courseId}/writtenTest`,
-                                        {
-                                          state: {
-                                            test: chapter.test,
-                                            chapterId:chapter._id,
-                                          },
-                                        }
-                                      ): null
-
-                                    
-                                }
-                              >
-                                Take Test
-                                {completedTests.has(chapter.chapterId) && (
-                                <img className="content-watched" src={tick} alt="Completed" />
-                              )}
-                              </button> */}
-
 <button
   className="testButton"
   onClick={() => {
@@ -713,3 +767,4 @@ const CourseContent = () => {
 };
 
 export default CourseContent;
+

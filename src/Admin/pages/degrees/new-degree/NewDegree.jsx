@@ -99,7 +99,7 @@ const NewDegree = () => {
 
       console.log("Degree added successfully:", response.data);
       toast.success("Degree added successfully!");
-      navigate("/admin");
+      navigate("/admin/degrees");
     } catch (error) {
       console.error(
         "Error uploading degree:",

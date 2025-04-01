@@ -1,55 +1,108 @@
-.zion-courses-wrapper{
-    min-height: 100dvh;
-    height: 100%;
-    width: 100%;
-    background-color: hsl(0, 0%, 92%);
-    padding: 1em;
-    gap: 1em;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+/* Marks.css */
+
+.container-fluid {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
 }
 
-.zion-card{
-    display: block;
-    /* background-color: hsl(0, 0%, 50%); */
-}
-.zion-course-card{
-    width: 250px;
-    display: flex;
-    flex-direction: column;
-    padding: 1em;
-    /* background:linear-gradient( var(--primary-color), var(--primary-light)); */
-    background-color: hsl(0, 0%, 95%) !important;
-    border: 1px solid hsl(0, 0%, 85%) !important;
-    border-radius: 1em;
-    /* width: 250px; */
-    transition: all .5s ease-in-out;
+.text-center {
+  font-weight: bold;
+  margin-bottom: 20px;
 }
 
-.zion-course-card:hover{
-    transform: scale(103%);
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-    transition: all .5s ease-in-out;
-   
+.table {
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: hidden;
 }
-.zion-course-card img{
-    max-width: 100%;
-    display: block;
-    border-radius: .5em;
-    height: 150px;
-    /* width: 150px; */
-    visibility: visible;
+
+.table thead th {
+  text-align: center;
 }
-.zion-course-content{
-    padding:  1.5em 0 0 0;
+
+.table tbody tr:hover {
+  background-color: #f8f9fa;
 }
-.zion-course-title{
-    font-size: 1rem;
+
+.btn-outline-primary {
+  font-size: 14px;
+  padding: 5px 10px;
 }
-.zion-course-description{
-    font-size: .8rem;
-    margin-top: 2em;
+
+.modal {
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.zion-btn,.Lock,.UnLock{
-    font-size: .8rem !important;
+
+.modal-content {
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  border-bottom: 2px solid #007bff;
+}
+
+.modal-title {
+  font-weight: bold;
+}
+
+.btn-close {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+.table-dark {
+  background-color: #343a40;
+  color: white;
+}
+
+.table-info {
+  background-color: #d1ecf1;
+}
+
+.table-warning {
+  background-color: #fff3cd;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container-fluid {
+    padding: 10px;
+  }
+  
+  .table {
+    font-size: 14px;
+  }
+  
+  .btn-outline-primary {
+    font-size: 12px;
+    padding: 3px 8px;
+  }
+  
+  .btn-danger {
+    font-size: 14px;
+    padding: 8px 15px;
+  }
+  
+  .modal-dialog {
+    width: 90%;
+  }
 }
