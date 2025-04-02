@@ -343,17 +343,18 @@ const Profile = () => {
           </div>
           <div className="profileDetails">
             <label>First Name</label>
-            <div className="d-flex flex-column ">
-            <input
-              type="text"
-              name="firstName"
-              value={profileData.firstName}
-              onChange={handleChange}
-              disabled={!isEditing}
-            />
-            {errors.firstName && (
-              <span className="error-message">{errors.firstName}</span>
-            )}
+            <div className="d-flex flex-column w-100 align-items-end">
+              <input
+                type="text"
+                className="w-100"
+                name="firstName"
+                value={profileData.firstName}
+                onChange={handleChange}
+                disabled={!isEditing}
+              />
+              {errors.firstName && (
+                <span className="error-message">{errors.firstName}</span>
+              )}
             </div>
           </div>
           <div className="profileDetails">
@@ -376,8 +377,7 @@ const Profile = () => {
               name="gender"
               value={profileData.gender}
               onChange={handleChange}
-              disabled={!isEditing}
-            >
+              disabled={!isEditing}>
               <option value="">Select Gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
@@ -468,8 +468,7 @@ const Profile = () => {
               name="maritalStatus"
               value={profileData.maritalStatus}
               onChange={handleChange}
-              disabled={!isEditing}
-            >
+              disabled={!isEditing}>
               <option value="">Select Marital Status</option>
               <option value="Single">Single</option>
               <option value="Married">Married</option>
@@ -481,17 +480,24 @@ const Profile = () => {
             )}
           </div>
 
-          <div className="profileDetails">
+          <div className="profileDetails ">
             <label>Date of Birth</label>
-            <input
-              type="Date"
-              name="dob"
-              value={profileData.dob}
-              onChange={handleChange}
-              disabled={!isEditing}
-              placeholder="YYYY-MM-DD"
-            />
-            {errors.dob && <span className="error-message">{errors.dob}</span>}
+            <div className="d-flex flex-column align-items-end">
+              <input
+                type="Date"
+                className="w-100"
+                name="dob"
+                value={profileData.dob}
+                onChange={handleChange}
+                disabled={!isEditing}
+                placeholder="YYYY-MM-DD"
+              />
+              {errors.dob && (
+                <span className="error-message text-sm-end fs-6">
+                  {errors.dob}
+                </span>
+              )}
+            </div>
           </div>
           <div className="profileDetails">
             <label>Ministry Experience</label>
@@ -600,4 +606,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
