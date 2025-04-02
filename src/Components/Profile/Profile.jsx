@@ -219,7 +219,7 @@ const Profile = () => {
       const apiBaseUrl = process.env.REACT_APP_BASE_API;
 
       const response = await axios.put(
-        $`{apiBaseUrl}/api/users/${user._id}`,
+        `${apiBaseUrl}/api/users/${user._id}`,
         formData,
         {
           headers: {
@@ -343,6 +343,7 @@ const Profile = () => {
           </div>
           <div className="profileDetails">
             <label>First Name</label>
+            <div className="d-flex flex-column ">
             <input
               type="text"
               name="firstName"
@@ -353,6 +354,7 @@ const Profile = () => {
             {errors.firstName && (
               <span className="error-message">{errors.firstName}</span>
             )}
+            </div>
           </div>
           <div className="profileDetails">
             <label>Last Name</label>

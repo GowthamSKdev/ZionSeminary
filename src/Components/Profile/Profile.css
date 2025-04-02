@@ -160,7 +160,10 @@
 }
 
 
-
+.error-message {
+  font-size: 1rem;
+  
+}
 
 
 .error-border input,
