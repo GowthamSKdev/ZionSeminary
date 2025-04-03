@@ -115,7 +115,6 @@ function Home() {
         const res = await axios.get(`${apiBaseUrl}/api/users/${userInfo._id}`);
         const { user } = res.data;
         setUserDetails(user);
-        console.log(userDetails);
 
         // toast.success("User data fetched successfully");
       } catch (error) {
@@ -125,6 +124,7 @@ function Home() {
     };
     fetchUserDetails();
   }, []);
+  console.log(userDetails);
 
   return (
     <div className="mainContent">
@@ -322,7 +322,6 @@ function Home() {
           <div className="col-lg-6">
             <div className="card shadow-sm rounded-3 border">
               <div className="card-header fw-bold">
-                
                 <h5 className="mb-0">Your Courses</h5>
               </div>
               <div className="card-body p-0">
@@ -336,21 +335,22 @@ function Home() {
                     </tr>
                   </thead>
                   <tbody>
-                    {userDetails?.degrees?.[0]?.courses?.length > 0 ? (
-                      userDetails.degrees[0].courses.map((course, index) => (
-                        <tr key={course._id}>
-                          <td>{index + 1}</td>
-                          <td>{course.title}</td>
-                          <td>{course.progressPercentage}%</td>
-                          <td>
-                          <ProgressBar
-                      progress={
-                        course.completionPercentage
-                        ||
-                        0
-                      }
-                    />
-                            {/* <span
+                    {userDetails?.degreeProgress?.[0]?.courses?.length > 0 ? (
+                      userDetails.degreeProgress[0].courses.map(
+                        (course, index) => (
+                          <tr key={course._id}>
+                            <td>{index + 1}</td>
+                            <td>{course.coursetitle}</td>
+                            <td>{course.progressPercentage}%</td>
+                            <td>
+                              <ProgressBar
+                                progress={
+                                  course.completionPercentage ||
+                                  course.progressPercentage ||
+                                  0
+                                }
+                              />
+                              {/* <span
                               className={`badge ${
                                 course.progressPercentage === 100
                                   ? "bg-success"
@@ -361,9 +361,10 @@ function Home() {
                                 ? "Completed"
                                 : "In Progress"}
                             </span> */}
-                          </td>
-                        </tr>
-                      ))
+                            </td>
+                          </tr>
+                        )
+                      )
                     ) : (
                       <tr>
                         <td colSpan="4" className="text-center text-muted">
@@ -375,10 +376,12 @@ function Home() {
                 </Table>
               </div>
               <div className="card-footer d-flex align-items-center g-4">
-              <div className="w-100 mt-5">
+                <div className="w-100 mt-5">
                   <h5 className="d-flex justify-content-between">
                     Degree:
-                    <span>{userDetails?.degrees?.[0]?.title || "N/A"}</span>
+                    <span>
+                      {userDetails?.degreeProgress?.[0]?.degreeTitle || "N/A"}
+                    </span>
                   </h5>
                   <div className="w-100">
                     <ProgressBar

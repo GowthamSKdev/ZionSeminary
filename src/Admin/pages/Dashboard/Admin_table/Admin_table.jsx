@@ -9,16 +9,15 @@ import { toast } from "react-toastify";
 const apiBaseUrl = process.env.REACT_APP_BASE_API;
 
 const AdminTable = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [userList, setUserList] = useState([]);
   const [error, setError] = useState(null);
-  const [ isLoading, setIsLoading ] = useState(true);
-  const [viewDetails, setViewDetails] = useState(false)
+  const [isLoading, setIsLoading] = useState(true);
+  const [viewDetails, setViewDetails] = useState(false);
   const fetchUsers = async () => {
     try {
       const res = await axios.get(`${apiBaseUrl}/api/users`);
       const { users } = res.data;
-      
 
       // Fetch degrees for all users
       const usersWithDegrees = await Promise.all(
@@ -66,7 +65,7 @@ const AdminTable = () => {
 
   const deleteAction = async (userId) => {
     const res = await axios.delete(`${apiBaseUrl}/api/users/${userId}`);
-    toast.success('User Deleted successfully')
+    toast.success("User Deleted successfully");
     fetchUsers();
     console.log(res);
   };
@@ -120,13 +119,16 @@ const AdminTable = () => {
                     </td>
                     <td>{user.degreeName || "No degree Assigned"}</td>
                     <td className="d-flex">
-                      <button className="btn btn-light btn-sm me-2" onClick={()=>navigate('/admin/userDetails',{state:{user}})} >
-                        <EyeIcon />
-                      </button>
-                      <button className="btn btn-primary btn-sm me-2">
+                      <button
+                        className="btn btn-light btn-sm me-2"
+                        onClick={() =>
+                          navigate("/admin/userDetails", { state: { user } })
+                        }>
                         <Edit />
                       </button>
-                      <button className="btn btn-danger btn-sm" onClick={()=>deleteAction(user._id)}>
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() => deleteAction(user._id)}>
                         <Trash />
                       </button>
                     </td>
@@ -144,9 +146,7 @@ const AdminTable = () => {
         </table>
       )}
       {error && <div className="alert alert-danger">{error}</div>}
-      {viewDetails && (
-        <UserDetails/>
-  )}
+      {viewDetails && <UserDetails />}
     </div>
   );
 };

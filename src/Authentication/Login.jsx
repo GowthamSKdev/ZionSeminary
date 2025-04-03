@@ -46,17 +46,26 @@ function Login() {
             Don't have an account?{" "}
             <a
               href="/register"
-              className="text-decoration-underline fw-semibold text-primary"
-            >
+              className="text-decoration-underline fw-semibold text-primary">
               Create now
             </a>
           </p>
 
           <form onSubmit={handleSubmit(onSubmit)}>
+            {/* <div className="form-group mb-3">
+              <label className="form-label fw-semibold">E-mail</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter User Name"
+                {...register("userName", { required: true })}
+              />
+            </div> */}
             <div className="form-group mb-3">
               <label className="form-label fw-semibold">E-mail</label>
               <input
                 type="email"
+                // type={"email" || "text"}
                 className="form-control"
                 placeholder="Enter Email"
                 {...register("email", { required: true })}
@@ -91,8 +100,7 @@ function Login() {
 
             <button
               type="submit"
-              className="btn btn-primary w-100 mb-3 rounded-pill"
-            >
+              className="btn btn-primary w-100 mb-3 rounded-pill">
               Sign In
             </button>
 
@@ -106,8 +114,7 @@ function Login() {
               <button
                 type="button"
                 onClick={handleGoogleSignIn}
-                className="btn btn-white w-100 mb-3 rounded-pill border d-flex align-items-center"
-              >
+                className="btn btn-white w-100 mb-3 rounded-pill border d-flex align-items-center">
                 <img
                   src={google}
                   alt="Google"
@@ -134,8 +141,7 @@ function Login() {
             <li className="d-flex mb-1">
               <i
                 className="bi bi-check-circle-fill me-3"
-                style={{ fontSize: "1.5rem", color: "#ffd800" }}
-              ></i>
+                style={{ fontSize: "1.5rem", color: "#ffd800" }}></i>
               <span>
                 Comprehensive tools for administrators to manage data
                 efficiently.
@@ -144,8 +150,7 @@ function Login() {
             <li className="d-flex mb-1">
               <i
                 className="bi bi-check-circle-fill me-3"
-                style={{ fontSize: "1.5rem", color: "#ffd800" }}
-              ></i>
+                style={{ fontSize: "1.5rem", color: "#ffd800" }}></i>
               <span>
                 Enhanced teaching tools for educators to simplify course
                 management.
@@ -154,8 +159,7 @@ function Login() {
             <li className="d-flex mb-1">
               <i
                 className="bi bi-check-circle-fill me-3"
-                style={{ fontSize: "1.5rem", color: "#ffd800" }}
-              ></i>
+                style={{ fontSize: "1.5rem", color: "#ffd800" }}></i>
               <span>
                 User-friendly interface for students to track their progress.
               </span>
@@ -163,8 +167,7 @@ function Login() {
             <li className="d-flex mb-1">
               <i
                 className="bi bi-check-circle-fill me-3"
-                style={{ fontSize: "1.5rem", color: "#ffd800" }}
-              ></i>
+                style={{ fontSize: "1.5rem", color: "#ffd800" }}></i>
               <span>
                 Seamless integration of academic and administrative workflows.
               </span>

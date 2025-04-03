@@ -8,7 +8,11 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 // Firebase imports
-import { auth, googleProvider, signInWithPopup } from "../Admin/firebase/firebase";
+import {
+  auth,
+  googleProvider,
+  signInWithPopup,
+} from "../Admin/firebase/firebase";
 
 // API base URL from environment variables
 const apiBaseUrl = process.env.REACT_APP_BASE_API;
@@ -26,7 +30,7 @@ function Login() {
     try {
       const res = await axios.post(`${apiBaseUrl}/api/users/login`, data);
       const { user } = res.data;
-      const findUser = await axios.get(`${apiBaseUrl}/api/users/${user.id}`)
+      const findUser = await axios.get(`${apiBaseUrl}/api/users/${user.id}`);
       const CurrentUser = findUser.data.user;
 
       if (CurrentUser) {
@@ -35,10 +39,11 @@ function Login() {
         localStorage.setItem("isloggedin", true);
         toast.success("Login Successful");
         console.log(CurrentUser);
-        
 
-        const userRole = CurrentUser.role ? CurrentUser.role.toLowerCase() : null;
-        const hasDetails = CurrentUser.details
+        const userRole = CurrentUser.role
+          ? CurrentUser.role.toLowerCase()
+          : null;
+        const hasDetails = CurrentUser.details;
 
         if (userRole === "admin") {
           navigate("/admin");
@@ -76,7 +81,6 @@ function Login() {
   //     // Send the token to the backend
   //     const response = await axios.post(`${apiBaseUrl}/api/users/auth/google`, { token });
   //     console.log(response);
-      
 
   //     if (response.status === 200) {
   //       const { user } = response.data;
@@ -132,16 +136,17 @@ function Login() {
         toast.success("Google Login Successful");
 
         // Determine the user role and navigate accordingly
-        const userRole = CurrentUser.role ? CurrentUser.role.toLowerCase() : null;
-        const hasDetails = CurrentUser.details
+        const userRole = CurrentUser.role
+          ? CurrentUser.role.toLowerCase()
+          : null;
+        const hasDetails = CurrentUser.details;
 
         if (userRole === "admin") {
           navigate("/admin");
         } else if (userRole === "client") {
           if (hasDetails === true) {
             navigate("/waitAuth", { state: { userId: CurrentUser._id } });
-          }
-          else {
+          } else {
             navigate("/elf", {
               state: { userId: CurrentUser._id },
             });
@@ -159,7 +164,6 @@ function Login() {
       setIsSigningIn(false); // Reset the signing-in flag
     }
   };
-
 
   // // Handle forgot password
   // const handleForgotPassword = async () => {
@@ -214,6 +218,15 @@ function Login() {
                   {...register("email", { required: true })}
                 />
               </div>
+              {/* <div className="form-group mb-3">
+                <label className="form-label fw-semibold">E-mail</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter email Id Or User name"
+                  {...register("email", { required: true })}
+                />
+              </div> */}
 
               <div className="form-group mb-3">
                 <label className="form-label fw-semibold">Password</label>

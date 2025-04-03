@@ -29,6 +29,9 @@ const Profile = () => {
   });
   const [selectedProfileImage, setSelectedProfileImage] = useState(null);
   const [selectedProfileBanner, setSelectedProfileBanner] = useState(null);
+  const [selectedSignatureFile, setSelectedSignatureFile] = useState(null);
+  const [selectedEducationCertFile, setSelectedEducationCertFile] =
+    useState(null);
   const [errors, setErrors] = useState({});
   const user = JSON.parse(localStorage.getItem("userdata"));
 
@@ -65,6 +68,8 @@ const Profile = () => {
     }
   }, []);
 
+  console.log(profileData);
+
   // Validation functions
   const validateName = (value) => {
     return /^[A-Za-z\s]+$/.test(value);
@@ -78,9 +83,9 @@ const Profile = () => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   };
 
-  const validateDateOfBirth = (value) => {
-    return /^\d{4}-\d{2}-\d{2}$/.test(value);
-  };
+  // const validateDateOfBirth = (value) => {
+  //   return /^\d{2}-\d{2}-\d{4}$/.test(value);
+  // };
 
   const validateEducationalQualification = (value) => {
     return /^[A-Za-z\s]+$/.test(value);
@@ -144,9 +149,9 @@ const Profile = () => {
       newErrors.maritalStatus =
         "Marital status can only contain letters and spaces";
 
-    if (!profileData.dob) newErrors.dob = "Date of birth is required";
-    else if (!validateDateOfBirth(profileData.dob))
-      newErrors.dob = "Date of birth must be in the format YYYY-MM-DD";
+    // if (!profileData.dob) newErrors.dob = "Date of birth is required";
+    // else if (!validateDateOfBirth(profileData.dob))
+    //   newErrors.dob = "Date of birth must be in the format YYYY-MM-DD";
 
     if (!profileData.ministryExperience)
       newErrors.ministryExperience = "Ministry experience is required";
@@ -183,7 +188,7 @@ const Profile = () => {
       !validateEducationalQualification(value)
     )
       return;
-    if (name === "dob" && !validateDateOfBirth(value)) return;
+    // if (name === "dob" && !validateDateOfBirth(value)) return;
 
     setProfileData({
       ...profileData,
@@ -209,10 +214,17 @@ const Profile = () => {
       }
     }
     if (selectedProfileImage) {
-      formData.append("profilePhotoFile", selectedProfileImage);
+      // formData.append("profilePhotoFile", selectedProfileImage);
+      formData.append("passportPhotoFile", selectedProfileImage);
     }
     if (selectedProfileBanner) {
       formData.append("profileBanner", selectedProfileBanner);
+    }
+    if (selectedSignatureFile) {
+      formData.append("signatureFile", selectedSignatureFile);
+    }
+    if (selectedEducationCertFile) {
+      formData.append("educationCertFile", selectedEducationCertFile);
     }
 
     try {
@@ -228,10 +240,11 @@ const Profile = () => {
         }
       );
 
-      localStorage.setItem(
-        "userDataUpdated",
-        JSON.stringify(response.data.user)
-      );
+      // localStorage.setItem(
+      //   "userDataUpdated",
+      //   JSON.stringify(response.data.user)
+      // );
+      localStorage.setItem("userdata", JSON.stringify(response.data.user));
 
       if (response.status !== 200) {
         console.error("Error updating profile:", response.data);
@@ -245,23 +258,53 @@ const Profile = () => {
   const handleProfileImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setSelectedProfileImage(file);
       setProfileData((prevData) => ({
         ...prevData,
         passportPhotoFile: URL.createObjectURL(file),
+        // passportPhotoFile: file,
       }));
+      setSelectedProfileImage(file);
     }
   };
+  // const handleProfileImageChange = (e) => {
 
+  //   const file = e.target.files[0];
+  //   setProfileData((prevData) => ({
+  //     ...prevData,
+  //     passportPhotoFile: file,
+  //   }));
+  // };
   // Handle profile banner change
   const handleProfileBannerChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setSelectedProfileBanner(file);
       setProfileData((prevData) => ({
         ...prevData,
         profileBanner: URL.createObjectURL(file),
+        // profileBanner: file,
       }));
+      setSelectedProfileBanner(file);
+    }
+  };
+
+  const handleSignatureFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setProfileData((prevData) => ({
+        ...prevData,
+        signatureFile: URL.createObjectURL(file),
+      }));
+      setSelectedSignatureFile(file);
+    }
+  };
+  const handleEducationCertFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setProfileData((prevData) => ({
+        ...prevData,
+        educationCertFile: URL.createObjectURL(file),
+      }));
+      setSelectedEducationCertFile(file);
     }
   };
 
@@ -303,6 +346,7 @@ const Profile = () => {
             {isEditing && (
               <label className="custom-file-upload">
                 <input
+                  name="passportPhotoFile"
                   type="file"
                   accept="image/*"
                   onChange={handleProfileImageChange}
@@ -466,7 +510,7 @@ const Profile = () => {
             <label>Marital Status</label>
             <select
               name="maritalStatus"
-              value={profileData.maritalStatus}
+              value={profileData.maritalStatus || ""}
               onChange={handleChange}
               disabled={!isEditing}>
               <option value="">Select Marital Status</option>
@@ -484,19 +528,19 @@ const Profile = () => {
             <label>Date of Birth</label>
             <div className="d-flex flex-column align-items-end">
               <input
-                type="Date"
+                type={!isEditing ? "text" : "date"}
                 className="w-100"
                 name="dob"
-                value={profileData.dob}
+                value={profileData.dob ? profileData.dob.split("T")[0] : ""}
                 onChange={handleChange}
                 disabled={!isEditing}
                 placeholder="YYYY-MM-DD"
               />
-              {errors.dob && (
+              {/* {errors.dob && (
                 <span className="error-message text-sm-end fs-6">
                   {errors.dob}
                 </span>
-              )}
+              )} */}
             </div>
           </div>
           <div className="profileDetails">
@@ -555,12 +599,7 @@ const Profile = () => {
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={(e) =>
-                      setProfileData({
-                        ...profileData,
-                        signatureFile: URL.createObjectURL(e.target.files[0]),
-                      })
-                    }
+                    onChange={handleSignatureFileChange}
                     className="imageBannerUpload"
                   />
                   Choose File for Signature
@@ -584,14 +623,7 @@ const Profile = () => {
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={(e) =>
-                      setProfileData({
-                        ...profileData,
-                        educationCertFile: URL.createObjectURL(
-                          e.target.files[0]
-                        ),
-                      })
-                    }
+                    onChange={handleEducationCertFileChange}
                     className="imageBannerUpload"
                   />
                   Choose File for Education file

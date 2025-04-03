@@ -232,13 +232,7 @@
 
 // export default UserDetails;
 
-
-
-
-
-
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./UserDetails.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import LeftBar from "../../../../components/global/sidebar/LeftBar";
@@ -257,6 +251,7 @@ const UserDetails = () => {
   const [user, setUser] = useState(initialUser); // State to manage user data
   const [isEditing, setIsEditing] = useState(false); // State to toggle edit mode
   const [isOpenAssignment, setIsOpenAssignment] = useState(false);
+  const [degrees, setDegrees] = useState([]);
 
   const formattedDob = new Date(user.dob).toISOString().split("T")[0];
 
@@ -269,10 +264,23 @@ const UserDetails = () => {
     }));
   };
 
+  useEffect(() => {
+    const fetchDegrees = async () => {
+      const { data } = await axios.get(`${apiBaseUrl}/api/degrees`);
+      const { degrees } = data;
+      console.log(degrees);
+
+      setDegrees(degrees);
+    };
+    fetchDegrees();
+  }, []);
   // Save updated user data
   const handleSave = async () => {
     try {
-      const res = await axios.put(`${apiBaseUrl}/api/users/${user._id}`, user);
+      const res = await axios.put(
+        `${apiBaseUrl}/api/users/edit/${user._id}`,
+        user
+      );
       toast.success("User updated successfully");
       setIsEditing(false); // Exit edit mode after saving
     } catch (err) {
@@ -452,17 +460,18 @@ const UserDetails = () => {
               <div className="input-form">
                 Apply For:
                 <select
-                  name="ApplyFor"
+                  name="applyingFor"
                   className="form-control"
-                  value={user.ApplyFor}
+                  value={user.applyingFor}
                   onChange={handleInputChange}
                   disabled={!isEditing}
-                >
+                  aria-placeholder={user.applyingFor}>
                   <option value="">Select an option</option>
-                  <option value="Option 1">Bachelor of edited 1</option>
-                  <option value="Option 2">B.Th</option>
-                  <option value="Option 3">B.Th Fast track</option>
-                  <option value="Option 3">dsfd</option>
+                  {degrees.map((degree) => (
+                    <option key={degree._id} value={degree._id}>
+                      {degree.title}
+                    </option>
+                  ))}
 
                   {/* Add more options as needed */}
                 </select>
@@ -476,16 +485,14 @@ const UserDetails = () => {
                     </button>
                     <button
                       className="btn btn-secondary"
-                      onClick={() => setIsEditing(false)}
-                    >
+                      onClick={() => setIsEditing(false)}>
                       Cancel
                     </button>
                   </>
                 ) : (
                   <button
                     className="btn btn-primary"
-                    onClick={() => setIsEditing(true)}
-                  >
+                    onClick={() => setIsEditing(true)}>
                     Edit
                   </button>
                 )}
@@ -518,8 +525,7 @@ const UserDetails = () => {
                       <td>
                         <button
                           className="btn btn-light btn-sm"
-                          onClick={() => setIsOpenAssignment(true)}
-                        >
+                          onClick={() => setIsOpenAssignment(true)}>
                           View
                         </button>
                       </td>
