@@ -40,7 +40,8 @@ const Profile = () => {
       const user = JSON.parse(localStorage.getItem("userdata"));
       console.log(user);
       setProfileData({
-        username: `${user.firstName} ${user.lastName}`,
+        // username: `${user.firstName} ${user.lastName}`,
+        username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
 
