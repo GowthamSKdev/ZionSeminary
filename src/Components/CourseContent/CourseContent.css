@@ -12,6 +12,16 @@
   background-color: var(--primary-bg);
 }
 
+
+.leftside {
+  width: 100px;
+  padding: 5px;
+  text-align: center;
+  border-radius: 5px;
+  margin-top: 3px;
+  background-color: skyblue;
+}
+
 .firstRow {
   width: 100%;
   display: flex;
@@ -280,6 +290,9 @@
   transition: all 0.3s ease;
   animation: bounce 0.3s;
 }
+
+
+
 
 @keyframes bounce {
   0% {

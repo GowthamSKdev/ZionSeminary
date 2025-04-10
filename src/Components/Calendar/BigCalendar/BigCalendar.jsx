@@ -31,6 +31,7 @@ const BigCalendar = () => {
           id: event.id || event._id, // Ensure compatibility with backend ID
         }));
         setEvents(formattedEvents);
+
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -66,6 +67,8 @@ const BigCalendar = () => {
         `${apiBaseUrl}/api/event/`,
         newEventWithUser
       );
+      window.location.reload();
+
       setEvents([
         ...events,
         {
@@ -76,6 +79,7 @@ const BigCalendar = () => {
         },
       ]);
       setShowModal(false);
+
     } catch (error) {
       console.error("Error adding event:", error);
       alert("Failed to add event. Please try again.");

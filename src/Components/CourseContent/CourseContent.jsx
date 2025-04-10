@@ -3,8 +3,7 @@ import "./CourseContent.css";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import tick from "../Assets/SVG/tick.svg";
 import ProgressBar from "../ProgressBar/ProgressBar";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Accordion } from "react-bootstrap";
 import axios from "axios";
 
@@ -14,21 +13,25 @@ const CourseContent = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { courseId } = useParams();
+
   const [courseData, setCourseData] = useState({});
   const [userId, setUserId] = useState("");
   const [fetchError, setFetchError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [currentCourseData, setCurrentCourseData] = useState({});
   const [activeAccordion, setActiveAccordion] = useState(null);
+
+  // These indices indicate the current chapter, lesson and sub-lesson
   const [currentChapterIndex, setCurrentChapterIndex] = useState(-1);
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
   const [currentSubLessonIndex, setCurrentSubLessonIndex] = useState(0);
+
   const [degreeProgress, setDegreeProgress] = useState([null]);
   const [completedLessons, setCompletedLessons] = useState(new Set());
   const [progressPercentage, setProgressPercentage] = useState();
 
   const courseDetails = location.state;
-  console.log(courseDetails);
+  console.log("Course Details", courseDetails);
   const userInfo = JSON.parse(localStorage.getItem("userdata"));
 
   const [completedExercises, setCompletedExercises] = useState(new Set());
@@ -38,7 +41,6 @@ const CourseContent = () => {
     const fetchData = async () => {
       try {
         setCourseData(courseDetails);
-
         if (userInfo) {
           const userId = userInfo._id;
           setUserId(userId);
@@ -60,14 +62,11 @@ const CourseContent = () => {
           `${apiBaseUrl}/api/users/progress/${userInfo._id}/${userInfo.applyingFor}`
         );
         const data = res.data.degreeProgress;
-        console.log(data);
-
+        console.log("Degree Progress", data);
         setDegreeProgress(data);
-
         const completed = new Set();
-        let totalChapterProgress = 0; // Sum of chapter progress percentages
-        let totalChapters = 0; // Count of all chapters
-
+        let totalChapterProgress = 0;
+        let totalChapters = 0;
         data.courses.forEach((course) => {
           course.chapters.forEach((chapter) => {
             setProgressPercentage(course.progressPercentage);
@@ -82,15 +81,12 @@ const CourseContent = () => {
             });
           });
         });
-
         const averageProgress =
           totalChapters > 0 ? totalChapterProgress / totalChapters : 0;
-        // setProgressPercentage(averageProgress); // Set average progress percentage
-
+        // setProgressPercentage(averageProgress);
         setCompletedExercises(completed);
-        // setCompletedLessons(completed);
-        console.log("Completed Lessons:", completed);
-        console.log("Average Chapter Progress:", averageProgress);
+        console.log("Completed Lessons", completed);
+        console.log("Average Chapter Progress", averageProgress);
       } catch (error) {
         console.error("Error fetching video progress:", error);
       }
@@ -105,24 +101,24 @@ const CourseContent = () => {
     lessonId,
     subLessonId
   ) => {
-    console.log(data, chapterId, courseId, subLessonId);
+    console.log("Current Content", data, chapterId, courseId, subLessonId);
     const modifiedData = {
       ...data,
-      // exerciseNo: lessonId,
-      // lessonNo: chapterId,
       exerciseNo: subLessonId,
       lessonNo: lessonId,
       chapterNo: chapterId,
       type: data.fileType,
       link: data.file,
-      //  duration: data.duration,
     };
     setCurrentCourseData(modifiedData);
     setCurrentChapterIndex(chapterId);
     setCurrentLessonIndex(lessonId);
     setCurrentSubLessonIndex(subLessonId);
-    setActiveAccordion(chapterId);
+    // Open the corresponding chapter in the side dropdown.
+    setActiveAccordion(courseData.chapters[chapterId]?.chapterId);
   };
+
+  // Renders video/audio/PDF/PPT content based on file type.
   const renderContent = (
     link,
     typeManual,
@@ -135,7 +131,6 @@ const CourseContent = () => {
       return (
         <>
           <div className="embed-responsive-item">
-            {/* <video src={link} title={courseData.title || "Video Title"}> */}
             <video
               controls
               onEnded={() => {
@@ -143,8 +138,6 @@ const CourseContent = () => {
               }}
               style={{ maxWidth: "100%", width: "100%", borderRadius: "1em" }}
             >
-              {/* <source src={link} type="video/mp4" /> */}
-              {/* <source src={link} type="video/mkv" /> */}
               <source src={link ? `${link}` : "/test.mp4"} type="video/mp4" />
             </video>
           </div>
@@ -170,11 +163,7 @@ const CourseContent = () => {
               controls
               style={{ width: "100%", marginTop: "1em" }}
               onEnded={() => {
-                handleMediaEnd(
-                  { title: `${data?.title}` },
-                  lessonIndex,
-                  exerciseIndex
-                );
+                handleMediaEnd({ title: `${data?.title} `}, lessonIndex, exerciseIndex);
               }}
             >
               <source src={link} type="audio/mp3" />
@@ -190,7 +179,6 @@ const CourseContent = () => {
               data={`${link}#view=FitH`}
               type="application/pdf"
               height={500}
-              // contentEditable
               width={"100%"}
               style={{ height: "400px", borderRadius: "1em" }}
             ></object>
@@ -198,14 +186,7 @@ const CourseContent = () => {
           <div className="MarkAsCompleted">
             <button
               className="NextBtn"
-              onClick={() =>
-                handleMediaEnd(
-                  // {title: `${data?.title} `},
-                  data,
-                  lessonIndex,
-                  exerciseIndex
-                )
-              }
+              onClick={() => handleMediaEnd(data, lessonIndex, exerciseIndex)}
             >
               {" "}
               Mark as Completed
@@ -217,13 +198,7 @@ const CourseContent = () => {
       typeManual ===
       "application/vnd.openxmlformats-officedocument.presentationml.presentation"
     ) {
-      const officeEmbedUrl = `https://view.officeapps.live.com/op/view.aspx?src=${link}`;
-
-
-      
-
-      
-
+      const officeEmbedUrl = "https://view.officeapps.live.com/op/view.aspx?src=${link}";
       return (
         <>
           <div className="embed-responsive-item">
@@ -239,14 +214,7 @@ const CourseContent = () => {
             <div className="MarkAsCompleted">
               <button
                 className="NextBtn"
-                onClick={() =>
-                  handleMediaEnd(
-                    // {title: `${data?.title} `},
-                    data,
-                    lessonIndex,
-                    exerciseIndex
-                  )
-                }
+                onClick={() => handleMediaEnd(data, lessonIndex, exerciseIndex)}
               >
                 {" "}
                 Mark as Completed
@@ -267,10 +235,7 @@ const CourseContent = () => {
       console.error("Invalid indices for chapter or lesson.");
       return;
     }
-
     try {
-      // Construct a unique key for tracking completion
-      // const exerciseKey = `${currentChapterIndex}-${currentLessonIndex}`;
       const exerciseKey = `${currentChapterIndex}-${currentLessonIndex}-${currentSubLessonIndex}`;
       const currentChapter = courseData?.chapters?.find(
         (chapter) => chapter.chapterId === currentChapterIndex
@@ -278,11 +243,9 @@ const CourseContent = () => {
       const currentLesson = currentChapter?.lessons?.find(
         (lesson) => lesson.lessonId === currentLessonIndex
       );
-
       const currentSublesson = currentLesson?.subLessons?.find(
         (sublesson) => sublesson.subLessonId === currentSubLessonIndex
       );
-
       if (!currentChapter || !currentLesson || !currentSublesson) {
         console.error("Chapter or Lesson data not found:", {
           currentChapterIndex,
@@ -291,323 +254,269 @@ const CourseContent = () => {
         });
         return;
       }
-
-      // Update the set of completed exercises
       setCompletedExercises((prev) => {
         const updatedSet = new Set(prev);
         updatedSet.add(exerciseKey);
         return updatedSet;
       });
-
-      // Optional: Log progress or handle additional actions
       console.log(`Marked lesson completed: ${currentSublesson.title}`);
-
-      // Optional: If there's an API call to save progress
-      await progress_data(
-        currentLessonIndex,
-        currentChapterIndex,
-        currentSubLessonIndex
-      );
+      await progress_data(currentLessonIndex, currentChapterIndex, currentSubLessonIndex);
     } catch (error) {
       console.error("Error in handleMediaEnd:", error);
     }
   };
 
   const progress_data = async (lessonIndex, chapterIndex, subLessonIndex) => {
-    console.log(lessonIndex, chapterIndex, subLessonIndex);
-
-    // Calculate total exercises and progress percentage
+    console.log("Progress Data:", lessonIndex, chapterIndex, subLessonIndex);
     const totalExercises = degreeProgress.courses?.reduce(
       (total, chapter) => total + chapter.lessons?.length,
       0
     );
-
     const progress_percentage =
-      totalExercises > 0 ? (completedExercises.size / totalExercises) * 100 : 0;
-
+      totalExercises > 0
+        ? (completedExercises.size / totalExercises) * 100
+        : 0;
     const watchedPercentage = progress_percentage;
-
-    // Ensure required data is available
     if (!userId || !courseId || watchedPercentage == null) {
       console.error("Missing required data for API request.");
       return;
     }
-
     try {
-      // Endpoint URL
       const endpoint = `${apiBaseUrl}/api/users/progress`;
-
-      // API request payload
       const payload = {
         userId,
         degreeId: userInfo.applyingFor,
-        // courseId,
-        // watchedPercentage,
-        // lessonIndex,
-        // chapterIndex,
         lessonId: lessonIndex,
         subLessonId: subLessonIndex,
       };
-
-      // API request
       const response = await axios.post(endpoint, payload);
-
       console.log("Progress updated successfully:", response.data);
     } catch (err) {
-      console.error(
-        "Error updating progress:",
-        err.message,
-        err.response?.data || {}
-      );
+      console.error("Error updating progress:", err.message, err.response?.data || {});
     }
   };
 
-  
   const truncateText = (text, maxLength) => {
     if (text?.length > maxLength) {
       return text.slice(0, maxLength) + "...";
     }
     return text;
   };
+
   function convertToReadableDuration(duration) {
     if (!duration || duration === "0") {
       return "3mins+";
     }
-
     const [minutes, seconds] = duration.split(":");
     return `${parseInt(minutes, 10)}m ${parseInt(seconds, 10)}s`;
   }
 
-  
-    const [completedTests, setCompletedTests] = useState(new Set());
-  
-    const markTestAsCompleted = (chapterId) => {
-      setCompletedTests((prev) => new Set([...prev, chapterId]));
+  const [completedTests, setCompletedTests] = useState(new Set());
+  const markTestAsCompleted = (chapterId) => {
+    setCompletedTests((prev) => new Set([...prev, chapterId]));
   };
+
   
 
-  // new
+
   const handleNext = async () => {
-    if (!courseData?.chapters || courseData.chapters.length === 0) {
-      console.error("No chapters available.");
-      return;
-    }
+  if (!courseData?.chapters || courseData.chapters.length === 0) {
+    console.error("No chapters available.");
+    return;
+  }
 
-    // Find the current chapter
-    const currentChapter = courseData.chapters.find(
-      (chapter) => chapter.chapterId === currentChapterIndex
-    );
-
-    if (!currentChapter) {
-      console.error("Current chapter not found.");
-      return;
-    }
-
-    // Find the current lesson
-    const currentLesson = currentChapter.lessons.find(
-      (lesson) => lesson.lessonId === currentLessonIndex
-    );
-
-    if (!currentLesson) {
-      console.error("Current lesson not found.");
-      return;
-    }
-
-    // Find the current sub-lesson
-    const currentSubLesson = currentLesson.subLessons.find(
-      (subLesson) => subLesson.subLessonId === currentSubLessonIndex
-    );
-
-    if (!currentSubLesson) {
-      console.error("Current sub-lesson not found.");
-      return;
-    }
-
-    // Check if there are more sub-lessons in the current lesson
-    if (currentSubLessonIndex < currentLesson.subLessons.length - 1) {
-      // Move to the next sub-lesson in the current lesson
-      const nextSubLesson = currentLesson.subLessons[currentSubLessonIndex + 1];
+  // Initialize to first chapter if none selected
+  if (currentChapterIndex < 0) {
+    setCurrentChapterIndex(0);
+    setCurrentLessonIndex(0);
+    setCurrentSubLessonIndex(0);
+    setActiveAccordion(courseData.chapters[0].chapterId);
+    
+    // Set the initial content to display
+    const firstChapter = courseData.chapters[0];
+    if (firstChapter.lessons?.length > 0 && firstChapter.lessons[0].subLessons?.length > 0) {
+      const firstSubLesson = firstChapter.lessons[0].subLessons[0];
       handleCurrentContent(
-        nextSubLesson,
-        currentChapterIndex,
-        currentLessonIndex,
-        currentSubLessonIndex + 1
+        firstSubLesson,
+        0, // chapterIndex
+        0, // lessonIndex
+        0  // subLessonIndex
       );
-      setCurrentSubLessonIndex(currentSubLessonIndex + 1);
-    } else if (currentLessonIndex < currentChapter.lessons.length - 1) {
-      // Move to the first sub-lesson of the next lesson in the current chapter
-      const nextLesson = currentChapter.lessons[currentLessonIndex + 1];
-      const nextSubLesson = nextLesson.subLessons[0];
+    }
+    return;
+  }
+
+  const currentChapter = courseData.chapters[currentChapterIndex];
+  if (!currentChapter?.lessons || currentChapter.lessons.length === 0) {
+    console.error("No lessons in current chapter.");
+    return;
+  }
+
+  // Find the current lesson
+  const currentLesson = currentChapter.lessons[currentLessonIndex];
+  if (!currentLesson?.subLessons || currentLesson.subLessons.length === 0) {
+    console.error("No sub-lessons in current lesson.");
+    return;
+  }
+
+  // Check if there's a next sub-lesson in the current lesson
+  if (currentSubLessonIndex < currentLesson.subLessons.length - 1) {
+    const nextSubLessonIndex = currentSubLessonIndex + 1;
+    setCurrentSubLessonIndex(nextSubLessonIndex);
+    
+    // Update the displayed content
+    const nextSubLesson = currentLesson.subLessons[nextSubLessonIndex];
+    handleCurrentContent(
+      nextSubLesson,
+      currentChapterIndex,
+      currentLessonIndex,
+      nextSubLessonIndex
+    );
+    return;
+  }
+
+  // If no more sub-lessons in current lesson, move to next lesson
+  if (currentLessonIndex < currentChapter.lessons.length - 1) {
+    const nextLessonIndex = currentLessonIndex + 1;
+    setCurrentLessonIndex(nextLessonIndex);
+    setCurrentSubLessonIndex(0);
+    
+    // Update the displayed content
+    const nextLesson = currentChapter.lessons[nextLessonIndex];
+    if (nextLesson.subLessons?.length > 0) {
+      const firstSubLesson = nextLesson.subLessons[0];
       handleCurrentContent(
-        nextSubLesson,
+        firstSubLesson,
         currentChapterIndex,
-        currentLessonIndex + 1,
+        nextLessonIndex,
         0
       );
-      setCurrentLessonIndex(currentLessonIndex + 1);
-      setCurrentSubLessonIndex(0);
-    } else if (currentChapterIndex < courseData.chapters.length - 1) {
-      // Move to the first sub-lesson of the first lesson in the next chapter
-      const nextChapter = courseData.chapters[currentChapterIndex + 1];
-      const nextLesson = nextChapter.lessons[0];
-      const nextSubLesson = nextLesson.subLessons[0];
-      handleCurrentContent(nextSubLesson, currentChapterIndex + 1, 0, 0);
-      setCurrentChapterIndex(currentChapterIndex + 1);
-      setCurrentLessonIndex(0);
-      setCurrentSubLessonIndex(0);
-    } else {
-      // No more content to navigate to
-      console.log("You have reached the end of the course.");
     }
-  };
-  // new
+    return;
+  }
 
+  // If we've reached the end of the chapter
+  console.log("Reached end of current chapter");
+  // Optionally, you could automatically move to the next chapter here
+};
+  // ------------------------------------------------------------------
 
   return (
-    <div className="courseContentContainer min-vh-100">
-      <div className="row firstRow g-0">
-        <div className="courseContentHeader">
-          <button className="BackBtn" onClick={() => navigate(-1)}>
-            Back
-          </button>
-          <div className="courseHeading">
-            {truncateText(courseData.title, 45)}
-          </div>
-          <button
-            className="NextBtn"
-            onClick={() => handleNext()}
-            // onClick={() => navigate(+1)}
-    
-
-          >
-            Next
-          </button>
-        </div>
-        <div className="courseContentProgressBar">
-          <ProgressBar progress={progressPercentage || 0} />
-        </div>
-      </div>
-      <div className="row secondRow">
-        <div className="col-md-8 pdy">
-          <div className="videoBox">
-            <div className="embed-responsive embed-responsive-16by9">
-              {courseData?.chapters?.length > 0 &&
-                renderContent(
-                  !currentCourseData.link
-                    ? "/test.mp4"
-                    : currentCourseData.link,
-                  !currentCourseData.link ? "/test.mp4" : currentCourseData.type
-                )}
+    <>
+      <p className="leftside" onClick={() => navigate(-1)}>
+        Back
+      </p>
+      <div className="courseContentContainer min-vh-100">
+        <div className="row firstRow g-0">
+          <div className="courseContentHeader">
+            <button className="BackBtn" onClick={() => navigate(-1)}>
+              Back
+            </button>
+            <div className="courseHeading">
+              {truncateText(courseData.title, 45)}
             </div>
-            <div>
-              <div className="infoBox">
-                <h1>{courseData.title}</h1>
-                {courseData.chapters && courseData.chapters.length > 0 && (
-                  <div className="lessonDescriptionBox">
-                    <h3 className="lessonDescriptionBoxTitle">
-                      {/* {!currentCourseData.title
-                        ? ""
-                        : `${currentCourseData.lessonNo}.${currentCourseData.excerciseNo}`} */}
-                      {!currentCourseData.title
-                        ? courseData.chapters.title
-                        : currentCourseData.title}
-                    </h3>
-                    <p className="lessonDescriptionBoxDescription">
-                      {!currentCourseData.notes
-                        ? courseData.chapters.description
-                        : currentCourseData.notes}
-                    </p>
-                  </div>
-                )}
+            <button className="NextBtn" onClick={() => handleNext()}>
+              Next
+            </button>
+          </div>
+          <div className="courseContentProgressBar">
+            <ProgressBar progress={progressPercentage || 0} />
+          </div>
+        </div>
+
+        <div className="row secondRow">
+          <div className="col-md-8 pdy">
+            <div className="videoBox">
+              <div className="embed-responsive embed-responsive-16by9">
+                {courseData?.chapters?.length > 0 &&
+                  renderContent(
+                    !currentCourseData.link ? "/test.mp4" : currentCourseData.link,
+                    !currentCourseData.link ? "/test.mp4" : currentCourseData.type
+                  )}
+              </div>
+              <div>
+                <div className="infoBox">
+                  <h1>{courseData.title}</h1>
+                  {courseData.chapters && courseData.chapters.length > 0 && (
+                    <div className="lessonDescriptionBox">
+                      <h3 className="lessonDescriptionBoxTitle">
+                        {!currentCourseData.title
+                          ? courseData.chapters.title
+                          : currentCourseData.title}
+                      </h3>
+                      <p className="lessonDescriptionBoxDescription">
+                        {!currentCourseData.notes
+                          ? courseData.chapters.description
+                          : currentCourseData.notes}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="col-md-4 CCaccordianBox h-100">
-          
-
-          <Accordion
-            activeKey={activeAccordion}
-            onSelect={(key) => setActiveAccordion(key)}
-          >
-            {courseData?.chapters &&
-              courseData.chapters.map((chapter, index) => {
-                const ChapterCompleted = chapter.lessons?.every((lesson) =>
-                  lesson.subLessons?.every((subLesson) =>
-                    completedExercises.has(
-                      `${chapter.chapterId}-${lesson.lessonId}-${subLesson.subLessonId}`
+          <div className="col-md-4 CCaccordianBox h-100">
+            <Accordion
+              activeKey={activeAccordion}
+              onSelect={(key) => setActiveAccordion(key)}
+            >
+              {courseData?.chapters &&
+                courseData.chapters.map((chapter, index) => {
+                  const ChapterCompleted = chapter.lessons?.every((lesson) =>
+                    lesson.subLessons?.every((subLesson) =>
+                      completedExercises.has(
+                        `${chapter.chapterId}-${lesson.lessonId}-${subLesson.subLessonId}`
+                      )
                     )
-                  )
-                );
-
-                return (
-                  <Accordion.Item
-                    key={chapter.chapterId}
-                    eventKey={chapter.chapterId}
-                  >
-                    <Accordion.Header>
-                      <div className="CClesson-meta">
-                        <div className="CClesson-title">
-                          <div>
-                            {index + 1}&nbsp;.&nbsp;{chapter.title}
+                  );
+                  return (
+                    <Accordion.Item key={chapter.chapterId} eventKey={chapter.chapterId}>
+                      <Accordion.Header>
+                        <div className="CClesson-meta">
+                          <div className="CClesson-title">
+                            <div>
+                              {index + 1}. {chapter.title}
+                            </div>
+                            {ChapterCompleted && (
+                              <img className="content-watched" src={tick} alt="watched" />
+                            )}
                           </div>
-                          {ChapterCompleted && (
-                            <img
-                              className="content-watched"
-                              src={tick}
-                              alt="watched"
-                            />
-                          )}
+                          <span>Total Content: {chapter.lessons?.length}</span>
                         </div>
-                        <span>Total Content: {chapter.lessons?.length}</span>
-                      </div>
-                    </Accordion.Header>
-
-                    <Accordion.Body>
-                      <Accordion>
-                        {chapter.lessons.map((lesson) => {
-                          const LessonCompleted = lesson.subLessons?.every(
-                            (subLesson) =>
-                              completedExercises.has(
-                                `${chapter.chapterId}-${lesson.lessonId}-${subLesson.subLessonId}`
-                              )
-                          );
-
-                          return (
-                            <Accordion.Item
-                              key={lesson.lessonId}
-                              eventKey={`${chapter.chapterId}-${lesson.lessonId}`}
-                            >
-                              <Accordion.Header>
-                                <div className="CClesson-meta">
-                                  <div className="CClesson-title">
-                                    <div>
-                                      {index + 1}&nbsp;.&nbsp;{lesson.title}
+                      </Accordion.Header>
+                      <Accordion.Body>
+                        <Accordion>
+                          {chapter.lessons.map((lesson) => {
+                            const LessonCompleted = lesson.subLessons?.every(
+                              (subLesson) =>
+                                completedExercises.has(
+                                  `${chapter.chapterId}-${lesson.lessonId}-${subLesson.subLessonId}`
+                                )
+                            );
+                            return (
+                              <Accordion.Item
+                                key={lesson.lessonId}
+                                eventKey={`${chapter.chapterId}-${lesson.lessonId}`}
+                              >
+                                <Accordion.Header>
+                                  <div className="CClesson-meta">
+                                    <div className="CClesson-title">
+                                      <div>
+                                        {index + 1}. {lesson.title}
+                                      </div>
+                                      {LessonCompleted && (
+                                        <img className="content-watched" src={tick} alt="watched" />
+                                      )}
                                     </div>
-                                    {/* <span>{lesson.title}</span> */}
-                                    {LessonCompleted && (
-                                      <img
-                                        className="content-watched"
-                                        src={tick}
-                                        alt="watched"
-                                      />
-                                    )}
+                                    <span>Total Content : {lesson.subLessons?.length}</span>
                                   </div>
-                                  <span>
-                                    Total Content : {lesson.subLessons?.length}
-                                  </span>
-                                </div>
-                              </Accordion.Header>
-
-                              <Accordion.Body>
-                                {lesson.subLessons &&
-                                lesson.subLessons.length > 0 ? (
-                                  <ul className="list-group d-flex ">
-                                    {lesson.subLessons.map((subLesson) => {
-                                      return (
-                                        <>
+                                </Accordion.Header>
+                                <Accordion.Body>
+                                  {lesson.subLessons && lesson.subLessons.length > 0 ? (
+                                    <ul className="list-group d-flex">
+                                      {lesson.subLessons.map((subLesson) => (
+                                        <React.Fragment key={subLesson.subLessonId}>
                                           <li
-                                            key={subLesson.subLessonId}
                                             className={`list-group-item ${
                                               completedExercises.has(
                                                 `${chapter.chapterId}-${lesson.lessonId}-${subLesson.subLessonId}`
@@ -626,85 +535,52 @@ const CourseContent = () => {
                                           >
                                             <span className="video-number">
                                               <span>{subLesson.title}</span>
-
                                               {(completedExercises.has(
                                                 `${chapter.chapterId}-${lesson.lessonId}-${subLesson.subLessonId}`
                                               ) ||
                                                 completedSublessons.has(
                                                   `${chapter.chapterId}-${lesson.lessonId}-${subLesson.subLessonId}`
                                                 )) && (
-                                                <img
-                                                  className="content-watched"
-                                                  src={tick}
-                                                  alt="watched"
-                                                />
+                                                <img className="content-watched" src={tick} alt="watched" />
                                               )}
                                             </span>
-
-                                            {subLesson.fileType ===
-                                            "video/mp4" ? (
+                                            {subLesson.fileType === "video/mp4" ? (
                                               <span className="lesson-duration">
                                                 Duration:{" "}
                                                 {subLesson.duration
-                                                  ? convertToReadableDuration(
-                                                      Math.floor(
-                                                        lesson.duration / 1000
-                                                      )
-                                                    )
+                                                  ? convertToReadableDuration(Math.floor(lesson.duration / 1000))
                                                   : "N/A"}
                                               </span>
                                             ) : (
                                               <span className="lesson-duration">
-                                                Type:{" "}
-                                                {truncateText(
-                                                  subLesson?.fileType,
-                                                  30
-                                                )}
+                                                Type: {truncateText(subLesson?.fileType, 30)}
                                               </span>
                                             )}
                                           </li>
-                                          {subLesson.test &&
-                                          subLesson.test.length > 0 ? (
+                                          {subLesson.test && subLesson.test.length > 0 ? (
                                             <div className="testButtonBox">
                                               <div className="testButtonBox">
                                                 <div className="testButtonInr">
-                                                  <div className="testButtonTxt">
-                                                    UnderStand Start
-                                                  </div>
+                                                  <div className="testButtonTxt">UnderStand Start</div>
                                                   <button
                                                     className="testButton text-nowrap"
-                                                    onClick={() =>{
-                                                      subLesson.test[0].type ===
-                                                      "MCQ"
-                                                        ? navigate(
-                                                            `/home/courseContent/${courseId}/assessmentTest`,
-                                                            {
-                                                              state: {
-                                                                test: subLesson.test,
-                                                              },
-                                                            }
-                                                          )
-                                                        : subLesson.test[0]
-                                                            .type ===
-                                                          "paragraph"
-                                                        ? navigate(
-                                                            `/home/courseContent/${courseId}/writtenTest`,
-                                                            {
-                                                              state: {
-                                                                test: subLesson.test,
-                                                              },
-                                                            }
-                                                          )
-                                                        : null,
-                                                        handleMediaEnd(
-                                                          subLesson,
-                                                          chapter.chapterId,
-                                                          lesson.lessonId,
-                                                          subLesson.subLessonId
-                                                        )
-                                                    }
-                                                      
-                                                    }
+                                                    onClick={() => {
+                                                      subLesson.test[0].type === "MCQ"
+                                                        ? navigate(`/home/courseContent/${courseId}/assessmentTest`, {
+                                                            state: { test: subLesson.test },
+                                                          })
+                                                        : subLesson.test[0].type === "paragraph"
+                                                        ? navigate(`/home/courseContent/${courseId}/writtenTest`, {
+                                                            state: { test: subLesson.test },
+                                                          })
+                                                        : null;
+                                                      handleMediaEnd(
+                                                        subLesson,
+                                                        chapter.chapterId,
+                                                        lesson.lessonId,
+                                                        subLesson.subLessonId
+                                                      );
+                                                    }}
                                                   >
                                                     Test
                                                   </button>
@@ -712,59 +588,56 @@ const CourseContent = () => {
                                               </div>
                                             </div>
                                           ) : null}
-                                        </>
-                                      );
-                                    })}
-                                  </ul>
-                                ) : (
-                                  <div>No Sub-Lessons Available</div>
-                                )}
-                              </Accordion.Body>
-                            </Accordion.Item>
-                          );
-                        })}
-                        {chapter.test && chapter.test.length > 0 ? (
-                          <div className="testButtonBox">
-                            <div className="testButtonInr">
-                              <div className="testButtonTxt">
-                                Take a Test to Confirm Your Understanding
+                                        </React.Fragment>
+                                      ))}
+                                    </ul>
+                                  ) : (
+                                    <div>No Sub-Lessons Available</div>
+                                  )}
+                                </Accordion.Body>
+                              </Accordion.Item>
+                            );
+                          })}
+                          {chapter.test && chapter.test.length > 0 ? (
+                            <div className="testButtonBox">
+                              <div className="testButtonInr">
+                                <div className="testButtonTxt">
+                                  Take a Test to Confirm Your Understanding
+                                </div>
+                                <button
+                                  className="testButton"
+                                  onClick={() => {
+                                    if (chapter.test[0].type === "MCQ") {
+                                      navigate(`/home/courseContent/${courseId}/assessmentTest`, {
+                                        state: { test: chapter.test },
+                                      });
+                                    } else if (chapter.test[0].type === "paragraph") {
+                                      navigate(`/home/courseContent/${courseId}/writtenTest`, {
+                                        state: { test: chapter.test, chapterId: chapter._id },
+                                      });
+                                    }
+                                    markTestAsCompleted(chapter.chapterId);
+                                  }}
+                                >
+                                  Take Test
+                                  {completedTests.has(chapter.chapterId) && (
+                                    <img className="content-watched" src={tick} alt="Completed" />
+                                  )}
+                                </button>
                               </div>
-
-<button
-  className="testButton"
-  onClick={() => {
-    if (chapter.test[0].type === "MCQ") {
-      navigate(`/home/courseContent/${courseId}/assessmentTest`, {
-        state: { test: chapter.test },
-      });
-    } else if (chapter.test[0].type === "paragraph") {
-      navigate(`/home/courseContent/${courseId}/writtenTest`, {
-        state: { test: chapter.test, chapterId: chapter._id },
-      });
-    }
-    // Mark test as completed
-    markTestAsCompleted(chapter.chapterId);
-  }}
->
-  Take Test
-  {completedTests.has(chapter.chapterId) && (
-    <img className="content-watched" src={tick} alt="Completed" />
-  )}
-</button>
                             </div>
-                          </div>
-                        ) : null}
-                      </Accordion>
-                    </Accordion.Body>
-                  </Accordion.Item>
-                );
-              })}
-          </Accordion>
+                          ) : null}
+                        </Accordion>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  );
+                })}
+            </Accordion>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
-export default CourseContent;
-
+export default CourseContent;

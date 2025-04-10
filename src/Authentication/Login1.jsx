@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import "./Register.css";
@@ -19,13 +19,11 @@ const apiBaseUrl = process.env.REACT_APP_BASE_API;
 
 function Login() {
   const [isSigningIn, setIsSigningIn] = useState(false);
-  const [showForgotPassword, setShowForgotPassword] = useState(false);
-  // const [forgotEmail, setForgotEmail] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [userdata, setUserdata] = useState(null);
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
 
-  // Handle form submission
   const onSubmit = async (data) => {
     try {
       const res = await axios.post(`${apiBaseUrl}/api/users/login`, data);
@@ -38,7 +36,6 @@ function Login() {
         localStorage.setItem("userdata", JSON.stringify(CurrentUser));
         localStorage.setItem("isloggedin", true);
         toast.success("Login Successful");
-        console.log(CurrentUser);
 
         const userRole = CurrentUser.role
           ? CurrentUser.role.toLowerCase()
@@ -51,9 +48,7 @@ function Login() {
           if (hasDetails === true) {
             navigate("/waitAuth", { state: { userId: CurrentUser._id } });
           } else {
-            navigate("/elf", {
-              state: { userId: CurrentUser._id },
-            });
+            navigate("/elf", { state: { userId: CurrentUser._id } });
           }
         } else {
           toast.error("Role not recognized");
@@ -62,71 +57,23 @@ function Login() {
         toast.error("Invalid username or password");
       }
     } catch (error) {
-      console.error("Error fetching users: ", error);
+      console.error("Error logging in:", error);
       toast.error("An error occurred while logging in. Please try again.");
     }
   };
 
-  // Handle Google Sign-In
-  // const handleGoogleSignIn = async () => {
-  //   if (isSigningIn) return; // Prevent duplicate sign-in attempts
-
-  //   setIsSigningIn(true);
-
-  //   try {
-  //     const result = await signInWithPopup(auth, googleProvider);
-  //     const token = await result.user.getIdToken();
-  //     console.log("Google Sign-In Success:", result.user);
-
-  //     // Send the token to the backend
-  //     const response = await axios.post(`${apiBaseUrl}/api/users/auth/google`, { token });
-  //     console.log(response);
-
-  //     if (response.status === 200) {
-  //       const { user } = response.data;
-  //       if (user) {
-  //         localStorage.setItem("userdata", JSON.stringify(user));
-  //         localStorage.setItem("isloggedin", true);
-  //         toast.success("Google Login Successful");
-
-  //         const userRole = user.role
-  //           // ? user.role.toLowerCase() : null;
-  //         if (userRole === "admin") {
-  //           navigate("/admin");
-  //         } else if (userRole === "client") {
-  //           navigate(hasDetails ? "/elf" : "/waitAuth", {state:{userId:user.id}});
-  //         } else {
-  //           toast.error("Role not recognized");
-  //         }
-  //       } else {
-  //         toast.error("Failed to retrieve user details.");
-  //       }
-  //     } else {
-  //       toast.error("Google Login Failed. Please try again.");
-  //     }
-  //   } catch (error) {
-  //     toast.error("Google Sign-In Failed:", error);
-  //   } finally {
-  //     setIsSigningIn(false); // Reset flag after sign-in completes
-  //   }
-  // };
-
   const handleGoogleSignIn = async () => {
-    if (isSigningIn) return; // Prevent duplicate sign-in attempts
+    if (isSigningIn) return;
 
     setIsSigningIn(true);
 
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      const token = await result.user.getIdToken(); // Get Firebase authentication token
-      console.log("Google Sign-In Success:", result.user);
-
-      // Send the token to the backend
+      const token = await result.user.getIdToken();
       const response = await axios.post(`${apiBaseUrl}/api/users/auth/google`, {
         token,
       });
 
-      // Process the backend response
       const { user } = response.data;
       if (user) {
         const findUser = await axios.get(`${apiBaseUrl}/api/users/${user.id}`);
@@ -135,7 +82,6 @@ function Login() {
         localStorage.setItem("isloggedin", true);
         toast.success("Google Login Successful");
 
-        // Determine the user role and navigate accordingly
         const userRole = CurrentUser.role
           ? CurrentUser.role.toLowerCase()
           : null;
@@ -147,9 +93,7 @@ function Login() {
           if (hasDetails === true) {
             navigate("/waitAuth", { state: { userId: CurrentUser._id } });
           } else {
-            navigate("/elf", {
-              state: { userId: CurrentUser._id },
-            });
+            navigate("/elf", { state: { userId: CurrentUser._id } });
           }
         } else {
           toast.error("Role not recognized");
@@ -161,36 +105,18 @@ function Login() {
       console.error("Google Sign-In Error:", error);
       toast.error("Google Sign-In Failed. Please try again.");
     } finally {
-      setIsSigningIn(false); // Reset the signing-in flag
+      setIsSigningIn(false);
     }
   };
-
-  // // Handle forgot password
-  // const handleForgotPassword = async () => {
-  //   if (!forgotEmail) {
-  //     toast.error("Please enter your email.");
-  //     return;
-  //   }
-  //   try {
-  //     const response = await axios.post(`${apiBaseUrl}/api/users/forgot-password`, { email: forgotEmail });
-  //     if (response.status === 200) {
-  //       toast.success("Password reset link sent to your email.");
-  //       setShowForgotPassword(false);
-  //       setForgotEmail("");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error sending reset link: ", error);
-  //     toast.error("Failed to send password reset link. Please try again.");
-  //   }
-  // };
 
   return (
     <div
       className="register position-relative"
-      style={{ height: "100%", minHeight: "100dvh" }}>
+      style={{ height: "100%", minHeight: "100dvh" }}
+    >
       <div className="register-container d-flex justify-content-center align-items-center">
         <div className="register-card d-flex flex-column flex-md-row shadow-lg rounded">
-          {/* Left Column (Form) */}
+          {/* Left Column */}
           <div className="form-container d-flex flex-column w-100 w-md-50 px-5 py-4 bg-light">
             <img
               src={logo}
@@ -213,29 +139,41 @@ function Login() {
                 <label className="form-label fw-semibold">E-mail</label>
                 <input
                   type="email"
+                  // type="text"
+
                   className="form-control"
                   placeholder="Enter email Id"
                   {...register("email", { required: true })}
                 />
               </div>
-              {/* <div className="form-group mb-3">
-                <label className="form-label fw-semibold">E-mail</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Enter email Id Or User name"
-                  {...register("email", { required: true })}
-                />
-              </div> */}
 
-              <div className="form-group mb-3">
+              {/* Password with visibility toggle */}
+              <div className="form-group mb-3 position-relative">
                 <label className="form-label fw-semibold">Password</label>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   className="form-control"
                   placeholder="Enter Password"
                   {...register("password", { required: true })}
                 />
+                <span
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "70%",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer",
+                    color: "#6c757d",
+                    zIndex: 10,
+                  }}
+                >
+                  {showPassword ? (
+                    <i className="bi bi-eye-slash-fill"></i>
+                  ) : (
+                    <i className="bi bi-eye-fill"></i>
+                  )}
+                </span>
               </div>
 
               <div className="form-check d-flex justify-content-between mb-3">
@@ -249,17 +187,19 @@ function Login() {
                     Remember me
                   </label>
                 </div>
-                <a
+                <span
                   className="text-decoration-underline"
+                  style={{ cursor: "pointer" }}
                   onClick={() => navigate(`/forgotPassword`)}
-                  style={{ cursor: "pointer" }}>
+                >
                   Forgot Password?
-                </a>
+                </span>
               </div>
 
               <button
                 type="submit"
-                className="btn btn-primary w-100 mb-3 rounded-pill">
+                className="btn btn-primary w-100 mb-3 rounded-pill"
+              >
                 Sign In
               </button>
 
@@ -274,7 +214,8 @@ function Login() {
                   type="button"
                   className="btn btn-white w-100 mb-3 rounded-pill border d-flex align-items-center"
                   onClick={handleGoogleSignIn}
-                  disabled={isSigningIn}>
+                  disabled={isSigningIn}
+                >
                   <img
                     src={google}
                     alt="Google"
@@ -289,7 +230,7 @@ function Login() {
             </form>
           </div>
 
-          {/* Right Column (Content) */}
+          {/* Right Column */}
           <div className="content-container w-100 w-md-50 p-4 bg-primary text-white d-flex flex-column justify-content-center">
             <h2 className="fw-bold mb-4 text-center">
               Welcome to Zion Seminary
@@ -303,7 +244,8 @@ function Login() {
               <li className="d-flex mb-1">
                 <i
                   className="bi bi-check-circle-fill me-3"
-                  style={{ fontSize: "1.5rem", color: "#ffd800" }}></i>
+                  style={{ fontSize: "1.5rem", color: "#ffd800" }}
+                ></i>
                 <span>
                   Comprehensive tools for administrators to manage data
                   efficiently.
@@ -312,7 +254,8 @@ function Login() {
               <li className="d-flex mb-1">
                 <i
                   className="bi bi-check-circle-fill me-3"
-                  style={{ fontSize: "1.5rem", color: "#ffd800" }}></i>
+                  style={{ fontSize: "1.5rem", color: "#ffd800" }}
+                ></i>
                 <span>
                   Enhanced teaching tools for educators to simplify course
                   management.
@@ -321,7 +264,8 @@ function Login() {
               <li className="d-flex mb-1">
                 <i
                   className="bi bi-check-circle-fill me-3"
-                  style={{ fontSize: "1.5rem", color: "#ffd800" }}></i>
+                  style={{ fontSize: "1.5rem", color: "#ffd800" }}
+                ></i>
                 <span>
                   User-friendly interface for students to track their progress.
                 </span>
@@ -329,7 +273,8 @@ function Login() {
               <li className="d-flex mb-1">
                 <i
                   className="bi bi-check-circle-fill me-3"
-                  style={{ fontSize: "1.5rem", color: "#ffd800" }}></i>
+                  style={{ fontSize: "1.5rem", color: "#ffd800" }}
+                ></i>
                 <span>
                   Seamless integration of academic and administrative workflows.
                 </span>
@@ -341,31 +286,6 @@ function Login() {
               Seminary!
             </p>
           </div>
-
-          {/* Forgot Password Popup */}
-          {/* {showForgotPassword && (
-            <div className="popup-overlay position-absolute top-50 start-50 translate-middle-x translate-middle-y bg-light p-2 rounded-2 z-2 ">
-              <div className="popup-content">
-                <h4>Forgot Password</h4>
-                <p>Enter your email to receive a password reset link.</p>
-                <input
-                  type="email"
-                  className="form-control mb-3"
-                  placeholder="Enter your email"
-                  value={forgotEmail}
-                  onChange={(e) => setForgotEmail(e.target.value)}
-                />
-                <div className="d-flex justify-content-end">
-                  <button className="btn btn-secondary me-2" onClick={() => setShowForgotPassword(false)}>
-                    Cancel
-                  </button>
-                  <button className="btn btn-primary" onClick={handleForgotPassword}>
-                    Send Reset Link
-                  </button>
-                </div>
-              </div>
-            </div>
-          )} */}
         </div>
       </div>
     </div>

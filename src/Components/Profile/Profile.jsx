@@ -6,6 +6,8 @@ import axios from "axios";
 import defaultPorfileSVG from "../Assets/SVG/defaultPorfileSVG.svg";
 import defaultBannerSVG from "../Assets/SVG/defaultBannerSVG.svg";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -32,7 +34,6 @@ const Profile = () => {
   const [selectedSignatureFile, setSelectedSignatureFile] = useState(null);
   const [selectedEducationCertFile, setSelectedEducationCertFile] =
     useState(null);
-  const [errors, setErrors] = useState({});
   const user = JSON.parse(localStorage.getItem("userdata"));
 
   useEffect(() => {
@@ -40,11 +41,9 @@ const Profile = () => {
       const user = JSON.parse(localStorage.getItem("userdata"));
       console.log(user);
       setProfileData({
-        // username: `${user.firstName} ${user.lastName}`,
         username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
-
         email: user.email,
         phoneNumber: user.mobileNo,
         gender: user.gender,
@@ -69,8 +68,6 @@ const Profile = () => {
     }
   }, []);
 
-  console.log(profileData);
-
   // Validation functions
   const validateName = (value) => {
     return /^[A-Za-z\s]+$/.test(value);
@@ -84,10 +81,6 @@ const Profile = () => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   };
 
-  // const validateDateOfBirth = (value) => {
-  //   return /^\d{2}-\d{2}-\d{4}$/.test(value);
-  // };
-
   const validateEducationalQualification = (value) => {
     return /^[A-Za-z\s]+$/.test(value);
   };
@@ -100,71 +93,109 @@ const Profile = () => {
     return /^[A-Za-z\s]+$/.test(value);
   };
 
+  // Check if field is empty
+  const isEmpty = (value) => {
+    return !value || value.trim() === "";
+  };
+
   // Form validation
   const validateForm = () => {
-    const newErrors = {};
+    let isValid = true;
 
-    if (!profileData.firstName) newErrors.firstName = "First name is required";
-    else if (!validateName(profileData.firstName))
-      newErrors.firstName = "First name can only contain letters and spaces";
+    if (isEmpty(profileData.firstName)) {
+      toast.error("First name is required");
+      isValid = false;
+    } else if (!validateName(profileData.firstName)) {
+      toast.error("First name can only contain letters and spaces");
+      isValid = false;
+    }
 
-    if (!profileData.lastName) newErrors.lastName = "Last name is required";
-    else if (!validateName(profileData.lastName))
-      newErrors.lastName = "Last name can only contain letters and spaces";
+    if (isEmpty(profileData.lastName)) {
+      toast.error("Last name is required");
+      isValid = false;
+    } else if (!validateName(profileData.lastName)) {
+      toast.error("Last name can only contain letters and spaces");
+      isValid = false;
+    }
 
-    if (!profileData.username) newErrors.seurname = "user name is required";
-    else if (!validateName(profileData.username))
-      newErrors.username = "user name can only contain letters and spaces";
+    if (isEmpty(profileData.username)) {
+      toast.error("Username is required");
+      isValid = false;
+    } else if (!validateName(profileData.username)) {
+      toast.error("Username can only contain letters and spaces");
+      isValid = false;
+    }
 
-    // if (!profileData.name) newErrors.name = "Name is required";
-    // else if (!validateName(profileData.name))
-    //   newErrors.name = "Name can only contain letters and spaces";
+    if (isEmpty(profileData.email)) {
+      toast.error("Email is required");
+      isValid = false;
+    } else if (!validateEmail(profileData.email)) {
+      toast.error("Please enter a valid email address");
+      isValid = false;
+    }
 
-    if (!profileData.email) newErrors.email = "Email is required";
-    else if (!validateEmail(profileData.email))
-      newErrors.email = "Please enter a valid email address";
+    if (isEmpty(profileData.phoneNumber)) {
+      toast.error("Phone number is required");
+      isValid = false;
+    } else if (!validateNumber(profileData.phoneNumber)) {
+      toast.error("Phone number can only contain numbers");
+      isValid = false;
+    }
 
-    if (!profileData.phoneNumber)
-      newErrors.phoneNumber = "Phone number is required";
-    else if (!validateNumber(profileData.phoneNumber))
-      newErrors.phoneNumber = "Phone number can only contain numbers";
+    if (isEmpty(profileData.gender)) {
+      toast.error("Gender is required");
+      isValid = false;
+    } else if (!validateGender(profileData.gender)) {
+      toast.error("Gender can only contain letters and spaces");
+      isValid = false;
+    }
 
-    if (!profileData.gender) newErrors.gender = "Gender is required";
-    else if (!validateGender(profileData.gender))
-      newErrors.gender = "Gender can only contain letters and spaces";
+    if (isEmpty(profileData.address)) {
+      toast.error("Address is required");
+      isValid = false;
+    }
 
-    if (!profileData.address) newErrors.address = "Address is required";
-
-    if (!profileData.educationalQualification)
-      newErrors.educationalQualification =
-        "Educational qualification is required";
-    else if (
+    if (isEmpty(profileData.educationalQualification)) {
+      toast.error("Educational qualification is required");
+      isValid = false;
+    } else if (
       !validateEducationalQualification(profileData.educationalQualification)
-    )
-      newErrors.educationalQualification =
-        "Educational qualification can only contain letters and spaces";
+    ) {
+      toast.error(
+        "Educational qualification can only contain letters and spaces"
+      );
+      isValid = false;
+    }
 
-    if (!profileData.maritalStatus)
-      newErrors.maritalStatus = "Marital status is required";
-    else if (!validateMaritalStatus(profileData.maritalStatus))
-      newErrors.maritalStatus =
-        "Marital status can only contain letters and spaces";
+    if (isEmpty(profileData.maritalStatus)) {
+      toast.error("Marital status is required");
+      isValid = false;
+    } else if (!validateMaritalStatus(profileData.maritalStatus)) {
+      toast.error("Marital status can only contain letters and spaces");
+      isValid = false;
+    }
 
-    // if (!profileData.dob) newErrors.dob = "Date of birth is required";
-    // else if (!validateDateOfBirth(profileData.dob))
-    //   newErrors.dob = "Date of birth must be in the format YYYY-MM-DD";
+    if (isEmpty(profileData.dob)) {
+      toast.error("Date of birth is required");
+      isValid = false;
+    }
 
-    if (!profileData.ministryExperience)
-      newErrors.ministryExperience = "Ministry experience is required";
-    if (!profileData.theologicalQualification)
-      newErrors.theologicalQualification =
-        "Theological qualification is required";
-    if (!profileData.salvationExperience)
-      newErrors.salvationExperience = "Salvation experience is required";
+    if (isEmpty(profileData.ministryExperience)) {
+      toast.error("Ministry experience is required");
+      isValid = false;
+    }
 
-    setErrors(newErrors);
+    if (isEmpty(profileData.theologicalQualification)) {
+      toast.error("Theological qualification is required");
+      isValid = false;
+    }
 
-    return Object.keys(newErrors).length === 0;
+    if (isEmpty(profileData.salvationExperience)) {
+      toast.error("Salvation experience is required");
+      isValid = false;
+    }
+
+    return isValid;
   };
 
   // Handle edit/save click
@@ -177,19 +208,39 @@ const Profile = () => {
     const { name, value } = e.target;
 
     // Validate input based on field name
-    if (name === "firstName" && !validateName(value)) return;
-    if (name === "username" && !validateName(value)) return;
-
-    if (name === "lastName" && !validateName(value)) return;
-    if (name === "phoneNumber" && !validateNumber(value)) return;
-    if (name === "gender" && !validateGender(value)) return;
-    if (name === "maritalStatus" && !validateMaritalStatus(value)) return;
+    if (name === "firstName" && !validateName(value)) {
+      toast.error("First name can only contain letters and spaces");
+      return;
+    }
+    if (name === "username" && !validateName(value)) {
+      toast.error("Username can only contain letters and spaces");
+      return;
+    }
+    if (name === "lastName" && !validateName(value)) {
+      toast.error("Last name can only contain letters and spaces");
+      return;
+    }
+    if (name === "phoneNumber" && !validateNumber(value)) {
+      toast.error("Phone number can only contain numbers");
+      return;
+    }
+    if (name === "gender" && !validateGender(value)) {
+      toast.error("Gender can only contain letters and spaces");
+      return;
+    }
+    if (name === "maritalStatus" && !validateMaritalStatus(value)) {
+      toast.error("Marital status can only contain letters and spaces");
+      return;
+    }
     if (
       name === "educationalQualification" &&
       !validateEducationalQualification(value)
-    )
+    ) {
+      toast.error(
+        "Educational qualification can only contain letters and spaces"
+      );
       return;
-    // if (name === "dob" && !validateDateOfBirth(value)) return;
+    }
 
     setProfileData({
       ...profileData,
@@ -200,7 +251,7 @@ const Profile = () => {
   // Handle save click
   const handleSaveClick = async () => {
     if (!validateForm()) return;
-
+window.location.reload();
     setIsEditing(false);
     const formData = new FormData();
 
@@ -208,14 +259,17 @@ const Profile = () => {
       if (key === "emergencyContact") {
         const emergencyContact = profileData[key];
         for (const field in emergencyContact) {
-          formData.append(emergencyContact.$`{field}, emergencyContact[field]`);
+          formData.append(
+            `emergencyContact[${field}]`,
+            emergencyContact[field]
+          );
         }
       } else {
         formData.append(key, profileData[key]);
       }
     }
+
     if (selectedProfileImage) {
-      // formData.append("profilePhotoFile", selectedProfileImage);
       formData.append("passportPhotoFile", selectedProfileImage);
     }
     if (selectedProfileBanner) {
@@ -230,7 +284,6 @@ const Profile = () => {
 
     try {
       const apiBaseUrl = process.env.REACT_APP_BASE_API;
-
       const response = await axios.put(
         `${apiBaseUrl}/api/users/${user._id}`,
         formData,
@@ -241,17 +294,11 @@ const Profile = () => {
         }
       );
 
-      // localStorage.setItem(
-      //   "userDataUpdated",
-      //   JSON.stringify(response.data.user)
-      // );
       localStorage.setItem("userdata", JSON.stringify(response.data.user));
-
-      if (response.status !== 200) {
-        console.error("Error updating profile:", response.data);
-      }
+      toast.success("Profile updated successfully!");
     } catch (error) {
-      console.error("Network error updating profile:", error);
+      console.error("Error updating profile:", error);
+      toast.error("Failed to update profile. Please try again.");
     }
   };
 
@@ -262,19 +309,11 @@ const Profile = () => {
       setProfileData((prevData) => ({
         ...prevData,
         passportPhotoFile: URL.createObjectURL(file),
-        // passportPhotoFile: file,
       }));
       setSelectedProfileImage(file);
     }
   };
-  // const handleProfileImageChange = (e) => {
 
-  //   const file = e.target.files[0];
-  //   setProfileData((prevData) => ({
-  //     ...prevData,
-  //     passportPhotoFile: file,
-  //   }));
-  // };
   // Handle profile banner change
   const handleProfileBannerChange = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -282,7 +321,6 @@ const Profile = () => {
       setProfileData((prevData) => ({
         ...prevData,
         profileBanner: URL.createObjectURL(file),
-        // profileBanner: file,
       }));
       setSelectedProfileBanner(file);
     }
@@ -298,6 +336,7 @@ const Profile = () => {
       setSelectedSignatureFile(file);
     }
   };
+
   const handleEducationCertFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -372,7 +411,6 @@ const Profile = () => {
         <div className="profileSection">
           <div className="hh5">General Information</div>
 
-          {/* new */}
           <div className="profileDetails">
             <label>Username</label>
             <input
@@ -382,24 +420,19 @@ const Profile = () => {
               onChange={handleChange}
               disabled={!isEditing}
             />
-            {errors.username && (
-              <span className="error-message">{errors.username}</span>
-            )}
           </div>
           <div className="profileDetails">
             <label>First Name</label>
-            <div className="d-flex flex-column w-100 align-items-end">
+            <div className="d-flex flex-column  align-items-end " style={{ width: "340px" }}>
               <input
                 type="text"
-                className="w-100"
+                // className="w-800"
+                style={{ width: "340px" }}
                 name="firstName"
                 value={profileData.firstName}
                 onChange={handleChange}
                 disabled={!isEditing}
               />
-              {errors.firstName && (
-                <span className="error-message">{errors.firstName}</span>
-              )}
             </div>
           </div>
           <div className="profileDetails">
@@ -411,9 +444,6 @@ const Profile = () => {
               onChange={handleChange}
               disabled={!isEditing}
             />
-            {errors.lastName && (
-              <span className="error-message">{errors.lastName}</span>
-            )}
           </div>
 
           <div className="profileDetails">
@@ -422,15 +452,13 @@ const Profile = () => {
               name="gender"
               value={profileData.gender}
               onChange={handleChange}
-              disabled={!isEditing}>
+              disabled={!isEditing}
+            >
               <option value="">Select Gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
               <option value="Other">Other</option>
             </select>
-            {errors.gender && (
-              <span className="error-message">{errors.gender}</span>
-            )}
           </div>
 
           <div className="profileDetails">
@@ -441,9 +469,6 @@ const Profile = () => {
               onChange={handleChange}
               disabled={!isEditing}
             />
-            {errors.address && (
-              <span className="error-message">{errors.address}</span>
-            )}
           </div>
           <div className="profileSeperator"></div>
           <div className="hh5">Contact Details</div>
@@ -457,9 +482,6 @@ const Profile = () => {
               onChange={handleChange}
               disabled={!isEditing}
             />
-            {errors.email && (
-              <span className="error-message">{errors.email}</span>
-            )}
           </div>
           <div className="profileDetails profileSPLBox">
             <img src={mailSVG} alt="mailSVG" />
@@ -471,9 +493,6 @@ const Profile = () => {
               onChange={handleChange}
               disabled={!isEditing}
             />
-            {errors.phoneNumber && (
-              <span className="error-message">{errors.phoneNumber}</span>
-            )}
           </div>
         </div>
         <div className="profileSection">
@@ -487,25 +506,7 @@ const Profile = () => {
               onChange={handleChange}
               disabled={!isEditing}
             />
-            {errors.educationalQualification && (
-              <span className="error-message">
-                {errors.educationalQualification}
-              </span>
-            )}
           </div>
-          {/* <div className="profileDetails">
-            <label>Marital Status</label>
-            <input
-              type="text"
-              name="maritalStatus"
-              value={profileData.maritalStatus}
-              onChange={handleChange}
-              disabled={!isEditing}
-            />
-            {errors.maritalStatus && (
-              <span className="error-message">{errors.maritalStatus}</span>
-            )}
-          </div> */}
 
           <div className="profileDetails">
             <label>Marital Status</label>
@@ -513,35 +514,29 @@ const Profile = () => {
               name="maritalStatus"
               value={profileData.maritalStatus || ""}
               onChange={handleChange}
-              disabled={!isEditing}>
+              disabled={!isEditing}
+            >
               <option value="">Select Marital Status</option>
               <option value="Single">Single</option>
               <option value="Married">Married</option>
               <option value="Divorced">Divorced</option>
               <option value="Widowed">Widowed</option>
             </select>
-            {errors.maritalStatus && (
-              <span className="error-message">{errors.maritalStatus}</span>
-            )}
           </div>
 
           <div className="profileDetails ">
             <label>Date of Birth</label>
-            <div className="d-flex flex-column align-items-end">
+            <div className="d-flex flex-column align-items-end" style={{width: "340px"}}>
               <input
                 type={!isEditing ? "text" : "date"}
-                className="w-100"
+                // className="w-800"
+                style={{width: "340px"}}
                 name="dob"
                 value={profileData.dob ? profileData.dob.split("T")[0] : ""}
                 onChange={handleChange}
                 disabled={!isEditing}
                 placeholder="YYYY-MM-DD"
               />
-              {/* {errors.dob && (
-                <span className="error-message text-sm-end fs-6">
-                  {errors.dob}
-                </span>
-              )} */}
             </div>
           </div>
           <div className="profileDetails">
@@ -552,9 +547,6 @@ const Profile = () => {
               onChange={handleChange}
               disabled={!isEditing}
             />
-            {errors.ministryExperience && (
-              <span className="error-message">{errors.ministryExperience}</span>
-            )}
           </div>
           <div className="profileDetails">
             <label>Theological Qualification</label>
@@ -564,11 +556,6 @@ const Profile = () => {
               onChange={handleChange}
               disabled={!isEditing}
             />
-            {errors.theologicalQualification && (
-              <span className="error-message">
-                {errors.theologicalQualification}
-              </span>
-            )}
           </div>
           <div className="profileDetails">
             <label>Salvation Experience</label>
@@ -578,11 +565,6 @@ const Profile = () => {
               onChange={handleChange}
               disabled={!isEditing}
             />
-            {errors.salvationExperience && (
-              <span className="error-message">
-                {errors.salvationExperience}
-              </span>
-            )}
           </div>
           <div className="profileDetails">
             <label>Signature File</label>

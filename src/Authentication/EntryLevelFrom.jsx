@@ -1,189 +1,74 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Register.css";
 import { useForm } from "react-hook-form";
 import { Button } from "react-bootstrap";
 import axios from "axios";
-// import UserContext from "../context/UserContext";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const apiBaseUrl = process.env.REACT_APP_BASE_API;
+
 const EntryLevelForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({ mode: "onSubmit" });
+
   const location = useLocation();
-  const {userId} = location.state
-  // const { userInfo } = useContext(UserContext);
-  const [degrees, setdegrees] = useState([]);
-  // const [userId, setUserId] = useState("");
+  const { userId } = location.state || {};
   const navigate = useNavigate();
   const userInfo = JSON.parse(localStorage.getItem("userdata"));
 
+  const [degrees, setdegrees] = useState([]);
+
   useEffect(() => {
     const fetchDegrees = async () => {
-      const { data } = await axios.get(`${apiBaseUrl}/api/degrees`);
-      const { degrees } = data;
-      console.log(degrees);
-
-      setdegrees(degrees);
+      try {
+        const { data } = await axios.get(`${apiBaseUrl}/api/degrees`);
+        setdegrees(data.degrees || []);
+      } catch (error) {
+        console.error("Error fetching degrees", error);
+        toast.error("Failed to load degree options.");
+      }
     };
     fetchDegrees();
   }, []);
 
-  // const userData = JSON.parse(localStorage.getItem("loginUserdata"));
-  // useEffect(() => {
-  //   setUserId(userData.id)
-  // }, [])
-  // console.log(userId);
-
-  // console.log(degrees, userInfo.id);
-  // const userId = userInfo.id
-
-  //  const onSubmit = async (data) => {
-  //    try {
-  //      // Append userId from context to the data
-  //     //  const formData = { data, userId };
-
-  //      // Sending the data to the API
-  //      const response = await axios.post(
-  //        "/api/users/profile", {
-
-  //          data,
-  //          headers: {
-  //            "Content-Type": "multipart/formData",
-  //          },
-  //          userId,
-  //          details:true
-  //         }
-
-  //      );
-
-  //      // Assuming you want to handle success
-  //      console.log("Profile updated successfully", response.data);
-  //      navigate("/home"); // Redirecting to profile page after successful submission
-  //    } catch (error) {
-  //      console.error("Error updating profile:", error);
-  //      // Handle the error appropriately
-  //    }
-  //  };
-  // useEffect(() => {
-  //   const userData = JSON.parse(localStorage.getItem("userdata"));
-  //   setUserId(userData.id);
-  //   // if (userData) {
-  //   //   // Optionally, set default values if needed
-  //   //   // setValue("firstName", userData.firstName);
-  //   //   // setValue("lastName", userData.lastName);
-  //   //   // setValue("mobileNo", userData.mobileNo);
-  //   // }
-  // }, []);
-
-  // const onSubmit = async (data) => {
-  //   console.log(data);
-  //   const payload = {
-  //     data,
-  //     // formData,
-  //     userId: userId,
-  //     // details:true
-  //   }
-
-  //   try {
-  //     const response = await axios.post(
-  //       "/api/users/profile",
-  //       // degreeId= ("applyingFor", data.applyingFor),
-  //       // details = true,
-  //       payload,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       }
-  //     );
-
-  //     console.log("Profile updated successfully", response.data);
-  //     navigate("/home");
-  //   } catch (error) {
-  //     console.error("Error updating profile:", error);
-  //   }
-  // };
-
-  // const onSubmit = async (formData) => {
-  //   try {
-  //     const data = new FormData();
-  //     Object.keys(formData).forEach((key) => {
-  //       data.append(key, formData[key]);
-  //     });
-
-  //     data.append("userId", userId);
-  //     // data.append('details',true)// Add userId explicitly
-
-  //     const response = await axios.post(
-  //       `${apiBaseUrl}/api/users/profile`,
-  //       data,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       }
-  //     );
-
-  //     console.log("Profile updated successfully:", response.data);
-  //     // navigate("/home");
-  //     navigate(`/waitAuth`,{state:{userId:userInfo.id}})
-  //   } catch (error) {
-  //     console.error(
-  //       "Error updating profile:",
-  //       error.response?.data || error.message
-  //     );
-  //     alert("Error updating profile. Please try again.");
-  //   }
-  // };
-
   const onSubmit = async (formData) => {
     try {
       const data = new FormData();
-
-      // Append all form fields to FormData
       Object.keys(formData).forEach((key) => {
         if (formData[key] instanceof FileList) {
-          // If the input is a file, append the first file from FileList
           data.append(key, formData[key][0]);
         } else {
           data.append(key, formData[key]);
         }
       });
-
-      // Append userId to the FormData
       data.append("userId", userId || userInfo._id);
 
-      const response = await axios.post(
-        `${apiBaseUrl}/api/users/profile`,
-        data,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post(`${apiBaseUrl}/api/users/profile`, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-      console.log("Profile updated successfully:", response.data);
+      toast.success("Profile updated successfully!");
       navigate(`/waitAuth`, { state: { userId: userId || userInfo._id } });
     } catch (error) {
-      console.error(
-        "Error updating profile:",
-        error.response?.data || error.message
-      );
-      alert("Error updating profile. Please try again.");
+      console.error("Error updating profile:", error.response?.data || error.message);
+      toast.error("Error updating profile. Please try again.");
     }
   };
 
+  const onError = () => {
+    toast.error("Please fill in all fields correctly before submitting.");
+  };
 
   return (
     <div className="register min-vh-100 h-100 w-100 elf">
       <div className="register-container d-flex justify-content-center align-items-center">
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmit, onError)}
           className="w-100 d-flex justify-content-center align-items-center"
         >
           <div className="register-card d-flex flex-column flex-lg-row shadow-lg rounded w-100">
@@ -198,11 +83,13 @@ const EntryLevelForm = () => {
                   placeholder="Enter First Name"
                   {...register("firstName", {
                     required: "First Name is required",
+                    pattern: {
+                      value: /^[A-Za-z\s]+$/,
+                      message: "Only letters allowed",
+                    },
                   })}
                 />
-                {errors.firstName && (
-                  <p className="text-danger">{errors.firstName.message}</p>
-                )}
+                {errors.firstName && <p className="text-danger">{errors.firstName.message}</p>}
               </div>
 
               {/* Last Name */}
@@ -214,27 +101,34 @@ const EntryLevelForm = () => {
                   placeholder="Enter Last Name"
                   {...register("lastName", {
                     required: "Last Name is required",
+                    pattern: {
+                      value: /^[A-Za-z\s]+$/,
+                      message: "Only letters allowed",
+                    },
                   })}
                 />
-                {errors.lastName && (
-                  <p className="text-danger">{errors.lastName.message}</p>
-                )}
+                {errors.lastName && <p className="text-danger">{errors.lastName.message}</p>}
               </div>
 
               {/* Mobile Number */}
               <div className="form-group mb-2">
                 <label className="form-label fw-semibold">Mobile Number</label>
                 <input
-                  type="number"
+                  type="text"
                   className="form-control"
                   placeholder="Enter Mobile Number"
+                  onInput={(e) => {
+                    e.target.value = e.target.value.replace(/\D/g, "");
+                  }}
                   {...register("mobileNo", {
                     required: "Mobile Number is required",
+                    pattern: {
+                      value: /^[0-9]{10}$/,
+                      message: "Only numbers allowed and must be 10 digits",
+                    },
                   })}
                 />
-                {errors.mobileNo && (
-                  <p className="text-danger">{errors.mobileNo.message}</p>
-                )}
+                {errors.mobileNo && <p className="text-danger">{errors.mobileNo.message}</p>}
               </div>
 
               {/* Marital Status */}
@@ -242,17 +136,13 @@ const EntryLevelForm = () => {
                 <label className="form-label fw-semibold">Marital Status</label>
                 <select
                   className="form-select"
-                  {...register("maritalStatus", {
-                    required: "Marital Status is required",
-                  })}
+                  {...register("maritalStatus", { required: "Marital Status is required" })}
                 >
                   <option value="">Select...</option>
                   <option value="Married">Married</option>
                   <option value="Unmarried">Unmarried</option>
                 </select>
-                {errors.maritalStatus && (
-                  <p className="text-danger">{errors.maritalStatus.message}</p>
-                )}
+                {errors.maritalStatus && <p className="text-danger">{errors.maritalStatus.message}</p>}
               </div>
 
               {/* Date of Birth */}
@@ -261,13 +151,9 @@ const EntryLevelForm = () => {
                 <input
                   type="date"
                   className="form-control"
-                  {...register("dob", {
-                    required: "Date of Birth is required",
-                  })}
+                  {...register("dob", { required: "Date of Birth is required" })}
                 />
-                {errors.dob && (
-                  <p className="text-danger">{errors.dob.message}</p>
-                )}
+                {errors.dob && <p className="text-danger">{errors.dob.message}</p>}
               </div>
 
               {/* Gender */}
@@ -275,18 +161,14 @@ const EntryLevelForm = () => {
                 <label className="form-label fw-semibold">Gender</label>
                 <select
                   className="form-select"
-                  {...register("gender", {
-                    required: "Gender is required",
-                  })}
+                  {...register("gender", { required: "Gender is required" })}
                 >
                   <option value="">Select...</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                   <option value="Other">Other</option>
                 </select>
-                {errors.gender && (
-                  <p className="text-danger">{errors.gender.message}</p>
-                )}
+                {errors.gender && <p className="text-danger">{errors.gender.message}</p>}
               </div>
 
               {/* Applying For */}
@@ -294,19 +176,16 @@ const EntryLevelForm = () => {
                 <label className="form-label fw-semibold">Applying For</label>
                 <select
                   className="form-select"
-                  {...register("applyingFor", {
-                    required: "Please select a degree",
-                  })}
+                  {...register("applyingFor", { required: "Please select a degree" })}
                 >
+                  <option value="">Select...</option>
                   {degrees.map((degree) => (
                     <option key={degree._id} value={degree._id}>
                       {degree.title}
                     </option>
                   ))}
                 </select>
-                {errors.applyingFor && (
-                  <p className="text-danger">{errors.applyingFor.message}</p>
-                )}
+                {errors.applyingFor && <p className="text-danger">{errors.applyingFor.message}</p>}
               </div>
             </div>
 
@@ -314,9 +193,7 @@ const EntryLevelForm = () => {
             <div className="form-container d-flex flex-column w-100 px-4 py-4 bg-light">
               {/* Educational Qualification */}
               <div className="form-group mb-2">
-                <label className="form-label fw-semibold">
-                  Educational Qualification
-                </label>
+                <label className="form-label fw-semibold">Educational Qualification</label>
                 <input
                   type="text"
                   className="form-control"
@@ -326,17 +203,13 @@ const EntryLevelForm = () => {
                   })}
                 />
                 {errors.educationalQualification && (
-                  <p className="text-danger">
-                    {errors.educationalQualification.message}
-                  </p>
+                  <p className="text-danger">{errors.educationalQualification.message}</p>
                 )}
               </div>
 
               {/* Theological Qualification */}
               <div className="form-group mb-2">
-                <label className="form-label fw-semibold">
-                  Theological Qualification
-                </label>
+                <label className="form-label fw-semibold">Theological Qualification</label>
                 <input
                   type="text"
                   className="form-control"
@@ -346,35 +219,25 @@ const EntryLevelForm = () => {
                   })}
                 />
                 {errors.theologicalQualification && (
-                  <p className="text-danger">
-                    {errors.theologicalQualification.message}
-                  </p>
+                  <p className="text-danger">{errors.theologicalQualification.message}</p>
                 )}
               </div>
 
               {/* Address */}
               <div className="form-group mb-2">
-                <label className="form-label fw-semibold">
-                  Present Address
-                </label>
+                <label className="form-label fw-semibold">Present Address</label>
                 <input
                   type="text"
                   className="form-control"
                   placeholder="Enter Address"
-                  {...register("presentAddress", {
-                    required: "Address is required",
-                  })}
+                  {...register("presentAddress", { required: "Address is required" })}
                 />
-                {errors.presentAddress && (
-                  <p className="text-danger">{errors.presentAddress.message}</p>
-                )}
+                {errors.presentAddress && <p className="text-danger">{errors.presentAddress.message}</p>}
               </div>
 
               {/* Ministry Experience */}
               <div className="form-group mb-2">
-                <label className="form-label fw-semibold">
-                  Ministry Experience
-                </label>
+                <label className="form-label fw-semibold">Ministry Experience</label>
                 <input
                   type="text"
                   className="form-control"
@@ -384,17 +247,13 @@ const EntryLevelForm = () => {
                   })}
                 />
                 {errors.ministryExperience && (
-                  <p className="text-danger">
-                    {errors.ministryExperience.message}
-                  </p>
+                  <p className="text-danger">{errors.ministryExperience.message}</p>
                 )}
               </div>
 
               {/* Salvation Experience */}
               <div className="form-group mb-2">
-                <label className="form-label fw-semibold">
-                  Salvation Experience
-                </label>
+                <label className="form-label fw-semibold">Salvation Experience</label>
                 <input
                   type="text"
                   className="form-control"
@@ -404,9 +263,7 @@ const EntryLevelForm = () => {
                   })}
                 />
                 {errors.salvationExperience && (
-                  <p className="text-danger">
-                    {errors.salvationExperience.message}
-                  </p>
+                  <p className="text-danger">{errors.salvationExperience.message}</p>
                 )}
               </div>
 
@@ -420,14 +277,10 @@ const EntryLevelForm = () => {
                     required: "Signature file is required",
                   })}
                 />
-                {errors.signatureFile && (
-                  <p className="text-danger">{errors.signatureFile.message}</p>
-                )}
+                {errors.signatureFile && <p className="text-danger">{errors.signatureFile.message}</p>}
               </div>
               <div className="form-group mb-2">
-                <label className="form-label fw-semibold">
-                  Passport Photo File
-                </label>
+                <label className="form-label fw-semibold">Passport Photo File</label>
                 <input
                   type="file"
                   className="form-control"
@@ -436,26 +289,20 @@ const EntryLevelForm = () => {
                   })}
                 />
                 {errors.passportPhotoFile && (
-                  <p className="text-danger">
-                    {errors.passportPhotoFile.message}
-                  </p>
+                  <p className="text-danger">{errors.passportPhotoFile.message}</p>
                 )}
               </div>
               <div className="form-group mb-2">
-                <label className="form-label fw-semibold">
-                  Education CertFile
-                </label>
+                <label className="form-label fw-semibold">Education CertFile</label>
                 <input
                   type="file"
                   className="form-control"
                   {...register("educationCertFile", {
-                    required: "Passport Photo is required",
+                    required: "Education Certificate is required",
                   })}
                 />
                 {errors.educationCertFile && (
-                  <p className="text-danger">
-                    {errors.educationCertFile.message}
-                  </p>
+                  <p className="text-danger">{errors.educationCertFile.message}</p>
                 )}
               </div>
 
@@ -466,6 +313,7 @@ const EntryLevelForm = () => {
           </div>
         </form>
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };
