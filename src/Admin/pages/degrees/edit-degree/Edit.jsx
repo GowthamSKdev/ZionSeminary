@@ -313,19 +313,22 @@ const Edit = ({ courseDetails }) => {
           <div className="flex-input">
             <div className="course-name-cnt responsive-input">
               <p>Enter course price</p>
-              <input
-                type="number"
-                className="name-input price-input"
-                value={courseData?.price ?? ""}
-                placeholder="₹"
-                readOnly={!editCourse}
-                onChange={(e) =>
-                  setCourseData({
-                    ...courseData,
-                    price: e.target.value,
-                  })
-                }
-              />
+              <div className="flex-2">
+                <label htmlFor="">Rs.</label>
+                <input
+                  type="number"
+                  className="name-input price-input"
+                  value={courseData?.price ?? ""}
+                  placeholder="₹"
+                  readOnly={!editCourse}
+                  onChange={(e) =>
+                    setCourseData({
+                      ...courseData,
+                      price: e.target.value,
+                    })
+                  }
+                />
+              </div>
             </div>
             {/* <div className="course-name-cnt">
               <p>Upload Degree Thumbnail</p>

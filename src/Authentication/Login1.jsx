@@ -58,7 +58,7 @@ function Login() {
       }
     } catch (error) {
       console.error("Error logging in:", error);
-      toast.error("An error occurred while logging in. Please try again.");
+      toast.error("Invalid username or password. Please try again.");
     }
   };
 
@@ -136,13 +136,15 @@ function Login() {
 
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="form-group mb-3">
-                <label className="form-label fw-semibold">E-mail</label>
+                <label className="form-label fw-semibold">E-mail or Username</label>
                 <input
-                  type="email"
-                  // type="text"
+                  // type="email"
+                  type="text"
+                // type={"email" || "text"}
+
 
                   className="form-control"
-                  placeholder="Enter email Id"
+                  placeholder="Enter email Id or Username"
                   {...register("email", { required: true })}
                 />
               </div>

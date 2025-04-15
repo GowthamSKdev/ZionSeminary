@@ -64,7 +64,7 @@ function Login() {
             <div className="form-group mb-3">
               <label className="form-label fw-semibold">E-mail</label>
               <input
-                type="email"
+                type="text"
                 // type={"email" || "text"}
                 className="form-control"
                 placeholder="Enter Email"

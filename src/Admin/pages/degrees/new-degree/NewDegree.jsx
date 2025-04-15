@@ -345,13 +345,16 @@ const NewDegree = () => {
           <div className="flex-input">
             <div className="course-name-cnt">
               <p>Enter degree price</p>
-              <input
-                type="number"
-                value={degreeData.price !== null ? degreeData.price : ""}
-                className="name-input price-input"
-                placeholder="₹"
-                onChange={(e) => handledirectInput("price", e.target.value)}
-              />
+              <div className="flex-2">
+                <label htmlFor="">Rs.</label>
+                <input
+                  type="number"
+                  value={degreeData.price !== null ? degreeData.price : ""}
+                  className="name-input price-input"
+                  placeholder="Rs."
+                  onChange={(e) => handledirectInput("price", e.target.value)}
+                />
+              </div>
             </div>
           </div>
           <div className="course-name-cnt">

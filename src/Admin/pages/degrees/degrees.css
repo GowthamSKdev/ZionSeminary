@@ -240,6 +240,7 @@ input[type="file"] {
   max-width: 9rem;
   font-weight: 500;
   color: rgb(83, 83, 83);
+  margin-left: 4px;
 }
 
 .flex-input {
@@ -249,6 +250,13 @@ input[type="file"] {
   justify-content: space-between;
   width: 80%;
   margin-top: 0.5rem;
+}
+
+
+.flex-2 {
+  position: relative;
+  top:3px;
+
 }
 
 .responsive-input {
